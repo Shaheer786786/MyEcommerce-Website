@@ -1,0 +1,109 @@
+/* MAIN WRAPPER CENTER + OUTER SPACING */
+.bt-wrapper {
+  width: 100%;
+  max-width: 1400px;     /* center width */
+  margin: 100px auto;     /* UP/DOWN + AUTO CENTER */
+  padding: 0 20px;       /* left/right inner padding */
+  display: grid;
+  grid-template-columns: 1.5fr 2fr;
+  gap: 25px;             /* BETTER GAP */
+}
+
+/* LARGE LEFT BOX */
+.bt-large-box {
+  background: #1a1a1a;
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+  padding: 25px;
+  height: 450px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);  /* PREMIUM LOOK */
+}
+
+.bt-large-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.bt-text {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  color: white;
+  z-index: 2;
+}
+
+/* RIGHT GRID */
+.bt-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;             /* better spacing */
+}
+
+/* SMALL BOXES */
+.bt-small-box {
+  background: #1a1a1a;
+  border-radius: 14px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  height: 210px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.18); /* PREMIUM */
+}
+
+.bt-small-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.bt-small-text {
+  position: relative;
+  top: 60px;
+  z-index: 2;
+  color: white;
+}
+/* BUTTON STYLING FOR BANNERS */
+.bt-text button,
+.bt-small-text button {
+  display: inline-block;        /* make button respect padding */
+  margin-top: 10px;             /* space below the text */
+  padding: 8px 8px;            /* top-bottom, left-right padding */
+  background-color: #ff6b6b;    /* nice primary color */
+  color: #fff;                  /* white text */
+  border: none;                 /* remove default border */
+  border-radius: 5px;           /* rounded corners */
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;    /* smooth hover effect */
+  text-align: center;
+  width: 100px;
+}
+
+.bt-text button:hover,
+.bt-small-text button:hover {
+  background-color: #ff4757;    /* slightly darker on hover */
+  transform: translateY(-2px);  /* subtle lift effect */
+}
+
+/* Ensure buttons are below text */
+.bt-text,
+.bt-small-text {
+  display: flex;
+  flex-direction: column;       /* stack text + button vertically */
+  justify-content: flex-start;
+}
+#big-sale {
+    scroll-margin-top:180px;
+ 
+}

@@ -1,0 +1,54 @@
+.admin-orders-container {
+  padding: 20px;
+}
+
+.admin-orders-container h2 {
+  margin-bottom: 20px;
+}
+
+/* Table styling */
+.admin-orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+}
+
+.admin-orders-table th,
+.admin-orders-table td {
+  border: 1px solid #000000;
+  padding: 10px;
+  text-align: left;
+}
+
+.admin-orders-table th {
+  background-color: #f4f4f4;
+}
+
+.admin-orders-table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.admin-orders-table tr:hover {
+  background-color: #c5c5c5;
+}
+
+/* Delete button */
+.admin-orders-delete-btn {
+  background-color: #f44336; /* red */
+  color: white;
+  border: none;
+  padding: 9px 15px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.admin-orders-delete-btn:hover {
+  background-color: #d32f2f;
+}
+
+/* Loading & empty message */
+.admin-orders-message {
+  padding: 20px;
+  font-size: 16px;
+}

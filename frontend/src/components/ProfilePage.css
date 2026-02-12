@@ -1,0 +1,114 @@
+.profile-page {
+  display: flex;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f5f5f5;
+  min-height: 100vh;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* Sidebar */
+.profile-sidebar {
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.profile-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.profile-card img.profile-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+.profile-card h2 {
+  margin: 0;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+.profile-card p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+}
+.btn-logout {
+  background: #ff3b30;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.btn-logout:hover {
+  background: #e32b20;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sidebar-menu button {
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: none;
+  background: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+.sidebar-menu button:hover {
+  background: #0056b3;
+}
+
+/* Main content */
+.profile-main {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  padding: 25px 30px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.profile-main h1 {
+  margin-bottom: 20px;
+}
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.profile-form label {
+  font-weight: 500;
+  font-size: 14px;
+}
+.profile-form input {
+  padding: 8px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+.btn-update {
+  padding: 10px 15px;
+  border: none;
+  background: #28a745;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+.btn-update:hover {
+  background: #218838;
+}
+.message {
+  background: #d4edda;
+  color: #155724;
+  padding: 8px 12px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}

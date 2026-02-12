@@ -1,0 +1,72 @@
+.admin-favicon-container {
+  max-width: 450px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-favicon-container h3 {
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+.admin-favicon-container input[type="file"],
+.admin-favicon-container input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border 0.2s;
+}
+
+.admin-favicon-container input[type="file"]:focus,
+.admin-favicon-container input[type="text"]:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.admin-favicon-container button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.admin-favicon-container button:hover {
+  background: #357ab8;
+}
+
+.admin-favicon-container button:disabled {
+  background: #a0c4f7;
+  cursor: not-allowed;
+}
+
+.admin-favicon-container p {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: #333;
+}
+.favicon-preview {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.favicon-preview img {
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}

@@ -1,0 +1,116 @@
+.admin-promo-container {
+  padding: 20px;
+  background: #fff;
+}
+
+.admin-promo-heading {
+  font-size: 24px;
+  margin-bottom: 12px;
+  font-weight: bold;
+}
+
+.admin-promo-message {
+  background: #d4edda;
+  color: #155724;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.admin-promo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.admin-promo-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.admin-promo-submit-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.admin-promo-submit-btn:hover {
+  background: #0056b3;
+}
+
+.admin-promo-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-promo-table-header {
+  background: #f8f8f8;
+}
+
+.admin-promo-th,
+.admin-promo-td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.admin-promo-thumb {
+  width: 60px;
+  height: auto;
+  border-radius: 4px;
+}
+
+.admin-promo-tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.admin-promo-no-data {
+  text-align: center;
+  padding: 12px;
+  color: #555;
+}
+
+.admin-promo-edit-btn,
+.admin-promo-delete-btn,
+.admin-promo-recover-btn,
+.admin-promo-perm-btn {
+  margin: 0 4px;
+  padding: 6px 10px;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.admin-promo-edit-btn {
+  background: #ffc107;
+}
+.admin-promo-edit-btn:hover {
+  background: #e0a800;
+}
+
+.admin-promo-delete-btn {
+  background: #dc3545;
+}
+.admin-promo-delete-btn:hover {
+  background: #c82333;
+}
+
+.admin-promo-recover-btn {
+  background: #28a745;
+}
+.admin-promo-recover-btn:hover {
+  background: #218838;
+}
+
+.admin-promo-perm-btn {
+  background: #6c757d;
+}
+.admin-promo-perm-btn:hover {
+  background: #5a6268;
+}

@@ -1,0 +1,99 @@
+/* ===============================
+   BRANDS SECTION
+================================ */
+.brands-section {
+  padding: 24px 16px;
+  max-width: 1200px;
+  margin: 30px auto;
+  
+}
+
+.brands-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* ===============================
+   BRANDS ROW
+================================ */
+.brands-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  position: relative;
+  top: 40px;
+}
+
+/* ===============================
+   BRAND CARD
+================================ */
+.brand-card {
+  width: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.25s ease;
+  padding-bottom: 50px;
+  
+}
+
+.brand-card:hover {
+  transform: scale(1.1);
+}
+
+/* ===============================
+   IMAGE ONLY (NO BACKGROUND)
+================================ */
+.brand-image {
+  width: 90px;
+  height: 90px;
+  overflow: hidden;
+  border-radius: 50%;        /* circle look */
+  background: transparent;  /* 🔴 IMPORTANT */
+}
+
+/* image fix */
+.brand-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;        /* 🔥 MAIN FIX */
+  display: block;
+}
+
+/* ===============================
+   BRAND NAME
+================================ */
+.brand-name {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #222;
+  text-align: center;
+  line-height: 1.2;
+}
+
+#brands{
+    scroll-margin-top:250px ;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 480px) {
+  .brand-card {
+    width: 70px;
+  }
+
+  .brand-image {
+    width: 70px;
+    height: 70px;
+  }
+
+  .brand-name {
+    font-size: 11px;
+  }
+}

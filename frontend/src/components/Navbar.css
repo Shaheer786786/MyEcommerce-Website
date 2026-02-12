@@ -1,0 +1,462 @@
+/* ================= Navbar Container ================= */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #131921;
+  color: white;
+  padding: 20px 30px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* ================= Left Section (Logo) ================= */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.navbar-logo {
+  height: 40px;
+  object-fit: contain;
+}
+.navbar-brand {
+  font-weight: bold;
+  font-size: 20px;
+  color: white;
+  
+}
+
+/* ================= Center Section (Search) ================= */
+.navbar-center {
+  display: flex;
+  flex: 1;
+  max-width: 600px;
+  margin: 0 20px;
+  position: relative;
+}
+
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+}
+
+.navbar-search {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px 0 0 4px;
+  font-size: 16px;
+  outline: none;
+  margin-left: 60px;
+}
+
+/* .search-btn {
+  padding: 8px 12px;
+  background-color: #8f1717;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  transition: background 0.3s;
+}
+
+.search-btn:hover {
+  background-color: #b26262;
+} */
+
+/* ================= Menu Links ================= */
+.navbar-menu {
+  display: flex;
+  list-style: none;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  margin-left: 40px;
+}
+
+.navbar-menu a {
+  position: relative;
+  padding: 6px 12px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.navbar-menu a:hover {
+  color: #fff;
+  box-shadow: 0 0 5px rgba(34, 178, 178, 0.6);
+}
+
+/* ================= Right Section (Cart & Profile) ================= */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+}
+
+/* ================= Cart ================= */
+.nav-cart {
+  position: relative;
+  cursor: pointer;
+}
+.nav-cart img {
+  height: 30px;
+}
+
+.cart-count {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  background-color: #f08804;
+  color: black;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* ================= Search Dropdown ================= */
+.search-dropdown {
+  position: absolute;
+  top: 110%;
+  left: 60px;
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+  max-height: 360px;
+  overflow-y: auto;
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+.search-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-dropdown::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 6px;
+}
+
+.search-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.search-item:hover {
+  background: #f5f5f5;
+}
+
+.search-item img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #eee;
+}
+
+.search-item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+}
+
+.search-price {
+  font-size: 13px;
+  color: #0a8f08;
+  margin-top: 2px;
+}
+
+.search-empty {
+  padding: 14px;
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+}
+
+.search-item:active {
+  background: #eaeaea;
+}
+
+/* ================= User Profile Dropdown ================= */
+.nav-profile {
+  position: relative;
+  cursor: pointer;
+}
+
+.profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 20px;
+  background: #1a2533;
+  transition: background 0.2s;
+} 
+
+.profile-trigger:hover {
+  background: #2a3748;
+}
+
+.nav-profile-img {
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.hamburger {
+  font-size: 18px;
+  color: white;
+}
+
+/* Dropdown Menu */
+.profile-dropdown {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  width: 240px;
+  background: white;
+  color: black;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  padding: 10px;
+  z-index: 2000;
+}
+
+.dropdown-user-info p {
+  margin: 3px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.profile-dropdown hr {
+  margin: 6px 0;
+  border: 0.5px solid #ddd;
+}
+
+.profile-dropdown button {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 8px 5px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.profile-dropdown button:hover {
+  background: #f0f0f0;
+}
+
+.btn-logout {
+  color: red;
+  font-weight: bold;
+}
+
+.nav-login{
+  background-color: maroon;
+  margin-left: 20px;
+}
+.nav-login:hover{
+  background-color: rgb(255, 255, 255);
+  color: black;
+}
+
+/* ================= Animations ================= */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 
+:root {
+  --bg: #ffffff;
+  --text: #222;
+  --nav-bg: #f5f5f5;
+}
+
+[data-theme="dark"] {
+  --bg: #121212;
+  --text: #f1f1f1;
+  --nav-bg: #1e1e1e;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  transition: all 0.3s ease;
+}
+
+.navbar {
+  background: var(--nav-bg);
+} */
+/* ================= User (Image + Name + Hamburger) ================= */
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #1a2533;
+  padding: 6px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.nav-user:hover {
+  background: #2a3748;
+}
+
+.nav-user-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.nav-user-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  white-space: nowrap;
+}
+
+.hamburger-btn {
+  font-size: 20px;
+  margin-left: 6px;
+  cursor: pointer;
+  color: white;
+}
+/* Sidebar main container */
+.profile-sidebar {
+  width: 280px;
+  height: 100%;
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  right: -300px;
+  transition: right 0.3s ease;
+  box-shadow: -3px 0 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.profile-sidebar.open {
+  right: 0;
+}
+
+/* Sidebar overlay */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+}
+
+/* Sidebar header + center content */
+.sidebar-header {
+  padding: 30px 20px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.center-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Profile image large + centered */
+.sidebar-user-img-large {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 12px;
+  border: 2px solid #0a8f08;
+}
+
+/* User info */
+.sidebar-user-name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.sidebar-user-email {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+  text-align: center;
+}
+
+/* Sidebar menu */
+.sidebar-menu {
+  flex: 1;
+  padding: 15px 0;
+}
+
+.sidebar-menu li {
+  padding: 12px 20px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.sidebar-menu li:hover {
+  background-color: #f0f0f0;
+}
+
+/* Bottom logout */
+.sidebar-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #eee;
+}
+
+.logout-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #0a8f08;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  opacity: 0.9;
+}

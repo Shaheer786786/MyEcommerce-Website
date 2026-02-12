@@ -1,0 +1,164 @@
+/* Container */
+.abt-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+/* Title */
+.abt-container h2 {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  color: #222;
+  text-align: center;
+}
+
+/* Inputs */
+.abt-container input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border 0.2s ease;
+}
+
+.abt-container input:focus {
+  border-color: #ff5a5f;
+  outline: none;
+}
+
+/* Buttons */
+.abt-container button {
+  padding: 10px 18px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.abt-container button:first-of-type {
+  background-color: #ff5a5f;
+  color: #fff;
+}
+
+.abt-container button:first-of-type:hover {
+  background-color: #e14b50;
+}
+
+.abt-container button:last-of-type {
+  background-color: #ccc;
+  color: #333;
+}
+
+.abt-container button:last-of-type:hover {
+  background-color: #aaa;
+}
+
+/* Divider */
+.abt-container hr {
+  margin: 25px 0;
+  border: none;
+  border-top: 1px solid #eee;
+}
+
+/* Banner List */
+.abt-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.abt-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9f9f9;
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  transition: box-shadow 0.2s ease;
+}
+
+.abt-list li:hover {
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+/* Banner Image */
+.abt-list li img {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-right: 15px;
+}
+
+/* Banner Info */
+.abt-list li div {
+  flex: 1;
+}
+
+.abt-list li div strong {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+  color: #222;
+}
+
+.abt-list li div p {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0;
+}
+
+/* List Buttons */
+.abt-list li button {
+  margin-left: 8px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+}
+
+.abt-list li button:first-of-type {
+  background-color: #1e90ff;
+  color: #fff;
+}
+
+.abt-list li button:first-of-type:hover {
+  background-color: #187bcd;
+}
+
+.abt-list li button:last-of-type {
+  background-color: #ff4c4c;
+  color: #fff;
+}
+
+.abt-list li button:last-of-type:hover {
+  background-color: #e03b3b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .abt-list li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .abt-list li img {
+    margin-bottom: 8px;
+  }
+
+  .abt-list li button {
+    margin: 5px 5px 0 0;
+  }
+}

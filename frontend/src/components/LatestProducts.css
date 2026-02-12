@@ -1,0 +1,246 @@
+#latest{
+  scroll-margin-top:80px;
+}
+
+.lp-latest-products {
+  padding: 20px;
+  background: #ffffff;
+  font-family: 'Segoe UI', sans-serif;
+
+}
+
+.lp-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.lp-section-header h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.lp-slider {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  cursor: grab;
+}
+
+.lp-slider.lp-active {
+  cursor: grabbing;
+}
+
+.lp-slider::-webkit-scrollbar {
+  height: 6px;
+}
+
+.lp-slider::-webkit-scrollbar-thumb {
+  background: rgba(100, 100, 100, 0.3);
+  border-radius: 3px;
+}
+
+.lp-product-card {
+  min-width: 230px;
+  max-width: 260px;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  padding: 12px;
+  position: relative;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.lp-product-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+.lp-product-card {
+  position: relative; /* parent relative, taaki absolute badges sahi position me aaye */
+}
+
+.lp-product-badges span {
+  position: absolute;
+  margin-bottom: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: white;
+}
+
+/* Offer badge (blue) */
+.lp-badge-offer-badge {
+  background-color: red; /* blue */
+}
+
+/* New badge (green) */
+/* .lp-badge-new-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #28a745;
+} */
+
+/* Hot badge (red) */
+/* .lp-badge-hot-badge {
+  position: absolute;
+  top: 40px;
+  left: 10px;
+  background-color: #dc3545; 
+} */
+
+/* .lp-badge-tag {
+  position: absolute;
+  top: 70px;
+  left: 10px;
+  background-color: #6c757d; 
+}  */
+
+.lp-product-img-box {
+  width: 100%; /* card width ke hisaab se */
+  height: 230px; /* thodi height badhai */
+  overflow: hidden;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lp-product-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* image full cover kare container me */
+  display: block;
+}
+
+/* Mobile responsive */
+@media (max-width: 600px) {
+  .lp-product-img-box {
+    height: 140px; /* thoda chhota for mobile */
+  }
+}
+
+.lp-product-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #212121;
+  margin: 6px 0 4px;
+  line-height: 1.3;
+  height: 38px;
+  overflow: hidden;
+}
+
+.lp-product-short-desc {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.4;
+  height: 34px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.lp-rating-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.lp-rating-box {
+  font-size: 13px;
+  color: #ff9f00;
+  font-weight: 500;
+}
+
+.lp-rating-count {
+  font-size: 12px;
+  color: #878787;
+  margin-left: 4px;
+}
+
+.lp-price-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.lp-price {
+  font-size: 17px;
+  font-weight: 700;
+  color: #000;
+}
+
+.lp-old-price {
+  font-size: 13px;
+  color: #878787;
+  text-decoration: line-through;
+}
+
+.lp-action-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.lp-buy-btn {
+  flex: 1;
+  background: #fb641b;
+  color: #fff;
+  border: none;
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.lp-buy-btn:hover {
+  background: #df5900c7;
+}
+
+.lp-cart-btn {
+  flex: 1;
+  background: #fff;
+  color: #fb641b;
+  border: 1px solid #fb641b;
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.lp-cart-btn:hover {
+  background: #fff3e8;
+}
+
+.lp-section-empty {
+  font-size: 14px;
+  color: #555;
+  padding: 20px;
+}
+
+@media (max-width: 600px) {
+  .lp-slider {
+    gap: 12px;
+  }
+
+  .lp-product-card {
+    min-width: 180px;
+    max-width: 180px;
+  }
+
+  .lp-product-img-box img {
+    height: 160px;
+  }
+}
+

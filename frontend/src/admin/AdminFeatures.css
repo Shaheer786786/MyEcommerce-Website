@@ -1,0 +1,49 @@
+.af-message {
+  background: #d4edda;
+  color: #155724;
+  padding: 10px;
+  margin: 10px auto;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.admin-form input {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.admin-form button {
+  padding: 8px 14px;
+  margin-top: 6px;
+  background: #007bff;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.admin-form button:hover {
+  background: #0056b3;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+.admin-table th, .admin-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.admin-table th {
+  background: #f0f0f0;
+}
+
+.admin-table img {
+  width: 40px;
+}

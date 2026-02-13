@@ -104,6 +104,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import StepsTracker from "./StepsTracker";
+import BASE_URL from "../config"; // <- Add BASE_URL import
 import "./Cart.css";
 
 function Cart({ cart, removeFromCart, updateQuantity }) {
@@ -137,7 +138,7 @@ function Cart({ cart, removeFromCart, updateQuantity }) {
     const image = item.images?.[0] || item.image;
     return image?.startsWith("http")
       ? image
-      : `http://127.0.0.1:5000/images/${image}`;
+      : `${BASE_URL}/images/${image}`; // <- Use live backend URL
   };
 
   return (

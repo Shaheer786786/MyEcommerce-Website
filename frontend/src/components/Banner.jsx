@@ -62,23 +62,19 @@
 // }
 
 // export default Banner;
-
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import BASE_URL from "../config";
 import "./Banner.css";
 
 function Banner() {
   const [banners, setBanners] = useState([]);
   const [index, setIndex] = useState(0);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/banner`)
-      .then(res => {
-        if (!res.ok) throw new Error("Network response was not ok");
-        return res.json();
-      })
+    fetch(`${BASE_URL}/banner`)
+      .then(res => res.json())
       .then(data => setBanners(data.filter(b => !b.deleted)))
       .catch(err => console.error("Banner fetch error:", err));
   }, []);
@@ -94,7 +90,6 @@ function Banner() {
   const banner = banners[index];
   if (!banner) return null;
 
-  // Image URL from live backend
   const bannerImage = banner.image?.startsWith("http")
     ? banner.image
     : `${BASE_URL}/images/${banner.image}`;
@@ -103,7 +98,7 @@ function Banner() {
     if (banner.productId) {
       navigate(`/product/${banner.productId}`);
     } else if (banner.buttonLink) {
-      window.open(banner.buttonLink, "_blank");
+      window.location.href = banner.buttonLink;
     }
   };
 
@@ -111,7 +106,7 @@ function Banner() {
     <div
       className="banner-slider"
       style={{ backgroundImage: `url(${bannerImage})`, cursor: "pointer" }}
-      onClick={handleClick} 
+      onClick={handleClick}
     >
       <div className="banner-overlay">
         <div className="banner-content">
@@ -123,8 +118,6 @@ function Banner() {
               href={banner.buttonLink}
               className="banner-btn"
               onClick={(e) => e.stopPropagation()}
-              target="_blank"
-              rel="noopener noreferrer"
             >
               {banner.buttonText}
             </a>

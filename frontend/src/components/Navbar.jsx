@@ -364,6 +364,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import BASE_URL from "../config";
+
 import "./Navbar.css";
 
 // Helper: Safe image URL handling
@@ -395,7 +397,7 @@ export default function Navbar({ cart = { count: 0 } }) {
       .catch(() => setNavbar(null));
 
     // fetch("http://127.0.0.1:5000/products")
-     fetch(`${BASE_URL}/products`)
+     fetch(`${BASE_URL}/banners-two`)
 
     .then((res) => res.json())
       .then(setProducts)
@@ -406,7 +408,9 @@ export default function Navbar({ cart = { count: 0 } }) {
       const parsed = JSON.parse(savedUser);
       setUser(parsed);
 
-      fetch(`http://127.0.0.1:5000/user-orders/${parsed.id}`)
+      // fetch(`http://127.0.0.1:5000/user-orders/${parsed.id}`)
+           fetch(`${BASE_URL}/user-orders/${parsed.id}`)
+
         .then((res) => res.json())
         .then(setOrders)
         .catch(() => setOrders([]));

@@ -65,8 +65,11 @@ def allowed_file(filename):
 def read_data():
     return collection.find_one({}, {"_id": 0}) or {}
 
+# def write_data(new_data):
+#     collection.update_one({}, {"$set": new_data})
+
 def write_data(new_data):
-    collection.update_one({}, {"$set": new_data})
+    collection.update_one({}, {"$set": new_data}, upsert=True)
 
 def get_list(data, key):
     return [item for item in data.get(key, []) if not item.get("deleted", False)]
@@ -264,7 +267,10 @@ def admin_brands():
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(UPLOAD_FOLDER, filename))
-        item["image"] = f"http://127.0.0.1:5000/images/{filename}"
+        # item["image"] = f"http://127.0.0.1:5000/images/{filename}"
+        BASE_URL = os.environ.get("BASE_URL")
+
+    item["image"] = f"{BASE_URL}/images/{filename}"     
 
     item["id"] = max([b.get("id", 0) for b in data["brands"]] + [0]) + 1
     item["deleted"] = False

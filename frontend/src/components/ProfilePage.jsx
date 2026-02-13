@@ -29,7 +29,7 @@
 //     try {
 //       const token = localStorage.getItem("token");
 //       const res = await axios.put(
-//         "https://mye-commerce-website.onrender.com/auth/update",
+//         "http://127.0.0.1:5000/auth/update",
 //         editForm,
 //         { headers: { Authorization: `Bearer ${token}` } }
 //       );
@@ -121,8 +121,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import BASE_URL from "../config";
-
 import "./ProfilePage.css";
 
 export default function SettingsPage() {
@@ -144,11 +142,7 @@ export default function SettingsPage() {
   const handleUpdate = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.
-      // put("https://mye-commerce-website.onrender.com/auth/update", form, 
-                put(`${BASE_URL}/auth/update`,form,
-
-        { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.put("http://127.0.0.1:5000/auth/update", form, { headers: { Authorization: `Bearer ${token}` } });
       setMessage("Profile updated successfully!");
       localStorage.setItem("user", JSON.stringify(res.data.user));
       setUser(res.data.user);

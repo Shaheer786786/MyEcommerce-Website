@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import BASE_URL from "../config";
-
 import "./Brands.css";
 
 export default function Brands() {
@@ -11,9 +9,7 @@ export default function Brands() {
 
   useEffect(() => {
     axios
-      // .get("https://mye-commerce-website.onrender.com/brands")
-          get(`${BASE_URL}/brands`)
-
+      .get("http://127.0.0.1:5000/brands")
       .then((res) => setBrands(res.data))
       .catch((err) => console.error(err));
   }, []);

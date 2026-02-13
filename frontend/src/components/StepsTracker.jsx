@@ -1,6 +1,4 @@
 import React from "react";
-import BASE_URL from "../config";
-
 import "./StepsTracker.css";
 
 function StepsTracker({ steps, currentStep }) {

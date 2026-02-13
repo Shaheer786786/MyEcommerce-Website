@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import BASE_URL from "../config";
-
 import "./Preloader.css";
 
 export default function Preloader() {
@@ -11,10 +9,7 @@ export default function Preloader() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await 
-        // fetch("https://mye-commerce-website.onrender.com/preloader");
-                  fetch(`${BASE_URL}/preloader`)
-
+        const res = await fetch("http://127.0.0.1:5000/preloader");
         if (!res.ok) throw new Error("Network error");
 
         const json = await res.json();

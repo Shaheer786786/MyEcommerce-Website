@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BASE_URL from "../config";
-
 import "./Category.css";
 
 const getImageUrl = (prod) => {
@@ -29,10 +27,7 @@ function Category({ addToCart }) {
   // Fetch categories
   const fetchCategories = async () => {
     try {
-      const res = await 
-      // fetch("https://mye-commerce-website.onrender.com/categories");
-          fetch(`${BASE_URL}/categories`)
-
+      const res = await fetch("http://127.0.0.1:5000/categories");
       const data = await res.json();
       setCategories(data);
     } catch (err) {
@@ -43,15 +38,9 @@ function Category({ addToCart }) {
   // Fetch products + latest products
   const fetchProducts = async () => {
     try {
-      const resProducts = await 
-      // fetch("https://mye-commerce-website.onrender.com/products");
-                fetch(`${BASE_URL}/products`)
-
+      const resProducts = await fetch("http://127.0.0.1:5000/products");
       const productsData = await resProducts.json();
-      const resLatest = await 
-      // fetch("https://mye-commerce-website.onrender.com/latestProducts");
-          fetch(`${BASE_URL}/latestProducts`)
-
+      const resLatest = await fetch("http://127.0.0.1:5000/latestProducts");
       const latestData = await resLatest.json();
 
       const merged = [

@@ -1,8 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import StepsTracker from "./StepsTracker";
-import BASE_URL from "../config";
-
 import "./OrderSummary.css";
 
 function OrderSummary() {
@@ -57,11 +55,7 @@ function OrderSummary() {
     };
 
     try {
-      const res = await 
-                fetch(`${BASE_URL}/orders`,
-
-      // fetch("https://mye-commerce-website.onrender.com/orders", 
-        {
+      const res = await fetch("http://127.0.0.1:5000/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
@@ -94,7 +88,7 @@ function OrderSummary() {
     return image?.startsWith("http")
       ? image
       : image
-      ? `https://mye-commerce-website.onrender.com/images/${image}`
+      ? `http://127.0.0.1:5000/images/${image}`
       : "/default-product.png";
   };
 

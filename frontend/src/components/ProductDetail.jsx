@@ -1,7 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import BASE_URL from "../config";
-
 import "./ProductDetail.css";
 
 function ProductDetail({ addToCart }) {
@@ -26,22 +24,13 @@ function ProductDetail({ addToCart }) {
 
     const fetchAll = async () => {
       try {
-        const resProducts = await 
-        // fetch("https://mye-commerce-website.onrender.com/products");
-                  fetch(`${BASE_URL}/products`)
-
+        const resProducts = await fetch("http://127.0.0.1:5000/products");
         const productsData = await resProducts.json();
 
-        const resLatest = await f
-        // etch("https://mye-commerce-website.onrender.com/latestProducts");
-                  fetch(`${BASE_URL}/latestProducts`)
-
+        const resLatest = await fetch("http://127.0.0.1:5000/latestProducts");
         const latestData = await resLatest.json();
 
-        const resElectronics = await 
-        // fetch("https://mye-commerce-website.onrender.com/electronics");
-                  fetch(`${BASE_URL}/electronics`)
-
+        const resElectronics = await fetch("http://127.0.0.1:5000/electronics");
         const electronicsData = await resElectronics.json();
 
         const merged = [
@@ -72,13 +61,13 @@ function ProductDetail({ addToCart }) {
       ? product.images.map((img) =>
           img.startsWith("http")
             ? img
-            : `https://mye-commerce-website.onrender.com/images/${img}`
+            : `http://127.0.0.1:5000/images/${img}`
         )
       : product.image
       ? [
           product.image.startsWith("http")
             ? product.image
-            : `https://mye-commerce-website.onrender.com/images/${product.image}`,
+            : `http://127.0.0.1:5000/images/${product.image}`,
         ]
       : ["https://via.placeholder.com/400"];
 
@@ -423,7 +412,7 @@ function ProductDetail({ addToCart }) {
               (item.image?.startsWith("http")
                 ? item.image
                 : item.image
-                  ? `https://mye-commerce-website.onrender.com/images/${item.image}`
+                  ? `http://127.0.0.1:5000/images/${item.image}`
                   : "https://via.placeholder.com/300");
 
             const stockText =

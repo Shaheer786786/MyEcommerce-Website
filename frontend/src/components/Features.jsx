@@ -1,15 +1,11 @@
 import { useEffect, useState } from "react";
-import BASE_URL from "../config";
-
 import "./Features.css";
 
 function Features() {
   const [features, setFeatures] = useState([]);
 
   useEffect(() => {
-    // fetch("https://mye-commerce-website.onrender.com/features")
-              fetch(`${BASE_URL}/features`)
-
+    fetch("http://127.0.0.1:5000/features")
       .then((res) => res.json())
       .then((data) => setFeatures(Array.isArray(data) ? data : []))
       .catch(() => setFeatures([]));

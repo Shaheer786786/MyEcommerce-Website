@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import BASE_URL from "../config";
-
 import "./Footer.css";
 
 export default function Footer() {
@@ -19,10 +17,8 @@ export default function Footer() {
   };
 
   useEffect(() => {
-    // fetch("https://mye-commerce-website.onrender.com/footer") 
-          fetch(`${BASE_URL}/footer`)
-
-    .then(res => { if (!res.ok) throw new Error("Failed to fetch"); return res.json(); })
+    fetch("http://127.0.0.1:5000/footer") 
+      .then(res => { if (!res.ok) throw new Error("Failed to fetch"); return res.json(); })
       .then(data => setFooterData(data))
       .catch(err => {
         console.error(err);

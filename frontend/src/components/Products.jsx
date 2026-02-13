@@ -165,8 +165,6 @@
 // export default Products;
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BASE_URL from "../config";
-
 import "./Products.css";
 
 function Products({ searchQuery = "", addToCart }) {
@@ -187,10 +185,7 @@ function Products({ searchQuery = "", addToCart }) {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const res = await 
-        // fetch("https://mye-commerce-website.onrender.com/products");
-                  fetch(`${BASE_URL}/products`)
-
+        const res = await fetch("http://127.0.0.1:5000/products");
         const data = await res.json();
         setProducts(Array.isArray(data) ? data.filter((p) => !p.deleted) : []);
       } catch (err) {
@@ -258,7 +253,7 @@ function Products({ searchQuery = "", addToCart }) {
           const imageUrl =
             product.images?.[0] ||
             (product.image?.startsWith("http") ? product.image :
-              product.image ? `https://mye-commerce-website.onrender.com/images/${product.image}` :
+              product.image ? `http://127.0.0.1:5000/images/${product.image}` :
               "https://via.placeholder.com/300");
 
           const isOutOfStock = product.stock === 0;

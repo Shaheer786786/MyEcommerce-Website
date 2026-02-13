@@ -104,8 +104,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import StepsTracker from "./StepsTracker";
-import BASE_URL from "../config";
-
 import "./Cart.css";
 
 function Cart({ cart, removeFromCart, updateQuantity }) {

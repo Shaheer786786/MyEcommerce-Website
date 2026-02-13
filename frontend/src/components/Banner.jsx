@@ -27,7 +27,7 @@ function Banner() {
 
   const bannerImage = banner.image?.startsWith("http")
     ? banner.image
-    : `http://127.0.0.1:5000/images/${banner.image}`;
+    : `https://my-backend-93up.onrender.com/images/${banner.image}`;
 
   const handleClick = () => {
     if (banner.productId) {

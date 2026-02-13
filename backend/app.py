@@ -28,7 +28,7 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 # MONGO_URI = "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
 # client = MongoClient(MONGO_URI)
 
-MONGO_URI = os.environ.get("mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority")
+MONGO_URI = os.environ.get("MONGO_URI")
 client = MongoClient(MONGO_URI)
 db = client["ecommerce"]
 collection = db["products"] 

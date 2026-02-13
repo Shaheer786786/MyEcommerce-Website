@@ -361,12 +361,11 @@
 //     </>
 //   );
 // }
-
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
 
-// Helper to get proper image URL
+// Helper: Safe image URL handling
 const getImageUrl = (image) => {
   if (!image) return "https://via.placeholder.com/40";
   if (image.startsWith("data:image") || image.startsWith("http")) return image;
@@ -385,7 +384,7 @@ export default function Navbar({ cart = { count: 0 } }) {
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
 
-  // Fetch navbar, products, user & orders
+  // Fetch Navbar, products, user & orders
   useEffect(() => {
     fetch("http://127.0.0.1:5000/navbar")
       .then((res) => res.json())
@@ -408,7 +407,7 @@ export default function Navbar({ cart = { count: 0 } }) {
         .catch(() => setOrders([]));
     }
 
-    // Close sidebar if clicked outside
+    // Close sidebar on outside click
     const handleOutsideClick = (e) => {
       if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
         setSidebarOpen(false);
@@ -418,7 +417,7 @@ export default function Navbar({ cart = { count: 0 } }) {
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
 
-  // Filter products for search dropdown
+  // Filter products for search
   useEffect(() => {
     if (!query) setSearchResults([]);
     else {
@@ -429,7 +428,7 @@ export default function Navbar({ cart = { count: 0 } }) {
     }
   }, [query, products]);
 
-  // Logout function
+  // Logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -439,7 +438,7 @@ export default function Navbar({ cart = { count: 0 } }) {
     navigate("/", { replace: true });
   };
 
-  // Cart click handling
+  // Cart click
   const handleCartClick = () => {
     if (!user) {
       alert("Please login first!");
@@ -453,9 +452,14 @@ export default function Navbar({ cart = { count: 0 } }) {
 
   return (
     <>
+      {/* Navbar */}
       <nav className="navbar">
         <div className="navbar-left">
-          <img src={getImageUrl(navbar.logo?.image)} alt="logo" className="navbar-logo" />
+          <img
+            src={getImageUrl(navbar.logo?.image)}
+            alt="logo"
+            className="navbar-logo"
+          />
           <span className="navbar-brand">{navbar.logo?.name}</span>
         </div>
 
@@ -494,7 +498,10 @@ export default function Navbar({ cart = { count: 0 } }) {
                         setQuery("");
                       }}
                     >
-                      <img src={getImageUrl(p.images?.[0] || p.image)} alt={p.name} />
+                      <img
+                        src={getImageUrl(p.images?.[0] || p.image)}
+                        alt={p.name}
+                      />
                       <div>
                         <p>{p.name}</p>
                         <span>₹{p.price}</span>
@@ -524,7 +531,10 @@ export default function Navbar({ cart = { count: 0 } }) {
                 onClick={() => setSidebarOpen(true)}
               />
               <span className="nav-user-name">{user.name}</span>
-              <span className="hamburger-btn" onClick={() => setSidebarOpen(true)}>
+              <span
+                className="hamburger-btn"
+                onClick={() => setSidebarOpen(true)}
+              >
                 &#9776;
               </span>
             </div>
@@ -540,7 +550,10 @@ export default function Navbar({ cart = { count: 0 } }) {
       {sidebarOpen && <div className="sidebar-overlay" />}
 
       {/* Sidebar */}
-      <div ref={sidebarRef} className={`profile-sidebar ${sidebarOpen ? "open" : ""}`}>
+      <div
+        ref={sidebarRef}
+        className={`profile-sidebar ${sidebarOpen ? "open" : ""}`}
+      >
         <div className="sidebar-header">
           <div className="sidebar-user center-content">
             <img

@@ -24,13 +24,13 @@ function ProductDetail({ addToCart }) {
 
     const fetchAll = async () => {
       try {
-        const resProducts = await fetch("http://127.0.0.1:5000/products");
+        const resProducts = await fetch("https://mye-commerce-website.onrender.com/products");
         const productsData = await resProducts.json();
 
-        const resLatest = await fetch("http://127.0.0.1:5000/latestProducts");
+        const resLatest = await fetch("https://mye-commerce-website.onrender.com/latestProducts");
         const latestData = await resLatest.json();
 
-        const resElectronics = await fetch("http://127.0.0.1:5000/electronics");
+        const resElectronics = await fetch("https://mye-commerce-website.onrender.com/electronics");
         const electronicsData = await resElectronics.json();
 
         const merged = [
@@ -61,13 +61,13 @@ function ProductDetail({ addToCart }) {
       ? product.images.map((img) =>
           img.startsWith("http")
             ? img
-            : `http://127.0.0.1:5000/images/${img}`
+            : `https://mye-commerce-website.onrender.com/images/${img}`
         )
       : product.image
       ? [
           product.image.startsWith("http")
             ? product.image
-            : `http://127.0.0.1:5000/images/${product.image}`,
+            : `https://mye-commerce-website.onrender.com/images/${product.image}`,
         ]
       : ["https://via.placeholder.com/400"];
 
@@ -412,7 +412,7 @@ function ProductDetail({ addToCart }) {
               (item.image?.startsWith("http")
                 ? item.image
                 : item.image
-                  ? `http://127.0.0.1:5000/images/${item.image}`
+                  ? `https://mye-commerce-website.onrender.com/images/${item.image}`
                   : "https://via.placeholder.com/300");
 
             const stockText =

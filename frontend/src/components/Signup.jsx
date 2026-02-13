@@ -9,7 +9,7 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://127.0.0.1:5000/auth/signup", form);
+      await axios.post("https://mye-commerce-website.onrender.com/auth/signup", form);
       alert("Signup successful");
       navigate("/login");
     } catch (err) {

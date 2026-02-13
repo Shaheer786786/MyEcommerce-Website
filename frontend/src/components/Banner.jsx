@@ -8,7 +8,7 @@ function Banner() {
   const navigate = useNavigate(); 
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/banner")
+    fetch("https://mye-commerce-website.onrender.com/banner")
       .then(res => res.json())
       .then(data => setBanners(data.filter(b => !b.deleted)))
       .catch(err => console.error("Banner fetch error:", err));

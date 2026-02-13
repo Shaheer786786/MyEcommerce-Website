@@ -17,7 +17,7 @@ function LatestProducts({ refreshFlag, addToCart }) {
 
   // Fetch latest products
   const fetchProducts = () => {
-    fetch("http://127.0.0.1:5000/latestProducts")
+    fetch("https://mye-commerce-website.onrender.com/latestProducts")
       .then((res) => res.json())
       .then((data) => {
         const filtered = Array.isArray(data)

@@ -9,7 +9,7 @@ export default function Preloader() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:5000/preloader");
+        const res = await fetch("https://mye-commerce-website.onrender.com/preloader");
         if (!res.ok) throw new Error("Network error");
 
         const json = await res.json();

@@ -55,7 +55,7 @@ function OrderSummary() {
     };
 
     try {
-      const res = await fetch("http://127.0.0.1:5000/orders", {
+      const res = await fetch("https://mye-commerce-website.onrender.com/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
@@ -88,7 +88,7 @@ function OrderSummary() {
     return image?.startsWith("http")
       ? image
       : image
-      ? `http://127.0.0.1:5000/images/${image}`
+      ? `https://mye-commerce-website.onrender.com/images/${image}`
       : "/default-product.png";
   };
 

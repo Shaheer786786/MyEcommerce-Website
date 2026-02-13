@@ -9,7 +9,7 @@ export default function Brands() {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:5000/brands")
+      .get("https://mye-commerce-website.onrender.com/brands")
       .then((res) => setBrands(res.data))
       .catch((err) => console.error(err));
   }, []);

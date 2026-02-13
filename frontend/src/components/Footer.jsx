@@ -17,7 +17,7 @@ export default function Footer() {
   };
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/footer") 
+    fetch("https://mye-commerce-website.onrender.com/footer") 
       .then(res => { if (!res.ok) throw new Error("Failed to fetch"); return res.json(); })
       .then(data => setFooterData(data))
       .catch(err => {

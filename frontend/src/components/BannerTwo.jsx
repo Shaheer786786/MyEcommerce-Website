@@ -7,7 +7,7 @@ export default function BannerTwo() {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:5000/banners-two")
+      .get("https://mye-commerce-website.onrender.com/banners-two")
       .then((res) => setBanners(res.data))
       .catch((err) => console.error("Banner Fetch Error:", err));
   }, []);

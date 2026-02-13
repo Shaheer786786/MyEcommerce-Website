@@ -5,7 +5,7 @@ function Promo() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/promo")
+    fetch("https://mye-commerce-website.onrender.com/promo")
       .then((res) => res.json())
       .then((data) => setItems(Array.isArray(data) ? data.slice(0, 4) : []))
       .catch(() => setItems([]));
@@ -17,7 +17,7 @@ function Promo() {
     if (!img) return "";
     return img.startsWith("http")
       ? img
-      : `http://127.0.0.1:5000/images/${img}`;
+      : `https://mye-commerce-website.onrender.com/images/${img}`;
   };
 
   return (

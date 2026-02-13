@@ -29,7 +29,7 @@
 //     try {
 //       const token = localStorage.getItem("token");
 //       const res = await axios.put(
-//         "http://127.0.0.1:5000/auth/update",
+//         "https://mye-commerce-website.onrender.com/auth/update",
 //         editForm,
 //         { headers: { Authorization: `Bearer ${token}` } }
 //       );
@@ -142,7 +142,7 @@ export default function SettingsPage() {
   const handleUpdate = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.put("http://127.0.0.1:5000/auth/update", form, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.put("https://mye-commerce-website.onrender.com/auth/update", form, { headers: { Authorization: `Bearer ${token}` } });
       setMessage("Profile updated successfully!");
       localStorage.setItem("user", JSON.stringify(res.data.user));
       setUser(res.data.user);

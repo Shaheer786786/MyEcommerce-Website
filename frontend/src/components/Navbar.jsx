@@ -171,11 +171,11 @@ export default function Navbar({ cart = { count: 0 } }) {
   const sidebarRef = useRef(null);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/navbar")
+    fetch("https://mye-commerce-website.onrender.com/navbar")
       .then((res) => res.json())
       .then(setNavbar);
 
-    fetch("http://127.0.0.1:5000/products")
+    fetch("https://mye-commerce-website.onrender.com/products")
       .then((res) => res.json())
       .then(setProducts);
 
@@ -183,7 +183,7 @@ export default function Navbar({ cart = { count: 0 } }) {
     if (savedUser) {
       const parsed = JSON.parse(savedUser);
       setUser(parsed);
-      fetch(`http://127.0.0.1:5000/user-orders/${parsed.id}`)
+      fetch(`https://mye-commerce-website.onrender.com/user-orders/${parsed.id}`)
         .then((res) => res.json())
         .then(setOrders)
         .catch(() => setOrders([]));

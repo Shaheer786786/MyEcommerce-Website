@@ -21,7 +21,7 @@ function Electronics({ searchQuery = "", addToCart }) {
     const fetchElectronics = async () => {
       try {
         setLoading(true);
-        const res = await fetch("http://127.0.0.1:5000/electronics");
+        const res = await fetch("https://mye-commerce-website.onrender.com/electronics");
         const data = await res.json();
         const filtered = Array.isArray(data) ? data.filter(item => !item.deleted) : [];
         setElectronics(filtered);

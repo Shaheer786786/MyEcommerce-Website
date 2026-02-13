@@ -27,7 +27,7 @@ function Category({ addToCart }) {
   // Fetch categories
   const fetchCategories = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:5000/categories");
+      const res = await fetch("https://mye-commerce-website.onrender.com/categories");
       const data = await res.json();
       setCategories(data);
     } catch (err) {
@@ -38,9 +38,9 @@ function Category({ addToCart }) {
   // Fetch products + latest products
   const fetchProducts = async () => {
     try {
-      const resProducts = await fetch("http://127.0.0.1:5000/products");
+      const resProducts = await fetch("https://mye-commerce-website.onrender.com/products");
       const productsData = await resProducts.json();
-      const resLatest = await fetch("http://127.0.0.1:5000/latestProducts");
+      const resLatest = await fetch("https://mye-commerce-website.onrender.com/latestProducts");
       const latestData = await resLatest.json();
 
       const merged = [

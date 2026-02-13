@@ -96,7 +96,7 @@
 
 //   // Favicon
 //   useEffect(() => {
-//     fetch("http://localhost:5000/site-config")
+//     fetch("https://mye-commerce-website.onrender.com/site-config")
 //       .then((res) => res.json())
 //       .then((data) => {
 //         if (!data?.favicon) return;
@@ -330,7 +330,7 @@ function App() {
 
   // Favicon
   useEffect(() => {
-    fetch("http://localhost:5000/site-config")
+    fetch("https://mye-commerce-website.onrender.com/site-config")
       .then((res) => res.json())
       .then((data) => {
         if (!data?.favicon) return;
@@ -341,7 +341,7 @@ function App() {
         link.type = "image/png";
         link.href = data.favicon.startsWith("http")
           ? data.favicon
-          : `http://localhost:5000/images/${data.favicon}?v=${Date.now()}`;
+          : `https://mye-commerce-website.onrender.com/images/${data.favicon}?v=${Date.now()}`;
         document.head.appendChild(link);
       })
       .catch((err) => console.error("Favicon load error:", err));

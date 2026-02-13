@@ -406,9 +406,7 @@ export default function Navbar({ cart = { count: 0 } }) {
       const parsed = JSON.parse(savedUser);
       setUser(parsed);
 
-      // fetch(`http://127.0.0.1:5000/user-orders/${parsed.id}`)
-          fetch(`${BASE_URL}/user-orders/${parsed.id}`)
-
+      fetch(`http://127.0.0.1:5000/user-orders/${parsed.id}`)
         .then((res) => res.json())
         .then(setOrders)
         .catch(() => setOrders([]));

@@ -6,6 +6,7 @@ from bson import ObjectId
 from datetime import datetime
 from flask import abort
 import os
+import json
 import jwt
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
@@ -24,7 +25,10 @@ UPLOAD_FOLDER = os.path.join(BASE_DIR, "images")
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "ico"}
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-MONGO_URI = "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
+# MONGO_URI = "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
+# client = MongoClient(MONGO_URI)
+
+MONGO_URI = os.environ.get("mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority")
 client = MongoClient(MONGO_URI)
 db = client["ecommerce"]
 collection = db["products"] 
@@ -225,7 +229,9 @@ def user_profile(user_id):
     
     return jsonify(user)
 
-
+@app.route("/")
+def home():
+    return "Backend is Running Successfully 🚀"
 
 @app.route("/banner")
 def banners():

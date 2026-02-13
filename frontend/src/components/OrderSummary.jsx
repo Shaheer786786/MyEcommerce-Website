@@ -1,6 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import StepsTracker from "./StepsTracker";
+import BASE_URL from "../config";
+
 import "./OrderSummary.css";
 
 function OrderSummary() {
@@ -55,7 +57,11 @@ function OrderSummary() {
     };
 
     try {
-      const res = await fetch("https://mye-commerce-website.onrender.com/orders", {
+      const res = await 
+                fetch(`${BASE_URL}/orders`,
+
+      // fetch("https://mye-commerce-website.onrender.com/orders", 
+        {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),

@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import BASE_URL from "../config";
+
 
 export default function UserOrders() {
   const [orders, setOrders] = useState([]);
@@ -11,7 +13,9 @@ export default function UserOrders() {
       return;
     }
 
-    fetch(`https://mye-commerce-website.onrender.com/user-orders/${user.id}`)
+    // fetch(`https://mye-commerce-website.onrender.com/user-orders/${user.id}`)
+              fetch(`${BASE_URL}/user-orders/${user.id}`)
+
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched orders:", data);

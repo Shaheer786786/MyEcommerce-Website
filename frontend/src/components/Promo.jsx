@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
+import BASE_URL from "../config";
+
 import "./Promo.css";
 
 function Promo() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    fetch("https://mye-commerce-website.onrender.com/promo")
+    // fetch("https://mye-commerce-website.onrender.com/promo")
+              fetch(`${BASE_URL}/promo`)
+
       .then((res) => res.json())
       .then((data) => setItems(Array.isArray(data) ? data.slice(0, 4) : []))
       .catch(() => setItems([]));

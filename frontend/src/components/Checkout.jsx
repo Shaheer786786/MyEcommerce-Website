@@ -102,6 +102,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import StepsTracker from "./StepsTracker";
+import BASE_URL from "../config";
+
 import "./Checkout.css";
 
 function Checkout({ cart }) {

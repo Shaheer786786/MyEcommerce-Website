@@ -33,6 +33,8 @@
   
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import BASE_URL from "../config";
+
 
 export default function Profile() {
   const [user, setUser] = useState(null);

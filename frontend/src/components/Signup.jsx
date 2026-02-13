@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import BASE_URL from "../config";
+
 
 export default function Signup() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -9,7 +11,10 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://mye-commerce-website.onrender.com/auth/signup", form);
+      await axios.
+      // post("https://mye-commerce-website.onrender.com/auth/signup", form);
+                fetch(`${BASE_URL}/auth/signup`,form)
+
       alert("Signup successful");
       navigate("/login");
     } catch (err) {

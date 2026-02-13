@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import BASE_URL from "../config";
+
 import "./Settings.css";
 
 export default function Settings() {

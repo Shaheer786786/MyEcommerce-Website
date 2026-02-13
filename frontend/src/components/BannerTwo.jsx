@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import BASE_URL from "../config";
+
 import "./BannerTwo.css";
 
 export default function BannerTwo() {
@@ -7,7 +9,8 @@ export default function BannerTwo() {
 
   useEffect(() => {
     axios
-      .get("https://mye-commerce-website.onrender.com/banners-two")
+      // .get("https://mye-commerce-website.onrender.com/banners-two")
+          get(`${BASE_URL}/banners-two`)
       .then((res) => setBanners(res.data))
       .catch((err) => console.error("Banner Fetch Error:", err));
   }, []);

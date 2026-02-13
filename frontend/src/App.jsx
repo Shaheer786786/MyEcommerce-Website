@@ -223,6 +223,8 @@
 // export default App;
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import BASE_URL from "../config";
+
 
 import ScrollToTop from "./components/ScrollToTop";
 import Navbar from "./components/Navbar";
@@ -330,7 +332,9 @@ function App() {
 
   // Favicon
   useEffect(() => {
-    fetch("https://mye-commerce-website.onrender.com/site-config")
+    // fetch("https://mye-commerce-website.onrender.com/site-config")
+              fetch(`${BASE_URL}/site-config`)
+
       .then((res) => res.json())
       .then((data) => {
         if (!data?.favicon) return;

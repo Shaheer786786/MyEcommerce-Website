@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import BASE_URL from "../config";
+
 import "./ScrollToTop.css";
 
 

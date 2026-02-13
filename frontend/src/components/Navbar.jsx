@@ -149,6 +149,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import BASE_URL from "../config";
+
 import "./Navbar.css";
 
 const getImageUrl = (image) => {
@@ -171,11 +173,15 @@ export default function Navbar({ cart = { count: 0 } }) {
   const sidebarRef = useRef(null);
 
   useEffect(() => {
-    fetch("https://mye-commerce-website.onrender.com/navbar")
+    // fetch("https://mye-commerce-website.onrender.com/navbar")
+              fetch(`${BASE_URL}/navbar`)
+
       .then((res) => res.json())
       .then(setNavbar);
 
-    fetch("https://mye-commerce-website.onrender.com/products")
+    // fetch("https://mye-commerce-website.onrender.com/products")
+              fetch(`${BASE_URL}/products`)
+
       .then((res) => res.json())
       .then(setProducts);
 
@@ -183,7 +189,9 @@ export default function Navbar({ cart = { count: 0 } }) {
     if (savedUser) {
       const parsed = JSON.parse(savedUser);
       setUser(parsed);
-      fetch(`https://mye-commerce-website.onrender.com/user-orders/${parsed.id}`)
+      // fetch(`https://mye-commerce-website.onrender.com/user-orders/${parsed.id}`)
+                fetch(`${BASE_URL}/user-orders/${parsed.id}`)
+
         .then((res) => res.json())
         .then(setOrders)
         .catch(() => setOrders([]));

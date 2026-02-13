@@ -62,9 +62,11 @@
 // }
 
 // export default Banner;
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BASE_URL from "../config";
+import BASE_URL from "../config";  // ye wahi file jo upar banayi
+
 import "./Banner.css";
 
 function Banner() {
@@ -74,7 +76,10 @@ function Banner() {
 
   useEffect(() => {
     fetch(`${BASE_URL}/banner`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error("Network response was not ok");
+        return res.json();
+      })
       .then(data => setBanners(data.filter(b => !b.deleted)))
       .catch(err => console.error("Banner fetch error:", err));
   }, []);

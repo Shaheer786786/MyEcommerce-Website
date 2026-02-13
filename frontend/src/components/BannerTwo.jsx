@@ -61,20 +61,19 @@
 //     </div>
 //   );
 // }
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useEffect, useState } from "react";
+import axios from "axios";
 import BASE_URL from "../config";
 import "./BannerTwo.css";
 
 export default function BannerTwo() {
   const [banners, setBanners] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${BASE_URL}/banners-two`)
-      .then(res => res.json())
-      .then(data => setBanners(data.filter(b => !b.deleted)))
-      .catch(err => console.error("BannerTwo fetch error:", err));
+    axios
+      .get(`${BASE_URL}/banners-two`)
+      .then((res) => setBanners(res.data))
+      .catch((err) => console.error("BannerTwo fetch error:", err));
   }, []);
 
   if (banners.length < 5) {
@@ -82,17 +81,7 @@ export default function BannerTwo() {
   }
 
   const openProductDetail = (banner) => {
-    if (banner.productId) {
-      navigate(`/product/${banner.productId}`);
-    } else if (banner.buttonLink) {
-      window.location.href = banner.buttonLink;
-    }
-  };
-
-  const getBannerImage = (banner) => {
-    return banner.image?.startsWith("http")
-      ? banner.image
-      : `${BASE_URL}/images/${banner.image}`;
+    window.open(`/product/${banner.id}`, "_blank");
   };
 
   return (
@@ -100,7 +89,7 @@ export default function BannerTwo() {
       {/* LEFT BIG */}
       <div className="bt-large-box">
         <img
-          src={getBannerImage(banners[0])}
+          src={banners[0].image?.startsWith("http") ? banners[0].image : `${BASE_URL}/images/${banners[0].image}`}
           alt={banners[0].title}
           onClick={() => openProductDetail(banners[0])}
           style={{ cursor: "pointer" }}
@@ -118,7 +107,7 @@ export default function BannerTwo() {
         {banners.slice(1, 5).map((b) => (
           <div className="bt-small-box" key={b.id}>
             <img
-              src={getBannerImage(b)}
+              src={b.image?.startsWith("http") ? b.image : `${BASE_URL}/images/${b.image}`}
               alt={b.title}
               onClick={() => openProductDetail(b)}
               style={{ cursor: "pointer" }}

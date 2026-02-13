@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; 
+import BASE_URL from "../config";
 import "./Banner.css";
 
 function Banner() {
@@ -8,7 +9,8 @@ function Banner() {
   const navigate = useNavigate(); 
 
   useEffect(() => {
-    fetch("https://my-backend-93up.onrender.com/banner")
+    // fetch("https://my-backend-93up.onrender.com/banner")
+    fetch(`${BASE_URL}/banner`)
       .then(res => res.json())
       .then(data => setBanners(data.filter(b => !b.deleted)))
       .catch(err => console.error("Banner fetch error:", err));

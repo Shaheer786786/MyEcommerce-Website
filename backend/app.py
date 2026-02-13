@@ -297,7 +297,8 @@ def admin_brands_modify(id):
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(UPLOAD_FOLDER, filename))
-        update_data["image"] = f"http://127.0.0.1:5000/images/{filename}"
+        # update_data["image"] = f"http://127.0.0.1:5000/images/{filename}"
+        update_data["image"] = f"{request.host_url}images/{filename}"
 
     item = modify_item(data, "brands", id, new_data=update_data)
     write_data(data)

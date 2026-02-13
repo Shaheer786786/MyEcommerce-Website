@@ -74,7 +74,7 @@ function Banner() {
   const navigate = useNavigate(); 
 
   useEffect(() => {
-    fetch(`${BASE_URL}/banner`)
+    fetch(`${import.meta.env.VITE_BASE_URL}/banner`)
       .then(res => {
         if (!res.ok) throw new Error("Network response was not ok");
         return res.json();

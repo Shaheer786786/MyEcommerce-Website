@@ -361,6 +361,7 @@
 //     </>
 //   );
 // }
+
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
@@ -386,13 +387,17 @@ export default function Navbar({ cart = { count: 0 } }) {
 
   // Fetch Navbar, products, user & orders
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/navbar")
-      .then((res) => res.json())
+    // fetch("http://127.0.0.1:5000/navbar")
+    fetch(`${BASE_URL}/navbar`)
+
+    .then((res) => res.json())
       .then(setNavbar)
       .catch(() => setNavbar(null));
 
-    fetch("http://127.0.0.1:5000/products")
-      .then((res) => res.json())
+    // fetch("http://127.0.0.1:5000/products")
+     fetch(`${BASE_URL}/products`)
+
+    .then((res) => res.json())
       .then(setProducts)
       .catch(() => setProducts([]));
 
@@ -401,7 +406,9 @@ export default function Navbar({ cart = { count: 0 } }) {
       const parsed = JSON.parse(savedUser);
       setUser(parsed);
 
-      fetch(`http://127.0.0.1:5000/user-orders/${parsed.id}`)
+      // fetch(`http://127.0.0.1:5000/user-orders/${parsed.id}`)
+          fetch(`${BASE_URL}/user-orders/${parsed.id}`)
+
         .then((res) => res.json())
         .then(setOrders)
         .catch(() => setOrders([]));

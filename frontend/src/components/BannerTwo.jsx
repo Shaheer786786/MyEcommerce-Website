@@ -61,38 +61,38 @@
 //     </div>
 //   );
 // }
-
-import { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; 
+import BASE_URL from "../config";
 import "./BannerTwo.css";
-
-// Backend base URL
-const BASE_URL = "http://127.0.0.1:5000";
 
 export default function BannerTwo() {
   const [banners, setBanners] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get(`${BASE_URL}/banners-two`)
-      .then((res) => {
-        // Ensure image URL is full path
-        const bannersWithFullUrl = res.data.map((b) => ({
-          ...b,
-          image: b.image.startsWith("http") ? b.image : `${BASE_URL}/images/${b.image}`,
-        }));
-        setBanners(bannersWithFullUrl);
-      })
-      .catch((err) => console.error("Banner Fetch Error:", err));
+    fetch(`${BASE_URL}/banners-two`)
+      .then(res => res.json())
+      .then(data => setBanners(data.filter(b => !b.deleted)))
+      .catch(err => console.error("BannerTwo fetch error:", err));
   }, []);
 
   if (banners.length < 5) {
     return <p className="bt-error">❗ 5 banners required</p>;
   }
 
-  // Open product detail using banner.id
   const openProductDetail = (banner) => {
-    window.open(`/product/${banner.id}`, "_blank");
+    if (banner.productId) {
+      navigate(`/product/${banner.productId}`);
+    } else if (banner.buttonLink) {
+      window.location.href = banner.buttonLink;
+    }
+  };
+
+  const getBannerImage = (banner) => {
+    return banner.image?.startsWith("http")
+      ? banner.image
+      : `${BASE_URL}/images/${banner.image}`;
   };
 
   return (
@@ -100,7 +100,7 @@ export default function BannerTwo() {
       {/* LEFT BIG */}
       <div className="bt-large-box">
         <img
-          src={banners[0].image}
+          src={getBannerImage(banners[0])}
           alt={banners[0].title}
           onClick={() => openProductDetail(banners[0])}
           style={{ cursor: "pointer" }}
@@ -118,7 +118,7 @@ export default function BannerTwo() {
         {banners.slice(1, 5).map((b) => (
           <div className="bt-small-box" key={b.id}>
             <img
-              src={b.image}
+              src={getBannerImage(b)}
               alt={b.title}
               onClick={() => openProductDetail(b)}
               style={{ cursor: "pointer" }}

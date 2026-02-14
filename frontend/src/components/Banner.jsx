@@ -62,11 +62,9 @@
 // }
 
 // export default Banner;
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BASE_URL from "../config";  // ye wahi file jo upar banayi
-
+import BASE_URL from "../config";
 import "./Banner.css";
 
 function Banner() {
@@ -74,31 +72,51 @@ function Banner() {
   const [index, setIndex] = useState(0);
   const navigate = useNavigate();
 
+  /* ================= FETCH ALL BANNERS ================= */
   useEffect(() => {
-    fetch(`${BASE_URL}/banner`)
-      .then(res => {
+    const fetchBanners = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/banner`);
         if (!res.ok) throw new Error("Network response was not ok");
-        return res.json();
-      })
-      .then(data => setBanners(data.filter(b => !b.deleted)))
-      .catch(err => console.error("Banner fetch error:", err));
+
+        const data = await res.json();
+
+        // Ensure array + remove deleted
+        const validBanners = Array.isArray(data)
+          ? data.filter((b) => !b.deleted)
+          : [];
+
+        setBanners(validBanners);
+      } catch (err) {
+        console.error("Banner fetch error:", err);
+      }
+    };
+
+    fetchBanners();
   }, []);
 
+  /* ================= AUTO SLIDER ================= */
   useEffect(() => {
-    if (banners.length === 0) return;
+    if (banners.length <= 1) return;
+
     const timer = setInterval(() => {
-      setIndex(prev => (prev + 1) % banners.length);
+      setIndex((prev) => (prev + 1) % banners.length);
     }, 4000);
+
     return () => clearInterval(timer);
   }, [banners]);
 
+  if (banners.length === 0) return null;
+
   const banner = banners[index];
-  if (!banner) return null;
 
   const bannerImage = banner.image?.startsWith("http")
     ? banner.image
-    : `${BASE_URL}/images/${banner.image}`;
+    : banner.image
+    ? `${BASE_URL}/images/${banner.image}`
+    : "https://via.placeholder.com/1200x400";
 
+  /* ================= CLICK HANDLER ================= */
   const handleClick = () => {
     if (banner.productId) {
       navigate(`/product/${banner.productId}`);
@@ -110,7 +128,10 @@ function Banner() {
   return (
     <div
       className="banner-slider"
-      style={{ backgroundImage: `url(${bannerImage})`, cursor: "pointer" }}
+      style={{
+        backgroundImage: `url(${bannerImage})`,
+        cursor: "pointer",
+      }}
       onClick={handleClick}
     >
       <div className="banner-overlay">

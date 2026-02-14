@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import BASE_URL from "../config"; // backend Render URL
+import BASE_URL from "../config"; // backend URL
 import "./AdminBrands.css";
 
 export default function AdminBrands() {
@@ -17,7 +17,9 @@ export default function AdminBrands() {
   const fetchBrands = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/admin/brands`);
-      setBrands(res.data);
+      // MongoDB case: _id vs id
+      const data = res.data.map((b) => ({ ...b, id: b.id || b._id }));
+      setBrands(data);
     } catch (err) {
       console.error("Error fetching brands:", err);
       alert("Failed to fetch brands from server.");
@@ -41,20 +43,15 @@ export default function AdminBrands() {
       const formData = new FormData();
       formData.append("name", name);
 
-      // priority: file > imageUrl
-      if (file) {
-        formData.append("imageFile", file);
-      } else if (imageUrl) {
-        formData.append("image", imageUrl);
-      }
+      // file > imageUrl > existing image
+      if (file) formData.append("imageFile", file);
+      else if (imageUrl) formData.append("image", imageUrl);
 
       if (editId) {
-        // EDIT
         await axios.put(`${BASE_URL}/admin/brands/${editId}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
       } else {
-        // ADD
         await axios.post(`${BASE_URL}/admin/brands`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
@@ -69,6 +66,7 @@ export default function AdminBrands() {
   };
 
   const editBrand = (brand) => {
+    // Use brand.id (mapped from _id) for edit
     setEditId(brand.id);
     setName(brand.name || "");
     setImageUrl(brand.image || "");
@@ -77,7 +75,6 @@ export default function AdminBrands() {
 
   const deleteBrand = async (id) => {
     if (!window.confirm("Delete this brand?")) return;
-
     try {
       await axios.delete(`${BASE_URL}/admin/brands/${id}`);
       fetchBrands();
@@ -123,7 +120,7 @@ export default function AdminBrands() {
       </div>
 
       <ul className="brand-list">
-        {brands.map((b) => (
+        {brands.length > 0 ? brands.map((b) => (
           <li key={b.id} className="brand-item">
             {b.image && (
               <img src={b.image} alt={b.name} className="brand-thumb" />
@@ -137,7 +134,7 @@ export default function AdminBrands() {
               </button>
             </div>
           </li>
-        ))}
+        )) : <li>No brands available</li>}
       </ul>
     </div>
   );

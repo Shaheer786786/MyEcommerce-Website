@@ -1,21 +1,27 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
+import BASE_URL from "../config";
 import "./AdminFeatures.css";
 
-function AdminFeatures() {
+export default function AdminFeatures() {
   const [features, setFeatures] = useState([]);
   const [form, setForm] = useState({ icon: "", title: "", description: "" });
   const [editingId, setEditingId] = useState(null);
   const [message, setMessage] = useState(null);
 
-  const fetchFeatures = async () => {
-    const res = await fetch("http://127.0.0.1:5000/admin/features");
-    const data = await res.json();
-    setFeatures(Array.isArray(data) ? data : []);
-  };
-
   useEffect(() => {
     fetchFeatures();
   }, []);
+
+  const fetchFeatures = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/admin/features`);
+      setFeatures(Array.isArray(res.data) ? res.data : []);
+    } catch (err) {
+      console.error("Error fetching features:", err);
+      setFeatures([]);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,27 +30,23 @@ function AdminFeatures() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = editingId
-      ? `http://127.0.0.1:5000/admin/features/${editingId}`
-      : "http://127.0.0.1:5000/admin/features";
-    const method = editingId ? "PUT" : "POST";
+    try {
+      if (editingId) {
+        await axios.put(`${BASE_URL}/admin/features/${editingId}`, form);
+        setMessage("Feature updated!");
+      } else {
+        await axios.post(`${BASE_URL}/admin/features`, form);
+        setMessage("Feature added!");
+      }
 
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-
-    if (!res.ok) {
+      setForm({ icon: "", title: "", description: "" });
+      setEditingId(null);
+      fetchFeatures();
+      setTimeout(() => setMessage(null), 2000);
+    } catch (err) {
+      console.error(err);
       alert("Error saving feature");
-      return;
     }
-
-    setMessage(editingId ? "Feature updated!" : "Feature added!");
-    setForm({ icon: "", title: "", description: "" });
-    setEditingId(null);
-    fetchFeatures();
-    setTimeout(() => setMessage(null), 2000);
   };
 
   const handleEdit = (f) => {
@@ -53,34 +55,25 @@ function AdminFeatures() {
   };
 
   const handleDelete = async (id) => {
-    const res = await fetch(`http://127.0.0.1:5000/admin/features/${id}`, {
-      method: "DELETE",
-    });
-    if (res.ok) {
-      setMessage("Feature deleted!");
-      fetchFeatures();
-    }
+    await axios.delete(`${BASE_URL}/admin/features/${id}`);
+    setMessage("Feature deleted!");
+    fetchFeatures();
+    setTimeout(() => setMessage(null), 2000);
   };
 
   const handleRecover = async (id) => {
-    const res = await fetch(`http://127.0.0.1:5000/admin/features/recover/${id}`, {
-      method: "PUT",
-    });
-    if (res.ok) {
-      setMessage("Feature recovered!");
-      fetchFeatures();
-    }
+    await axios.put(`${BASE_URL}/admin/features/recover/${id}`);
+    setMessage("Feature recovered!");
+    fetchFeatures();
+    setTimeout(() => setMessage(null), 2000);
   };
 
   const handlePermanentDelete = async (id) => {
     if (!window.confirm("Permanently delete this feature?")) return;
-    const res = await fetch(`http://127.0.0.1:5000/admin/features/permanent/${id}`, {
-      method: "DELETE",
-    });
-    if (res.ok) {
-      setMessage("Feature permanently deleted!");
-      fetchFeatures();
-    }
+    await axios.delete(`${BASE_URL}/admin/features/permanent/${id}`);
+    setMessage("Feature permanently deleted!");
+    fetchFeatures();
+    setTimeout(() => setMessage(null), 2000);
   };
 
   return (
@@ -130,11 +123,7 @@ function AdminFeatures() {
               <tr key={f.id}>
                 <td>
                   {f.icon?.startsWith("http") ? (
-                    <img
-                      src={f.icon}
-                      alt={f.title}
-                      className="feature-icon-img"
-                    />
+                    <img src={f.icon} alt={f.title} className="feature-icon-img" />
                   ) : (
                     <span className="feature-icon-text">{f.icon}</span>
                   )}
@@ -170,5 +159,3 @@ function AdminFeatures() {
     </div>
   );
 }
-
-export default AdminFeatures;

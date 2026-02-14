@@ -221,10 +221,10 @@
 // }
 
 // export default App;
+
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import BASE_URL from "../config";
-
+import BASE_URL from "./config";
 
 import ScrollToTop from "./components/ScrollToTop";
 import Navbar from "./components/Navbar";
@@ -265,16 +265,18 @@ import AdminDashboard from "./admin/AdminDashboard";
 import AdminBrands from "./admin/AdminBrands";
 import AdminBannerTwo from "./admin/AdminBannerTwo";
 import AdminElectronic from "./admin/AdminElectronic";
-// Admin Auth
+
 import AdminLogin from "./admin/AdminLogin";
 import AdminSignUp from "./admin/AdminSignUp";
 
 function App() {
   const [loading, setLoading] = useState(true);
+
   const [cart, setCart] = useState(() => {
     const saved = localStorage.getItem("cart");
     return saved ? JSON.parse(saved) : { count: 0, items: [] };
   });
+
   const [searchQuery, setSearchQuery] = useState("");
   const [toast, setToast] = useState(null);
 
@@ -284,24 +286,28 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Cart functions
+  // ================= CART =================
+
   const addToCart = (product, quantity) => {
     setCart((prev) => {
       const existing = prev.items.find((item) => item.id === product.id);
       let updatedItems;
+
       if (existing) {
         updatedItems = prev.items.map((item) =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + quantity }
-            : item,
+            : item
         );
       } else {
         updatedItems = [...prev.items, { ...product, quantity }];
       }
+
       const totalCount = updatedItems.reduce(
         (sum, item) => sum + item.quantity,
-        0,
+        0
       );
+
       const newCart = { count: totalCount, items: updatedItems };
       localStorage.setItem("cart", JSON.stringify(newCart));
       return newCart;
@@ -312,7 +318,7 @@ function App() {
     setCart((prev) => ({
       ...prev,
       items: prev.items.map((item) =>
-        item.id === id ? { ...item, quantity } : item,
+        item.id === id ? { ...item, quantity } : item
       ),
     }));
   };
@@ -322,7 +328,7 @@ function App() {
       const updatedItems = prev.items.filter((item) => item.id !== id);
       const totalCount = updatedItems.reduce(
         (sum, item) => sum + item.quantity,
-        0,
+        0
       );
       const newCart = { count: totalCount, items: updatedItems };
       localStorage.setItem("cart", JSON.stringify(newCart));
@@ -330,28 +336,31 @@ function App() {
     });
   };
 
-  // Favicon
-  useEffect(() => {
-    // fetch("http://localhost:5000/site-config")
-                    fetch(`${BASE_URL}/site-config`)
+  // ================= FAVICON (FIXED BASE_URL) =================
 
+  useEffect(() => {
+    fetch(`${BASE_URL}/site-config`)
       .then((res) => res.json())
       .then((data) => {
         if (!data?.favicon) return;
+
         let link =
           document.querySelector("link[rel='icon']") ||
           document.createElement("link");
+
         link.rel = "icon";
         link.type = "image/png";
         link.href = data.favicon.startsWith("http")
           ? data.favicon
-          : `http://localhost:5000/images/${data.favicon}?v=${Date.now()}`;
+          : `${BASE_URL}/images/${data.favicon}?v=${Date.now()}`;
+
         document.head.appendChild(link);
       })
       .catch((err) => console.error("Favicon load error:", err));
   }, []);
 
-  // Admin private route wrapper
+  // ================= ADMIN PRIVATE ROUTE =================
+
   const AdminPrivateRoute = ({ children }) => {
     const admin = JSON.parse(localStorage.getItem("adminLoggedIn"));
     return admin ? children : <Navigate to="/admin/login" replace />;
@@ -365,7 +374,7 @@ function App() {
       {toast && <div className="toast">{toast}</div>}
 
       <Routes>
-        {/* Home Page */}
+        {/* HOME */}
         <Route
           path="/"
           element={
@@ -385,25 +394,14 @@ function App() {
           }
         />
 
-        {/* User Pages */}
+        {/* USER ROUTES */}
         <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/user-orders" element={<UserOrders />} />
         <Route path="/settings" element={<Settings />} />
 
-        {/* Electronics Category Page */}
-        <Route
-          path="/electronics"
-          element={
-            <>
-              <Navbar cart={cart} setSearchQuery={setSearchQuery} />
-              <Footer />
-            </>
-          }
-        />
-
-        {/* Product Detail Page */}
+        {/* PRODUCT DETAIL */}
         <Route
           path="/product/:id"
           element={
@@ -415,7 +413,7 @@ function App() {
           }
         />
 
-        {/* Cart Page */}
+        {/* CART */}
         <Route
           path="/cart"
           element={
@@ -431,7 +429,7 @@ function App() {
           }
         />
 
-        {/* Checkout Page */}
+        {/* CHECKOUT */}
         <Route
           path="/checkout"
           element={
@@ -443,7 +441,6 @@ function App() {
           }
         />
 
-        {/* Order Summary Page */}
         <Route
           path="/order-summary"
           element={
@@ -455,128 +452,31 @@ function App() {
           }
         />
 
-        {/* Admin Login Page */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-
-        {/* Admin Routes */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<Navigate to="dashboard" replace />} />
-          <Route
-            path="dashboard"
-            element={
-              <AdminPrivateRoute>
-                <AdminDashboard />
-              </AdminPrivateRoute>
-            }
-          />
-          <Route
-            path="products"
-            element={
-              <AdminPrivateRoute>
-                <AdminProducts />
-              </AdminPrivateRoute>
-            }
-          />
-          <Route
-            path="electronics"
-            element={
-              <AdminPrivateRoute>
-                <AdminElectronic />
-              </AdminPrivateRoute>
-            }
-          />
-          <Route
-            path="orders"
-            element={
-              <AdminPrivateRoute>
-                <AdminOrders />
-              </AdminPrivateRoute>
-            }
-          />
-          <Route
-            path="banners"
-            element={
-              <AdminPrivateRoute>
-                <AdminBanners />
-              </AdminPrivateRoute>
-            }
-          />
-          <Route
-            path="navbar"
-            element={
-              <AdminPrivateRoute>
-                <AdminNavbar />
-              </AdminPrivateRoute>
-            }
-          />
-          <Route
-            path="latest-products"
-            element={
-              <AdminPrivateRoute>
-                <AdminLatestProducts />
-              </AdminPrivateRoute>
-            }
-          />
-          <Route
-            path="category"
-            element={
-              <AdminPrivateRoute>
-                <AdminCategory />
-              </AdminPrivateRoute>
-            }
-          />
-          <Route
-            path="features"
-            element={
-              <AdminPrivateRoute>
-                <AdminFeatures />
-              </AdminPrivateRoute>
-            }
-          />
-          <Route
-            path="promo"
-            element={
-              <AdminPrivateRoute>
-                <AdminPromo />
-              </AdminPrivateRoute>
-            }
-          />
-          <Route
-            path="footer"
-            element={
-              <AdminPrivateRoute>
-                <AdminFooter />
-              </AdminPrivateRoute>
-            }
-          />
-          <Route
-            path="favicon"
-            element={
-              <AdminPrivateRoute>
-                <AdminFavicon />
-              </AdminPrivateRoute>
-            }
-          />
-          <Route
-            path="brands"
-            element={
-              <AdminPrivateRoute>
-                <AdminBrands />
-              </AdminPrivateRoute>
-            }
-          />
-          <Route
-            path="banner-two"
-            element={
-              <AdminPrivateRoute>
-                <AdminBannerTwo />
-              </AdminPrivateRoute>
-            }
-          />
-        </Route>
+        {/* ADMIN LOGIN */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/signup" element={<AdminSignUp />} />
-        {/* Fallback */}
+
+        {/* ADMIN PANEL */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Navigate to="dashboard" replace />} />
+
+          <Route path="dashboard" element={<AdminPrivateRoute><AdminDashboard /></AdminPrivateRoute>} />
+          <Route path="products" element={<AdminPrivateRoute><AdminProducts /></AdminPrivateRoute>} />
+          <Route path="electronics" element={<AdminPrivateRoute><AdminElectronic /></AdminPrivateRoute>} />
+          <Route path="orders" element={<AdminPrivateRoute><AdminOrders /></AdminPrivateRoute>} />
+          <Route path="banners" element={<AdminPrivateRoute><AdminBanners /></AdminPrivateRoute>} />
+          <Route path="navbar" element={<AdminPrivateRoute><AdminNavbar /></AdminPrivateRoute>} />
+          <Route path="latest-products" element={<AdminPrivateRoute><AdminLatestProducts /></AdminPrivateRoute>} />
+          <Route path="category" element={<AdminPrivateRoute><AdminCategory /></AdminPrivateRoute>} />
+          <Route path="features" element={<AdminPrivateRoute><AdminFeatures /></AdminPrivateRoute>} />
+          <Route path="promo" element={<AdminPrivateRoute><AdminPromo /></AdminPrivateRoute>} />
+          <Route path="footer" element={<AdminPrivateRoute><AdminFooter /></AdminPrivateRoute>} />
+          <Route path="favicon" element={<AdminPrivateRoute><AdminFavicon /></AdminPrivateRoute>} />
+          <Route path="brands" element={<AdminPrivateRoute><AdminBrands /></AdminPrivateRoute>} />
+          <Route path="banner-two" element={<AdminPrivateRoute><AdminBannerTwo /></AdminPrivateRoute>} />
+        </Route>
+
+        {/* FALLBACK */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>

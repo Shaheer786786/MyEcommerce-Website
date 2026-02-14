@@ -404,7 +404,9 @@ export default function Navbar({ cart = { count: 0 } }) {
 
     fetch(`${BASE_URL}/products`)
       .then((res) => res.json())
-      .then((data) => setProducts(Array.isArray(data) ? data.filter(p => !p.deleted) : []))
+      .then((data) =>
+        setProducts(Array.isArray(data) ? data.filter((p) => !p.deleted) : [])
+      )
       .catch(() => setProducts([]));
 
     const savedUser = localStorage.getItem("user");
@@ -462,6 +464,25 @@ export default function Navbar({ cart = { count: 0 } }) {
     navigate("/cart");
   };
 
+  /* ================= SIGN IN CLICK ================= */
+  const handleAccountClick = () => {
+    if (!user) {
+      navigate("/login");
+    } else {
+      setSidebarOpen(true);
+    }
+  };
+
+  /* ================= RETURNS & ORDERS CLICK ================= */
+  const handleOrdersClick = () => {
+    if (!user) {
+      alert("Please login to see your orders!");
+      navigate("/login");
+    } else {
+      navigate("/user-orders");
+    }
+  };
+
   if (!navbar) return null;
 
   return (
@@ -507,7 +528,10 @@ export default function Navbar({ cart = { count: 0 } }) {
                         setQuery("");
                       }}
                     >
-                      <img src={getImageUrl(p.images?.[0] || p.image)} alt={p.name} />
+                      <img
+                        src={getImageUrl(p.images?.[0] || p.image)}
+                        alt={p.name}
+                      />
                       <div>
                         <p>{p.name}</p>
                         <span>₹{p.price}</span>
@@ -524,12 +548,12 @@ export default function Navbar({ cart = { count: 0 } }) {
 
         {/* ================= RIGHT SIDE ================= */}
         <div className="navbar-right">
-          <div className="nav-account">
+          <div className="nav-account" onClick={handleAccountClick}>
             <span className="nav-greeting">{navbar.account.greeting}</span>
             <span className="nav-title">{user ? user.name : navbar.account.title}</span>
           </div>
 
-          <div className="nav-orders">
+          <div className="nav-orders" onClick={handleOrdersClick}>
             <span>{navbar.orders.line1}</span>
             <span>{user ? `(${orders.length})` : ""}</span>
             <span>{navbar.orders.line2}</span>
@@ -586,7 +610,9 @@ export default function Navbar({ cart = { count: 0 } }) {
         </ul>
 
         <div className="sidebar-footer">
-          <button className="logout-btn" onClick={handleLogout}>Logout</button>
+          <button className="logout-btn" onClick={handleLogout}>
+            Logout
+          </button>
         </div>
       </div>
     </>

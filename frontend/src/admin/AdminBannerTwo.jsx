@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import BASE_URL from "../config"; 
+
 import "./AdminBannerTwo.css";
 
 export default function AdminBannerTwo() {
@@ -20,7 +22,10 @@ export default function AdminBannerTwo() {
 
   const fetchBanners = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:5000/banners-two");
+      const res = await axios.
+      // get("http://127.0.0.1:5000/banners-two");
+          get(`${BASE_URL}/banners-two`)
+
       setBanners(res.data);
     } catch (err) {
       console.error("Error fetching banners:", err);
@@ -40,10 +45,16 @@ export default function AdminBannerTwo() {
     try {
       if (editId) {
         // UPDATE
-        await axios.put(`http://127.0.0.1:5000/banners-two/${editId}`, form);
+        await axios.
+        // put(`http://127.0.0.1:5000/banners-two/${editId}`, form);
+            put(`${BASE_URL}/banner-two/${editId}`,form);
+
       } else {
         // ADD NEW  ✅ Ye line fix ki gayi hai
-        await axios.post("http://127.0.0.1:5000/banners-two", form);
+        await axios.
+        // post("http://127.0.0.1:5000/banners-two", form);
+            post(`${BASE_URL}/banner-two`,form);
+
       }
 
       resetForm();
@@ -69,7 +80,10 @@ export default function AdminBannerTwo() {
     if (!window.confirm("Delete banner permanently?")) return;
 
     try {
-      await axios.delete(`http://127.0.0.1:5000/banners-two/${id}`);
+      await axios.
+      // delete(`http://127.0.0.1:5000/banners-two/${id}`);
+          delete(`${BASE_URL}/banner-two/${id}`);
+
       fetchBanners();
     } catch (err) {
       console.error("Error deleting:", err);

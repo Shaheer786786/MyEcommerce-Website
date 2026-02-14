@@ -449,7 +449,7 @@ body {
 .logout-btn {
   width: 100%;
   padding: 10px;
-  background-color: #0a8f08;
+  background-color: red;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -459,4 +459,6 @@ body {
 
 .logout-btn:hover {
   opacity: 0.9;
+  background-color: rgb(108, 56, 56);
+
 }

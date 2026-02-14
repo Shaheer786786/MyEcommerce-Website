@@ -182,87 +182,52 @@
 // }
 
 // export default AdminCategory;
+
 import { useEffect, useState } from "react";
+import axios from "axios";
+import BASE_URL from "../config";
 import "./AdminCategory.css";
 
-function AdminCategory() {
+export default function AdminCategory() {
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
-  const [parentId, setParentId] = useState(""); 
+  const [parentId, setParentId] = useState("");
   const [editId, setEditId] = useState(null);
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:5000/admin/categories");
-      const data = await res.json();
-      setCategories(data);
+      const res = await axios.get(`${BASE_URL}/admin/categories`);
+      setCategories(res.data);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching categories:", err);
+      alert("Failed to fetch categories from server.");
     }
   };
 
   const saveCategory = async () => {
-    if (!name.trim() || !image.trim()) return;
+    if (!name.trim() || !image.trim()) {
+      alert("Name and Image URL are required");
+      return;
+    }
 
-    const url = editId
-      ? `http://127.0.0.1:5000/admin/categories/${editId}`
-      : "http://127.0.0.1:5000/admin/categories";
-
-    const method = editId ? "PUT" : "POST";
+    const payload = { name, image, parentId: parentId || null };
 
     try {
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, image, parentId }),
-      });
-
-      if (res.ok) {
-        setName("");
-        setImage("");
-        setParentId(""); 
-        setEditId(null);
-        fetchCategories();
+      if (editId) {
+        await axios.put(`${BASE_URL}/admin/categories/${editId}`, payload);
+      } else {
+        await axios.post(`${BASE_URL}/admin/categories`, payload);
       }
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
-  const deleteCategory = async (id) => {
-    try {
-      const res = await fetch(
-        `http://127.0.0.1:5000/admin/categories/${id}`,
-        { method: "DELETE" }
-      );
-      if (res.ok) fetchCategories();
+      setName("");
+      setImage("");
+      setParentId("");
+      setEditId(null);
+      fetchCategories();
     } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const recoverCategory = async (id) => {
-    try {
-      const res = await fetch(
-        `http://127.0.0.1:5000/admin/categories/recover/${id}`,
-        { method: "PUT" }
-      );
-      if (res.ok) fetchCategories();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const permanentDeleteCategory = async (id) => {
-    try {
-      const res = await fetch(
-        `http://127.0.0.1:5000/admin/categories/permanent/${id}`,
-        { method: "DELETE" }
-      );
-      if (res.ok) fetchCategories();
-    } catch (err) {
-      console.error(err);
+      console.error("Error saving category:", err);
+      alert("Failed to save category.");
     }
   };
 
@@ -270,7 +235,37 @@ function AdminCategory() {
     setEditId(cat.id);
     setName(cat.name);
     setImage(cat.image);
-    setParentId(cat.parentId || ""); 
+    setParentId(cat.parentId || "");
+  };
+
+  const deleteCategory = async (id) => {
+    if (!window.confirm("Delete this category?")) return;
+    try {
+      await axios.delete(`${BASE_URL}/admin/categories/${id}`);
+      fetchCategories();
+    } catch (err) {
+      console.error("Delete failed:", err);
+      alert("Failed to delete category.");
+    }
+  };
+
+  const recoverCategory = async (id) => {
+    try {
+      await axios.put(`${BASE_URL}/admin/categories/recover/${id}`);
+      fetchCategories();
+    } catch (err) {
+      console.error("Recover failed:", err);
+    }
+  };
+
+  const permanentDeleteCategory = async (id) => {
+    if (!window.confirm("Permanently delete this category?")) return;
+    try {
+      await axios.delete(`${BASE_URL}/admin/categories/permanent/${id}`);
+      fetchCategories();
+    } catch (err) {
+      console.error("Permanent delete failed:", err);
+    }
   };
 
   useEffect(() => {
@@ -304,6 +299,20 @@ function AdminCategory() {
           onChange={(e) => setImage(e.target.value)}
         />
 
+        <select
+          value={parentId}
+          onChange={(e) => setParentId(e.target.value)}
+        >
+          <option value="">No Parent</option>
+          {categories
+            .filter((c) => !c.deleted && c.id !== editId)
+            .map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+        </select>
+
         <button onClick={saveCategory}>
           {editId ? "Update Category" : "Add Category"}
         </button>
@@ -315,6 +324,7 @@ function AdminCategory() {
               setEditId(null);
               setName("");
               setImage("");
+              setParentId("");
             }}
           >
             Cancel
@@ -365,5 +375,3 @@ function AdminCategory() {
     </div>
   );
 }
-
-export default AdminCategory;

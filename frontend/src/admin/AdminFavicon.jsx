@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
+import BASE_URL from "../config";
 import "./AdminFavicon.css";
 
 export default function AdminFavicon() {
@@ -9,10 +11,17 @@ export default function AdminFavicon() {
   const [preview, setPreview] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5000/site-config")
-      .then(res => res.json())
-      .then(data => setPreview(data.favicon || ""));
+    fetchFavicon();
   }, []);
+
+  const fetchFavicon = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/site-config`);
+      setPreview(res.data.favicon || "");
+    } catch (err) {
+      console.error("Error fetching favicon:", err);
+    }
+  };
 
   const updateFavicon = async () => {
     if (!file && !url) {
@@ -28,22 +37,20 @@ export default function AdminFavicon() {
     if (url) formData.append("url", url);
 
     try {
-      const res = await fetch("http://localhost:5000/admin/site/favicon", {
-        method: "POST",
-        body: formData
+      const res = await axios.post(`${BASE_URL}/admin/site/favicon`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
-      const data = await res.json();
-
-      if (data.success) {
-        setMsg(" Favicon updated successfully");
-        setPreview(data.favicon);
+      if (res.data.success) {
+        setMsg("Favicon updated successfully");
+        setPreview(res.data.favicon);
         setFile(null);
         setUrl("");
       } else {
         setMsg("Update failed");
       }
     } catch (err) {
+      console.error(err);
       setMsg("Server error");
     } finally {
       setLoading(false);
@@ -73,7 +80,7 @@ export default function AdminFavicon() {
         {loading ? "Updating..." : "Update Favicon"}
       </button>
 
-      {msg && <p>{msg}</p>}
+      {msg && <p className="favicon-msg">{msg}</p>}
 
       {preview && (
         <div className="favicon-preview">
@@ -81,7 +88,7 @@ export default function AdminFavicon() {
             src={
               preview.startsWith("http")
                 ? preview
-                : `http://localhost:5000/images/${preview}?v=${Date.now()}`
+                : `${BASE_URL}/images/${preview}?v=${Date.now()}`
             }
             alt="favicon"
           />

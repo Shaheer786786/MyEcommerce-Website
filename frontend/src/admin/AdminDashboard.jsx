@@ -146,7 +146,7 @@ export default function AdminDashboard() {
   return (
     <div className="dashboard-container">
       <h1>E-Commerce Admin Dashboard</h1>
-      <button className="logout-btn" onClick={handleLogout}>
+      <button className="logout-btn1" onClick={handleLogout}>
         Logout
       </button>
 

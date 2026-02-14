@@ -390,3 +390,21 @@ h2 {
   color: blue;
   font-weight: bold;
 }
+.logout-btn1{
+    width: 100px;
+  padding: 10px;
+  background-color: red;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 1000px;
+  position: relative;
+  bottom: 30px;
+}
+.logout-btn1:hover{
+
+  background-color: rgb(133, 61, 61);
+
+}

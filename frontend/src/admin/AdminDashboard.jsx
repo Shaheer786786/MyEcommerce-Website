@@ -266,11 +266,9 @@
 //   );
 // }
 import React, { useEffect, useState } from "react";
-import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
+import BASE_URL from "../config"; // Ensure correct path to BASE_URL
 import "./AdminDashboard.css";
-
-const socket = io("http://localhost:5000");
 
 const SummaryCard = ({ title, value, icon, bgColor }) => (
   <div className="summary-card" style={{ backgroundColor: bgColor }}>
@@ -336,6 +334,11 @@ const UserActivity = ({ activities }) => (
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
+  const [profile, setProfile] = useState(null);
+  const [stats, setStats] = useState({});
+  const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [activities, setActivities] = useState([]);
 
   useEffect(() => {
     const admin = JSON.parse(localStorage.getItem("adminLoggedIn"));
@@ -344,53 +347,45 @@ export default function AdminDashboard() {
     }
   }, [navigate]);
 
-  const [profile, setProfile] = useState(null);
-  const [stats, setStats] = useState({});
-  const [orders, setOrders] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [activities, setActivities] = useState([]);
-
   useEffect(() => {
-    fetch("http://localhost:5000/admin/dashboard/profile")
+    // Profile
+    fetch(`${BASE_URL}/admin/dashboard/profile`)
       .then((res) => res.json())
-      .then(setProfile);
+      .then(setProfile)
+      .catch((err) => console.error("Profile fetch error:", err));
 
-    fetch("http://localhost:5000/admin/dashboard/stats")
+    // Stats
+    fetch(`${BASE_URL}/admin/dashboard/stats`)
       .then((res) => res.json())
-      .then(setStats);
+      .then(setStats)
+      .catch((err) => console.error("Stats fetch error:", err));
 
-    fetch("http://localhost:5000/orders")
+    // Orders
+    fetch(`${BASE_URL}/orders`)
       .then((res) => res.json())
       .then((data) => {
         const sortedOrders = data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
         setOrders(sortedOrders);
-      });
+      })
+      .catch((err) => console.error("Orders fetch error:", err));
 
-    fetch("http://localhost:5000/admin/dashboard/products")
+    // Products
+    fetch(`${BASE_URL}/admin/dashboard/products`)
       .then((res) => res.json())
-      .then(setProducts);
+      .then(setProducts)
+      .catch((err) => console.error("Products fetch error:", err));
 
-    fetch("http://localhost:5000/admin/dashboard/activities")
+    // Activities
+    fetch(`${BASE_URL}/admin/dashboard/activities`)
       .then((res) => res.json())
-      .then(setActivities);
-
-    socket.on("dashboard_update", (data) => {
-      setStats(data.stats);
-      const sortedOrders = data.orders.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
-      setOrders(sortedOrders);
-      setProducts(data.products);
-      setActivities(data.activities || []);
-    });
-
-    return () => socket.off("dashboard_update");
+      .then(setActivities)
+      .catch((err) => console.error("Activities fetch error:", err));
   }, []);
 
   const updateOrderStatus = (orderId, status) => {
-    fetch(`http://localhost:5000/orders/${orderId}/status`, {
+    fetch(`${BASE_URL}/orders/${orderId}/status`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),

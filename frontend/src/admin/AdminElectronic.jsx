@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+import BASE_URL from "../config";
 import "./AdminElectronic.css";
 
-function AdminElectronic() {
+export default function AdminElectronic() {
   const [electronics, setElectronics] = useState([]);
   const [form, setForm] = useState({
     name: "",
@@ -13,7 +15,6 @@ function AdminElectronic() {
     rating: "",
     reviews: "",
     shortDesc: "",
-
     brand: "",
     model: "",
     material: "",
@@ -31,9 +32,8 @@ function AdminElectronic() {
   // ================= FETCH ELECTRONICS =================
   const fetchElectronics = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:5000/admin/electronics");
-      const data = await res.json();
-      setElectronics(Array.isArray(data) ? data : []);
+      const res = await axios.get(`${BASE_URL}/admin/electronics`);
+      setElectronics(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error(err);
       setElectronics([]);
@@ -60,12 +60,8 @@ function AdminElectronic() {
       const fd = new FormData();
       fd.append("file", file);
       try {
-        const res = await fetch("http://127.0.0.1:5000/upload", {
-          method: "POST",
-          body: fd,
-        });
-        const data = await res.json();
-        if (data.filename) uploaded.push(data.filename);
+        const res = await axios.post(`${BASE_URL}/upload`, fd);
+        if (res.data.filename) uploaded.push(res.data.filename);
       } catch (err) {
         console.error(err);
       }
@@ -89,11 +85,9 @@ function AdminElectronic() {
       price: Number(form.price) || 0,
       oldPrice: form.oldPrice ? Number(form.oldPrice) : undefined,
       stock: Number(form.stock) || 0,
-
       colors: form.colors ? form.colors.split(",").map((c) => c.trim()) : [],
       sizes: form.sizes ? form.sizes.split(",").map((s) => s.trim()) : [],
       highlights: form.highlights ? form.highlights.split(",").map((h) => h.trim()) : [],
-
       specifications: {
         Brand: form.brand,
         Model: form.model,
@@ -102,28 +96,19 @@ function AdminElectronic() {
       },
     };
 
-    const url = editingId
-      ? `http://127.0.0.1:5000/admin/electronics/${editingId}`
-      : "http://127.0.0.1:5000/admin/electronics";
-    const method = editingId ? "PUT" : "POST";
-
     try {
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) throw new Error("Failed");
-
-      const result = await res.json();
-
-      setMessage(editingId ? "Product updated!" : "Product added!");
-      if (!editingId) setElectronics((prev) => [result, ...prev]);
-      else fetchElectronics();
+      if (editingId) {
+        await axios.put(`${BASE_URL}/admin/electronics/${editingId}`, payload);
+        setMessage("Product updated!");
+      } else {
+        const res = await axios.post(`${BASE_URL}/admin/electronics`, payload);
+        setElectronics((prev) => [res.data, ...prev]);
+        setMessage("Product added!");
+      }
 
       resetForm();
       setTimeout(() => setMessage(null), 3000);
+      fetchElectronics();
     } catch (err) {
       console.error(err);
       setMessage("Operation failed!");
@@ -177,14 +162,14 @@ function AdminElectronic() {
   };
 
   const handleDelete = async (id) => {
-    await fetch(`http://127.0.0.1:5000/admin/electronics/${id}`, { method: "DELETE" });
+    await axios.delete(`${BASE_URL}/admin/electronics/${id}`);
     setMessage("Product deleted!");
     fetchElectronics();
     setTimeout(() => setMessage(null), 3000);
   };
 
   const handleRecover = async (id) => {
-    await fetch(`http://127.0.0.1:5000/admin/electronics/${id}/recover`, { method: "POST" });
+    await axios.post(`${BASE_URL}/admin/electronics/${id}/recover`);
     setMessage("Product recovered!");
     fetchElectronics();
     setTimeout(() => setMessage(null), 3000);
@@ -192,7 +177,7 @@ function AdminElectronic() {
 
   const handlePermanentDelete = async (id) => {
     if (!window.confirm("Are you sure to permanently delete?")) return;
-    await fetch(`http://127.0.0.1:5000/admin/electronics/${id}/permanent`, { method: "DELETE" });
+    await axios.delete(`${BASE_URL}/admin/electronics/${id}/permanent`);
     setMessage("Product permanently deleted!");
     fetchElectronics();
     setTimeout(() => setMessage(null), 3000);
@@ -278,5 +263,3 @@ function AdminElectronic() {
     </div>
   );
 }
-
-export default AdminElectronic;

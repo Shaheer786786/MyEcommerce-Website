@@ -481,6 +481,8 @@
 
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import BASE_URL from "../config";
+
 import "./ProductDetail.css";
 
 function ProductDetail({ addToCart }) {
@@ -504,13 +506,22 @@ function ProductDetail({ addToCart }) {
     window.scrollTo(0, 0);
     const fetchAll = async () => {
       try {
-        const resProducts = await fetch("http://127.0.0.1:5000/products");
+        const resProducts = await 
+        // fetch("http://127.0.0.1:5000/products");
+              fetch(`${BASE_URL}/products`);
+
         const productsData = await resProducts.json();
 
-        const resLatest = await fetch("http://127.0.0.1:5000/latestProducts");
+        const resLatest = await 
+        // fetch("http://127.0.0.1:5000/latestProducts");
+            fetch(`${BASE_URL}/latestProducts`);
+
         const latestData = await resLatest.json();
 
-        const resElectronics = await fetch("http://127.0.0.1:5000/electronics");
+        const resElectronics = await 
+        // fetch("http://127.0.0.1:5000/electronics");
+             fetch(`${BASE_URL}/electronics`);
+
         const electronicsData = await resElectronics.json();
 
         const merged = [

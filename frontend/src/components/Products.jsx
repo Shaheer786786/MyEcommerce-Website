@@ -324,6 +324,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import BASE_URL from "../config";
+
 import "./Products.css";
 
 function Products({ searchQuery = "", addToCart }) {
@@ -343,7 +345,10 @@ function Products({ searchQuery = "", addToCart }) {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const res = await fetch("http://127.0.0.1:5000/products");
+        const res = await 
+        // fetch("http://127.0.0.1:5000/products");
+                fetch(`${BASE_URL}/products`);
+
         const data = await res.json();
         setProducts(Array.isArray(data) ? data.filter((p) => !p.deleted) : []);
       } catch (err) {

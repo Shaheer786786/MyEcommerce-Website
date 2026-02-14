@@ -51,6 +51,8 @@
 
 
 import { useEffect, useState } from "react";
+import BASE_URL from "../config";
+
 import "./Promo.css";
 
 export default function Promo() {
@@ -59,7 +61,10 @@ export default function Promo() {
   useEffect(() => {
     const fetchPromos = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:5000/promo");
+        const res = await 
+        // fetch("http://127.0.0.1:5000/promo");
+                fetch(`${BASE_URL}/promo`);
+
         const data = await res.json();
         if (Array.isArray(data)) setItems(data.slice(0, 4));
         else setItems([]);

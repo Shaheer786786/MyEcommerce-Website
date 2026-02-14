@@ -201,6 +201,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import BASE_URL from "../config";
+
 import "./ProfilePage.css";
 
 export default function SettingsPage() {
@@ -222,7 +224,12 @@ export default function SettingsPage() {
   const handleUpdate = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.put("http://127.0.0.1:5000/auth/update", form, {
+      const res = await axios.
+      // put("http://127.0.0.1:5000/auth/update", 
+              put(`${BASE_URL}/auth/update`,
+
+      
+        form, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMessage("Profile updated successfully!");

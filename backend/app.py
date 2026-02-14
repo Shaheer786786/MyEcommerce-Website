@@ -496,23 +496,7 @@ def admin_electronics_modify(id):
 
     write_data(data)
     return jsonify({"success": True})
-@app.route("/auth/forgot-password", methods=["POST"])
-def forgot_password():
-    data = request.json
-    email = data.get("email")
 
-    # check user exists
-    user = User.query.filter_by(email=email).first()
-    if not user:
-        return jsonify({"message": "User not found"}), 404
-
-    # Here you can:
-    # 1. Generate reset token
-    # 2. Send email
-    # OR
-    # 3. Directly allow password reset (simple project case)
-
-    return jsonify({"message": "Reset link sent"})
 
 # ============================
 # RECOVER

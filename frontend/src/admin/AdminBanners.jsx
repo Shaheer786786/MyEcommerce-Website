@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import BASE_URL from "../config"; 
+
 import "./AdminBanners.css";
 
 const emptyForm = {
@@ -17,7 +19,9 @@ function AdminBanners() {
   const [uploading, setUploading] = useState(false);
 
   const loadBanners = () => {
-    fetch("http://127.0.0.1:5000/admin/banners")
+    // fetch("http://127.0.0.1:5000/admin/banners")
+        fetch(`${BASE_URL}/admin/banners`)
+
       .then(res => res.json())
       .then(setBanners);
   };
@@ -49,7 +53,11 @@ function AdminBanners() {
   const deleteBanner = async (id) => {
     if (!window.confirm("Delete this banner permanently?")) return;
 
-    await fetch(`http://127.0.0.1:5000/admin/banners/${id}`, {
+    await 
+    // fetch(`http://127.0.0.1:5000/admin/banners/${id}`, 
+        fetch(`${BASE_URL}/admin/banners/${id}`,
+
+      {
       method: "DELETE"
     });
 
@@ -64,7 +72,10 @@ function AdminBanners() {
     const fd = new FormData();
     fd.append("file", file);
 
-    fetch("http://127.0.0.1:5000/upload", {
+    // fetch("http://127.0.0.1:5000/upload", 
+        fetch(`${BASE_URL}/upload`,
+
+      {
       method: "POST",
       body: fd
     })

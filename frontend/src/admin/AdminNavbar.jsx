@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import BASE_URL from "../config"; // BASE_URL import
 import "./AdminNavbar.css";
 
 export default function AdminNavbar() {
@@ -18,8 +19,8 @@ export default function AdminNavbar() {
 
   const loadData = async () => {
     try {
-      const menuRes = await fetch("http://127.0.0.1:5000/admin/navbar/menu");
-      const configRes = await fetch("http://127.0.0.1:5000/admin/navbar/config");
+      const menuRes = await fetch(`${BASE_URL}/admin/navbar/menu`);
+      const configRes = await fetch(`${BASE_URL}/admin/navbar/config`);
 
       const menuData = await menuRes.json();
       const configData = await configRes.json();
@@ -44,10 +45,11 @@ export default function AdminNavbar() {
   useEffect(() => {
     loadData();
   }, []);
+
   const addMenu = async () => {
     if (!form.name || !form.link) return;
 
-    await fetch("http://127.0.0.1:5000/admin/navbar/menu", {
+    await fetch(`${BASE_URL}/admin/navbar/menu`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form)
@@ -58,24 +60,18 @@ export default function AdminNavbar() {
   };
 
   const deleteMenu = async (id) => {
-    await fetch(`http://127.0.0.1:5000/admin/navbar/menu/${id}`, {
-      method: "DELETE"
-    });
+    await fetch(`${BASE_URL}/admin/navbar/menu/${id}`, { method: "DELETE" });
     loadData();
   };
 
   const recoverMenu = async (id) => {
-    await fetch(`http://127.0.0.1:5000/admin/navbar/menu/${id}`, {
-      method: "POST"
-    });
+    await fetch(`${BASE_URL}/admin/navbar/menu/${id}`, { method: "POST" });
     loadData();
   };
 
   const permanentDeleteMenu = async (id) => {
     if (!window.confirm("Permanently delete this menu?")) return;
-    await fetch(`http://127.0.0.1:5000/admin/navbar/menu/${id}?permanent=true`, {
-      method: "DELETE"
-    });
+    await fetch(`${BASE_URL}/admin/navbar/menu/${id}?permanent=true`, { method: "DELETE" });
     loadData();
   };
 
@@ -85,11 +81,7 @@ export default function AdminNavbar() {
     const fd = new FormData();
     fd.append("image", file);
 
-    const res = await fetch("http://127.0.0.1:5000/admin/logo/upload", {
-      method: "POST",
-      body: fd
-    });
-
+    const res = await fetch(`${BASE_URL}/admin/logo/upload`, { method: "POST", body: fd });
     const data = await res.json();
 
     if (data.success) {
@@ -97,7 +89,7 @@ export default function AdminNavbar() {
         ...prev,
         logo: {
           ...prev.logo,
-          image: `http://127.0.0.1:5000/images/${data.filename}`
+          image: `${BASE_URL}/images/${data.filename}`
         }
       }));
     }
@@ -113,7 +105,7 @@ export default function AdminNavbar() {
         cart: config.cart
       };
 
-      const res = await fetch("http://127.0.0.1:5000/admin/navbar/config", {
+      const res = await fetch(`${BASE_URL}/admin/navbar/config`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -146,21 +138,16 @@ export default function AdminNavbar() {
           value={config.logo.name}
           onChange={(e) => setConfig({ ...config, logo: { ...config.logo, name: e.target.value } })}
         />
-
         <input
           placeholder="Logo image URL (https://...)"
           value={config.logo.image}
           onChange={(e) => setConfig({ ...config, logo: { ...config.logo, image: e.target.value } })}
         />
-
         <p style={{ textAlign: "center", margin: "8px 0", fontSize: 13 }}>OR</p>
-
         <input type="file" accept="image/*" onChange={(e) => handleLogoFromGallery(e.target.files[0])} />
-
-        {config.logo.image && (
-          <img src={config.logo.image} height="60" alt="Logo Preview" style={{ marginTop: 12 }} />
-        )}
+        {config.logo.image && <img src={config.logo.image} height="60" alt="Logo Preview" style={{ marginTop: 12 }} />}
       </div>
+
       <div className="anav-card">
         <h4>Menu</h4>
         <input placeholder="Menu name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
@@ -215,6 +202,7 @@ export default function AdminNavbar() {
           onChange={(e) => setConfig({ ...config, account: { ...config.account, title: e.target.value } })}
         />
       </div>
+
       <div className="anav-card">
         <h4>Orders</h4>
         <input
@@ -244,9 +232,7 @@ export default function AdminNavbar() {
         />
       </div>
 
-      <button className="anav-save" onClick={saveConfig}>
-        Save Navbar
-      </button>
+      <button className="anav-save" onClick={saveConfig}>Save Navbar</button>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import BASE_URL from "../config"; // BASE_URL import
 import "./AdminProducts.css";
 
 function AdminProducts() {
@@ -13,7 +14,6 @@ function AdminProducts() {
     offer: "",
     rating: "",
     reviews: "",
-    // Specifications
     brand: "",
     model: "",
     material: "",
@@ -31,7 +31,7 @@ function AdminProducts() {
   // ================= FETCH PRODUCTS =================
   const fetchProducts = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:5000/admin/products");
+      const res = await fetch(`${BASE_URL}/admin/products`);
       const data = await res.json();
       setProducts(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -60,12 +60,12 @@ function AdminProducts() {
       const fd = new FormData();
       fd.append("file", file);
       try {
-        const res = await fetch("http://127.0.0.1:5000/upload", {
+        const res = await fetch(`${BASE_URL}/upload`, {
           method: "POST",
           body: fd,
         });
         const data = await res.json();
-        if (data.filename) uploaded.push(`http://127.0.0.1:5000/images/${data.filename}`);
+        if (data.filename) uploaded.push(`${BASE_URL}/images/${data.filename}`);
       } catch (err) {
         console.error(err);
       }
@@ -101,8 +101,8 @@ function AdminProducts() {
     };
 
     const url = editingId
-      ? `http://127.0.0.1:5000/admin/products/${editingId}`
-      : "http://127.0.0.1:5000/admin/products";
+      ? `${BASE_URL}/admin/products/${editingId}`
+      : `${BASE_URL}/admin/products`;
     const method = editingId ? "PUT" : "POST";
 
     try {
@@ -176,14 +176,14 @@ function AdminProducts() {
   };
 
   const handleDelete = async (id) => {
-    await fetch(`http://127.0.0.1:5000/admin/products/${id}`, { method: "DELETE" });
+    await fetch(`${BASE_URL}/admin/products/${id}`, { method: "DELETE" });
     setMessage("Product deleted!");
     fetchProducts();
     setTimeout(() => setMessage(null), 3000);
   };
 
   const handleRecover = async (id) => {
-    await fetch(`http://127.0.0.1:5000/admin/products/${id}/recover`, { method: "POST" });
+    await fetch(`${BASE_URL}/admin/products/${id}/recover`, { method: "POST" });
     setMessage("Product recovered!");
     fetchProducts();
     setTimeout(() => setMessage(null), 3000);
@@ -191,7 +191,7 @@ function AdminProducts() {
 
   const handlePermanentDelete = async (id) => {
     if (!window.confirm("Are you sure to permanently delete?")) return;
-    await fetch(`http://127.0.0.1:5000/admin/products/${id}/permanent`, { method: "DELETE" });
+    await fetch(`${BASE_URL}/admin/products/${id}/permanent`, { method: "DELETE" });
     setMessage("Product permanently deleted!");
     fetchProducts();
     setTimeout(() => setMessage(null), 3000);
@@ -250,74 +250,50 @@ function AdminProducts() {
 
       <div className="ap-list">
         {filteredProducts.map((item) => (
-<div key={item.id} className="ae-card">
-  <div className="ae-image-wrapper">
-    {item.images?.length ? <img src={item.images[0]} alt={item.name} /> : <div>No Image</div>}
-  </div>
-  <div className="ae-details">
-    <h4>{item.name}</h4>
-    
-    <p>
-      ₹{item.price}{" "}
-      {item.oldPrice && <span className="old-price">₹{item.oldPrice}</span>}
-    </p>
-    
-    <p>Stock: {item.stock > 0 ? item.stock : "Out of Stock"}</p>
-    
-    {item.rating && (
-      <p>
-        <span role="img" aria-label="star">⭐</span> {item.rating}{" "}
-        {item.reviews && `(${item.reviews} reviews)`}
-      </p>
-    )}
-    
-    {item.shortDesc && <p>{item.shortDesc}</p>}
-    
-    {/* Specifications */}
-    <div className="ae-specs">
-      <p><b>Brand:</b> {item.specifications?.Brand || "-"}</p>
-      <p><b>Model:</b> {item.specifications?.Model || "-"}</p>
-      <p><b>Material:</b> {item.specifications?.Material || "-"}</p>
-      <p><b>Warranty:</b> {item.specifications?.Warranty || "-"}</p>
-    </div>
-    
-    {/* Colors */}
-    <p>
-      <b>Colors:</b>{" "}
-      {item.colors && item.colors.length > 0 ? item.colors.join(", ") : "-"}
-    </p>
-    
-    {/* Sizes */}
-    <p>
-      <b>Sizes:</b>{" "}
-      {item.sizes && item.sizes.length > 0 ? item.sizes.join(", ") : "-"}
-    </p>
-    
-    {/* Highlights */}
-    <p>
-      <b>Highlights:</b>{" "}
-      {item.highlights && item.highlights.length > 0
-        ? item.highlights.join(", ")
-        : "-"}
-    </p>
-    
-    {item.offer && <p className="inline-offer">{item.offer}</p>}
-  </div>
-  <div className="ae-actions">
-    {!item.deleted ? (
-      <>
-        <button className="edit-btn" onClick={() => handleEdit(item)}>Edit</button>
-        <button className="delete-btn" onClick={() => handleDelete(item.id)}>Delete</button>
-      </>
-    ) : (
-      <>
-        <button className="recover-btn" onClick={() => handleRecover(item.id)}>Recover</button>
-        <button className="perm-delete-btn" onClick={() => handlePermanentDelete(item.id)}>Permanent Delete</button>
-      </>
-    )}
-  </div>
-</div>
+          <div key={item.id} className="ae-card">
+            <div className="ae-image-wrapper">
+              {item.images?.length ? <img src={item.images[0]} alt={item.name} /> : <div>No Image</div>}
+            </div>
+            <div className="ae-details">
+              <h4>{item.name}</h4>
+              <p>₹{item.price} {item.oldPrice && <span className="old-price">₹{item.oldPrice}</span>}</p>
+              <p>Stock: {item.stock > 0 ? item.stock : "Out of Stock"}</p>
+              {item.rating && <p>⭐ {item.rating} {item.reviews && `(${item.reviews} reviews)`}</p>}
+              {item.shortDesc && <p>{item.shortDesc}</p>}
 
+              {/* Specifications */}
+              <div className="ae-specs">
+                <p><b>Brand:</b> {item.specifications?.Brand || "-"}</p>
+                <p><b>Model:</b> {item.specifications?.Model || "-"}</p>
+                <p><b>Material:</b> {item.specifications?.Material || "-"}</p>
+                <p><b>Warranty:</b> {item.specifications?.Warranty || "-"}</p>
+              </div>
+
+              {/* Colors */}
+              <p><b>Colors:</b> {item.colors?.length ? item.colors.join(", ") : "-"}</p>
+
+              {/* Sizes */}
+              <p><b>Sizes:</b> {item.sizes?.length ? item.sizes.join(", ") : "-"}</p>
+
+              {/* Highlights */}
+              <p><b>Highlights:</b> {item.highlights?.length ? item.highlights.join(", ") : "-"}</p>
+
+              {item.offer && <p className="inline-offer">{item.offer}</p>}
+            </div>
+            <div className="ae-actions">
+              {!item.deleted ? (
+                <>
+                  <button className="edit-btn" onClick={() => handleEdit(item)}>Edit</button>
+                  <button className="delete-btn" onClick={() => handleDelete(item.id)}>Delete</button>
+                </>
+              ) : (
+                <>
+                  <button className="recover-btn" onClick={() => handleRecover(item.id)}>Recover</button>
+                  <button className="perm-delete-btn" onClick={() => handlePermanentDelete(item.id)}>Permanent Delete</button>
+                </>
+              )}
+            </div>
+          </div>
         ))}
       </div>
     </div>

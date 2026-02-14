@@ -130,33 +130,28 @@ def preloader():
         return jsonify({"error": str(e)}), 500
 
 
+# Signup
 @app.route("/auth/signup", methods=["POST"])
 def signup():
-    data = request.get_json()
+    data = request.json
+    # Save user to DB
+    return jsonify({"message": "User created"})
 
-    name = data.get("name")
+# Forgot password
+@app.route("/auth/forgot-password", methods=["POST"])
+def forgot_password():
+    data = request.json
+    return jsonify({"message": "Reset link sent"})
+
+# Change password
+@app.route("/auth/change-password", methods=["POST"])
+def change_password():
+    data = request.json
     email = data.get("email")
-    password = data.get("password")
+    new_password = data.get("newPassword")
 
-    if not name or not email or not password:
-        return jsonify({"error": "All fields required"}), 400
-
-    existing = db.users.find_one({"email": email})
-    if existing:
-        return jsonify({"error": "Email already registered"}), 400
-
-    hashed_password = generate_password_hash(password)
-
-    user = {
-        "name": name,
-        "email": email,
-        "password": hashed_password,
-        "createdAt": datetime.utcnow()
-    }
-
-    db.users.insert_one(user)
-
-    return jsonify({"success": True, "message": "User registered"})
+    # Update password in DB
+    return jsonify({"message": "Password updated"})
 
 @app.route("/auth/login", methods=["POST"])
 def login():

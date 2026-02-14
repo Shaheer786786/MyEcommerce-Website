@@ -21,6 +21,11 @@ function ProductDetail({ addToCart }) {
 
   const [toasts, setToasts] = useState([]);
 
+  // <<< Yahan add karo >>>
+  const openProductDetailNewTab = (productId) => {
+    const baseUrl = window.location.origin; // frontend ka URL
+    window.open(`${baseUrl}/product/${productId}`, "_blank");
+  };
   useEffect(() => {
     window.scrollTo(0, 0);
 
@@ -432,53 +437,53 @@ function ProductDetail({ addToCart }) {
                 : "Out of Stock";
 
             return (
-              <div key={item.id} className="product-card" style={{ cursor: "pointer", position: "relative" }}
-                onClick={() => window.open(`/product/${item.id}`, "_blank")}>
-                
-                <div className="product-badges">
-                  {item.offer && <span className="pdx-badge offer">{item.offer}</span>}
-                  {item.tag && item.tag.split(",").map((t, index) => (
-                    <span key={index} className="pdx-badge tag">{t.trim()}</span>
-                  ))}
-                </div>
+             <div key={item.id} className="product-card" style={{ cursor: "pointer", position: "relative" }}
+  onClick={() => openProductDetailNewTab(item.id)}>
+  
+  <div className="product-badges">
+    {item.offer && <span className="pdx-badge offer">{item.offer}</span>}
+    {item.tag && item.tag.split(",").map((t, index) => (
+      <span key={index} className="pdx-badge tag">{t.trim()}</span>
+    ))}
+  </div>
 
-                <img src={imageUrl} alt={item.name}/>
-                <h3 className="product-title">{item.name}</h3>
-                <p className="product-short-desc">{item.shortDesc || "High performance with premium quality"}</p>
+  <img src={imageUrl} alt={item.name}/>
+  <h3 className="product-title">{item.name}</h3>
+  <p className="product-short-desc">{item.shortDesc || "High performance with premium quality"}</p>
 
-                <div className="rating-offer-row">
-                  <div className="rating-box">
-                    ⭐ {item.rating || 4.3} ({item.reviews || 0} Reviews)
-                    <br />
-                    <span className="stock-text">{stockText}</span>
-                  </div>
-                </div>
+  <div className="rating-offer-row">
+    <div className="rating-box">
+      ⭐ {item.rating || 4.3} ({item.reviews || 0} Reviews)
+      <br />
+      <span className="stock-text">{stockText}</span>
+    </div>
+  </div>
 
-                <div className="pprice-box">
-                  <span className="pprice">₹{item.price}</span>
-                  {item.oldPrice && item.oldPrice !== item.price && <span className="oold-price">₹{item.oldPrice}</span>}
-                </div>
+  <div className="pprice-box">
+    <span className="pprice">₹{item.price}</span>
+    {item.oldPrice && item.oldPrice !== item.price && <span className="oold-price">₹{item.oldPrice}</span>}
+  </div>
 
-                <div className="action-buttons" onClick={(e) => e.stopPropagation()}>
-<button
-  className="buy-btn"
-  onClick={() => window.open(`/product/${item.id}`, "_blank")}
->
-  View
-</button>
+  <div className="action-buttons" onClick={(e) => e.stopPropagation()}>
+    <button
+      className="buy-btn"
+      onClick={() => openProductDetailNewTab(item.id)}
+    >
+      View
+    </button>
 
-                  <button className="cart-btn" disabled={item.stock === 0} onClick={() => {
-                    const user = JSON.parse(localStorage.getItem("user"));
-                    if (!user) {
-                      navigate("/login");
-                      return;
-                    }
-                    handleAddToCart(item);
-                  }}>
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
+    <button className="cart-btn" disabled={item.stock === 0} onClick={() => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) {
+        navigate("/login");
+        return;
+      }
+      handleAddToCart(item);
+    }}>
+      Add to Cart
+    </button>
+  </div>
+</div>
             );
           })}
         </div>

@@ -319,8 +319,6 @@
 // }
 
 // export default Products;
-
-
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../config";
@@ -354,6 +352,7 @@ function Products({ searchQuery = "", addToCart }) {
       }
       setLoading(false);
     };
+
     fetchProducts();
   }, []);
 
@@ -364,19 +363,21 @@ function Products({ searchQuery = "", addToCart }) {
 
   /* ================= SLIDER ================= */
   const scrollLeft = () =>
-    sliderRef.current.scrollBy({ left: -350, behavior: "smooth" });
+    sliderRef.current?.scrollBy({ left: -350, behavior: "smooth" });
 
   const scrollRight = () =>
-    sliderRef.current.scrollBy({ left: 350, behavior: "smooth" });
+    sliderRef.current?.scrollBy({ left: 350, behavior: "smooth" });
 
   /* ================= TOAST ================= */
   const showToast = (message) => {
     const id = Date.now();
     setToasts((prev) => [...prev, { id, message }]);
+
     setTimeout(() => {
       setToasts((prev) =>
         prev.map((t) => (t.id === id ? { ...t, fade: true } : t))
       );
+
       setTimeout(
         () => setToasts((prev) => prev.filter((t) => t.id !== id)),
         500
@@ -411,12 +412,6 @@ function Products({ searchQuery = "", addToCart }) {
       });
     });
 
-  /* ================= OPEN DETAIL IN NEW TAB ================= */
-  const openProductDetailNewTab = (productId) => {
-    const baseUrl = window.location.origin;
-    window.open(`${baseUrl}/product/${productId}`, "_blank");
-  };
-
   if (loading)
     return <h3 className="prd-loading-text">Loading products...</h3>;
 
@@ -449,7 +444,7 @@ function Products({ searchQuery = "", addToCart }) {
               className={`prd-product-card ${
                 index === 0 ? "prd-featured" : ""
               }`}
-              onClick={() => openProductDetailNewTab(product.id)}
+              onClick={() => navigate(`/product/${product.id}`)}
               style={{ cursor: "pointer" }}
             >
               <div className="prd-product-img">
@@ -458,6 +453,7 @@ function Products({ searchQuery = "", addToCart }) {
 
               <div className="prd-product-info">
                 <h4 className="prd-product-title">{product.name}</h4>
+
                 <p className="prd-product-short-desc">
                   {product.shortDesc ||
                     "High performance with premium quality"}
@@ -474,6 +470,7 @@ function Products({ searchQuery = "", addToCart }) {
                         : `Stock: ${product.stock}`}
                     </span>
                   </div>
+
                   {product.offer && (
                     <span className="prd-inline-offer">
                       {product.offer}
@@ -482,7 +479,9 @@ function Products({ searchQuery = "", addToCart }) {
                 </div>
 
                 <div className="prd-price-box">
-                  <span className="prd-price">₹{product.price}</span>
+                  <span className="prd-price">
+                    ₹{product.price}
+                  </span>
                   {product.oldPrice && (
                     <span className="prd-old-price">
                       ₹{product.oldPrice}

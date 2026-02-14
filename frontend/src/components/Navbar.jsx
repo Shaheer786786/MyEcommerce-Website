@@ -361,18 +361,19 @@
 //     </>
 //   );
 // }
-
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../config";
-
 import "./Navbar.css";
 
-// Helper: Safe image URL handling
+/* ================= SAFE IMAGE HELPER ================= */
 const getImageUrl = (image) => {
   if (!image) return "https://via.placeholder.com/40";
-  if (image.startsWith("data:image") || image.startsWith("http")) return image;
-  return `http://127.0.0.1:5000/images/${image}`;
+
+  if (image.startsWith("data:image") || image.startsWith("http"))
+    return image;
+
+  return `${BASE_URL}/images/${image}`;
 };
 
 export default function Navbar({ cart = { count: 0 } }) {
@@ -387,32 +388,34 @@ export default function Navbar({ cart = { count: 0 } }) {
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
 
-  // Fetch Navbar, products, user & orders
+  /* ================= FETCH DATA ================= */
   useEffect(() => {
-    // fetch("http://127.0.0.1:5000/navbar")
+    // Navbar
     fetch(`${BASE_URL}/navbar`)
+      .then((res) => res.json())
+      .then((data) => setNavbar(data))
+      .catch((err) => {
+        console.error("Navbar fetch error:", err);
+        setNavbar(null);
+      });
 
-    .then((res) => res.json())
-      .then(setNavbar)
-      .catch(() => setNavbar(null));
-
-    // fetch("http://127.0.0.1:5000/products")
-     fetch(`${BASE_URL}/banners-two`)
-
-    .then((res) => res.json())
-      .then(setProducts)
+    // Products for search (FIXED)
+    fetch(`${BASE_URL}/products`)
+      .then((res) => res.json())
+      .then((data) =>
+        setProducts(Array.isArray(data) ? data.filter(p => !p.deleted) : [])
+      )
       .catch(() => setProducts([]));
 
+    // User
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
       const parsed = JSON.parse(savedUser);
       setUser(parsed);
 
-      // fetch(`http://127.0.0.1:5000/user-orders/${parsed.id}`)
-           fetch(`${BASE_URL}/user-orders/${parsed.id}`)
-
+      fetch(`${BASE_URL}/user-orders/${parsed.id}`)
         .then((res) => res.json())
-        .then(setOrders)
+        .then((data) => setOrders(Array.isArray(data) ? data : []))
         .catch(() => setOrders([]));
     }
 
@@ -422,22 +425,27 @@ export default function Navbar({ cart = { count: 0 } }) {
         setSidebarOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
+    return () =>
+      document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
 
-  // Filter products for search
+  /* ================= SEARCH FILTER ================= */
   useEffect(() => {
-    if (!query) setSearchResults([]);
-    else {
-      const filtered = products.filter((p) =>
-        p?.name?.toLowerCase().includes(query.toLowerCase())
-      );
-      setSearchResults(filtered.slice(0, 6));
+    if (!query) {
+      setSearchResults([]);
+      return;
     }
+
+    const filtered = products.filter((p) =>
+      p?.name?.toLowerCase().includes(query.toLowerCase())
+    );
+
+    setSearchResults(filtered.slice(0, 6));
   }, [query, products]);
 
-  // Logout
+  /* ================= LOGOUT ================= */
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -447,7 +455,7 @@ export default function Navbar({ cart = { count: 0 } }) {
     navigate("/", { replace: true });
   };
 
-  // Cart click
+  /* ================= CART ================= */
   const handleCartClick = () => {
     if (!user) {
       alert("Please login first!");
@@ -461,31 +469,36 @@ export default function Navbar({ cart = { count: 0 } }) {
 
   return (
     <>
-      {/* Navbar */}
+      {/* ================= NAVBAR ================= */}
       <nav className="navbar">
         <div className="navbar-left">
           <img
-            src={getImageUrl(navbar.logo?.image)}
+            src={getImageUrl(navbar?.logo?.image)}
             alt="logo"
             className="navbar-logo"
           />
-          <span className="navbar-brand">{navbar.logo?.name}</span>
+          <span className="navbar-brand">
+            {navbar?.logo?.name || "Brand"}
+          </span>
         </div>
 
         <ul className="navbar-menu">
-          {navbar.menu?.map((item, i) => (
+          {navbar?.menu?.map((item, i) => (
             <li key={i}>
               <a href={item.link}>{item.name}</a>
             </li>
           ))}
         </ul>
 
+        {/* ================= SEARCH ================= */}
         <div className="navbar-center">
           <div className="search-wrapper">
             <input
               type="text"
               className="navbar-search"
-              placeholder={navbar.search?.placeholder || "Search products"}
+              placeholder={
+                navbar?.search?.placeholder || "Search products"
+              }
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -498,17 +511,14 @@ export default function Navbar({ cart = { count: 0 } }) {
                       key={p.id}
                       className="search-item"
                       onClick={() => {
-                        if (!user) {
-                          alert("Please login first!");
-                          navigate("/login");
-                          return;
-                        }
                         navigate(`/product/${p.id}`);
                         setQuery("");
                       }}
                     >
                       <img
-                        src={getImageUrl(p.images?.[0] || p.image)}
+                        src={getImageUrl(
+                          p.images?.[0] || p.image
+                        )}
                         alt={p.name}
                       />
                       <div>
@@ -518,28 +528,38 @@ export default function Navbar({ cart = { count: 0 } }) {
                     </div>
                   ))
                 ) : (
-                  <div className="search-empty">No products found</div>
+                  <div className="search-empty">
+                    No products found
+                  </div>
                 )}
               </div>
             )}
           </div>
         </div>
 
+        {/* ================= RIGHT SIDE ================= */}
         <div className="navbar-right">
           <div className="nav-cart" onClick={handleCartClick}>
-            <img src={getImageUrl(navbar.cart?.icon)} alt="cart" />
-            <span className="cart-count">{user ? cart.count : 0}</span>
+            <img
+              src={getImageUrl(navbar?.cart?.icon)}
+              alt="cart"
+            />
+            <span className="cart-count">
+              {user ? cart.count : 0}
+            </span>
           </div>
 
           {user ? (
             <div className="nav-user">
               <img
-                src={getImageUrl(user.image)}
-                alt={user.name}
+                src={getImageUrl(user?.image)}
+                alt={user?.name}
                 className="nav-user-img"
                 onClick={() => setSidebarOpen(true)}
               />
-              <span className="nav-user-name">{user.name}</span>
+              <span className="nav-user-name">
+                {user?.name}
+              </span>
               <span
                 className="hamburger-btn"
                 onClick={() => setSidebarOpen(true)}
@@ -548,20 +568,24 @@ export default function Navbar({ cart = { count: 0 } }) {
               </span>
             </div>
           ) : (
-            <button className="nav-login" onClick={() => navigate("/login")}>
+            <button
+              className="nav-login"
+              onClick={() => navigate("/login")}
+            >
               Login
             </button>
           )}
         </div>
       </nav>
 
-      {/* Sidebar overlay */}
+      {/* ================= SIDEBAR ================= */}
       {sidebarOpen && <div className="sidebar-overlay" />}
 
-      {/* Sidebar */}
       <div
         ref={sidebarRef}
-        className={`profile-sidebar ${sidebarOpen ? "open" : ""}`}
+        className={`profile-sidebar ${
+          sidebarOpen ? "open" : ""
+        }`}
       >
         <div className="sidebar-header">
           <div className="sidebar-user center-content">
@@ -571,22 +595,29 @@ export default function Navbar({ cart = { count: 0 } }) {
               className="sidebar-user-img-large"
             />
             <div className="sidebar-user-info">
-              <h3 className="sidebar-user-name">{user?.name}</h3>
-              <p className="sidebar-user-email">{user?.email}</p>
+              <h3>{user?.name}</h3>
+              <p>{user?.email}</p>
             </div>
           </div>
         </div>
 
         <ul className="sidebar-menu">
-          <li onClick={() => navigate("/profile")}>Edit Profile</li>
+          <li onClick={() => navigate("/profile")}>
+            Edit Profile
+          </li>
           <li onClick={() => navigate("/user-orders")}>
             Orders ({orders.length})
           </li>
-          <li onClick={() => navigate("/settings")}>Settings</li>
+          <li onClick={() => navigate("/settings")}>
+            Settings
+          </li>
         </ul>
 
         <div className="sidebar-footer">
-          <button className="logout-btn" onClick={handleLogout}>
+          <button
+            className="logout-btn"
+            onClick={handleLogout}
+          >
             Logout
           </button>
         </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import BASE_URL from "../config"; // BASE_URL import
 import "./AdminOrders.css";
 
 function AdminOrders() {
@@ -7,7 +8,7 @@ function AdminOrders() {
 
   const loadOrders = () => {
     setLoading(true);
-    fetch("http://127.0.0.1:5000/orders")
+    fetch(`${BASE_URL}/orders`)
       .then((res) => res.json())
       .then((data) => {
         setOrders(data);
@@ -21,7 +22,7 @@ function AdminOrders() {
   const deleteOrder = async (_id) => {
     if (!window.confirm("Are you sure you want to delete this order?")) return;
 
-    const res = await fetch(`http://127.0.0.1:5000/orders/${_id}`, {
+    const res = await fetch(`${BASE_URL}/orders/${_id}`, {
       method: "DELETE",
     });
     const data = await res.json();
@@ -52,7 +53,7 @@ function AdminOrders() {
         </thead>
 
         <tbody>
-          {orders.map((order, index) => {
+          {orders.map((order) => {
             const customer = order.customer || {};
 
             const customerName =

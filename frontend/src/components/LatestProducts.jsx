@@ -233,6 +233,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import BASE_URL from "../config";
+
 import "./LatestProducts.css";
 
 function LatestProducts({ refreshFlag, addToCart }) {
@@ -250,7 +252,9 @@ function LatestProducts({ refreshFlag, addToCart }) {
 
   // Fetch latest products
   const fetchProducts = () => {
-    fetch("http://127.0.0.1:5000/latestProducts")
+    // fetch("http://127.0.0.1:5000/latestProducts")
+            fetch(`${BASE_URL}/latestProducts`)
+
       .then((res) => res.json())
       .then((data) => {
         const filtered = Array.isArray(data) ? data.filter((p) => !p.deleted) : [];

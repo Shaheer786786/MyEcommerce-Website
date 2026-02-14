@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import BASE_URL from "../config";
+import React, { useEffect, useState } from "react";
 import "./AdminFooter.css";
 
 const emptyFooter = {
@@ -11,40 +9,43 @@ const emptyFooter = {
   footerBottom: { copyright: "" }
 };
 
-export default function AdminFooter() {
+function AdminFooter() {
   const [footer, setFooter] = useState(emptyFooter);
   const [loading, setLoading] = useState(false);
   const [newHeadingKey, setNewHeadingKey] = useState("");
   const [toasts, setToasts] = useState([]); 
 
-  const loadFooter = async () => {
+  const loadFooter = () => {
     setLoading(true);
-    try {
-      const res = await axios.get(`${BASE_URL}/footer`);
-      setFooter({ ...emptyFooter, ...res.data });
-    } catch (err) {
-      console.error(err);
-      setFooter(emptyFooter);
-    } finally {
-      setLoading(false);
-    }
+    fetch("http://127.0.0.1:5000/footer")
+      .then(res => res.json())
+      .then(data => setFooter({ ...emptyFooter, ...data }))
+      .catch(err => { console.error(err); setFooter(emptyFooter); })
+      .finally(() => setLoading(false));
   };
 
-  useEffect(() => { loadFooter(); }, []);
+  useEffect(loadFooter, []);
 
   const showToast = (message, type = "success") => {
     const id = Date.now();
     setToasts(prev => [...prev, { id, message, type }]);
-    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3000);
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, 3000); 
   };
 
-  const saveFooter = async () => {
-    try {
-      await axios.put(`${BASE_URL}/admin/footer`, footer);
-      showToast("Footer updated successfully!");
-    } catch (err) {
-      showToast("Error: " + (err.response?.data?.message || err.message), "error");
-    }
+  const saveFooter = () => {
+    fetch("http://127.0.0.1:5000/admin/footer", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(footer)
+    })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to save footer");
+        return res.json();
+      })
+      .then(() => showToast("Footer updated successfully!", "success"))
+      .catch(err => showToast("Error: " + err.message, "error"));
   };
 
   const handleHeading = (key, value) => setFooter(prev => ({
@@ -240,3 +241,5 @@ export default function AdminFooter() {
     </div>
   );
 }
+
+export default AdminFooter;

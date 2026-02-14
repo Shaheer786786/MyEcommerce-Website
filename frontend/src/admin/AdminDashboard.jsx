@@ -267,7 +267,7 @@
 // }
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BASE_URL from "../config"; // Ensure correct path to BASE_URL
+import BASE_URL from "../config"; 
 import "./AdminDashboard.css";
 
 const SummaryCard = ({ title, value, icon, bgColor }) => (

@@ -369,15 +369,19 @@ import "./Navbar.css";
 /* ================= SAFE IMAGE HELPER ================= */
 const getImageUrl = (image) => {
   if (!image) return "https://via.placeholder.com/40";
-
-  if (image.startsWith("data:image") || image.startsWith("http"))
-    return image;
-
+  if (image.startsWith("data:image") || image.startsWith("http")) return image;
   return `${BASE_URL}/images/${image}`;
 };
 
 export default function Navbar({ cart = { count: 0 } }) {
-  const [navbar, setNavbar] = useState(null);
+  const [navbar, setNavbar] = useState({
+    logo: { name: "", image: "" },
+    menu: [],
+    search: { placeholder: "Search products", button: "Search" },
+    account: { greeting: "Hello,", title: "Account" },
+    orders: { line1: "You have", line2: "orders" },
+    cart: { count: 0, icon: "" },
+  });
   const [products, setProducts] = useState([]);
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -388,26 +392,21 @@ export default function Navbar({ cart = { count: 0 } }) {
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
 
-  /* ================= FETCH DATA ================= */
+  /* ================= FETCH NAVBAR & PRODUCTS ================= */
   useEffect(() => {
-    // Navbar
     fetch(`${BASE_URL}/navbar`)
       .then((res) => res.json())
       .then((data) => setNavbar(data))
       .catch((err) => {
         console.error("Navbar fetch error:", err);
-        setNavbar(null);
+        setNavbar({});
       });
 
-    // Products for search (FIXED)
     fetch(`${BASE_URL}/products`)
       .then((res) => res.json())
-      .then((data) =>
-        setProducts(Array.isArray(data) ? data.filter(p => !p.deleted) : [])
-      )
+      .then((data) => setProducts(Array.isArray(data) ? data.filter(p => !p.deleted) : []))
       .catch(() => setProducts([]));
 
-    // User
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
       const parsed = JSON.parse(savedUser);
@@ -419,7 +418,6 @@ export default function Navbar({ cart = { count: 0 } }) {
         .catch(() => setOrders([]));
     }
 
-    // Close sidebar on outside click
     const handleOutsideClick = (e) => {
       if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
         setSidebarOpen(false);
@@ -427,8 +425,7 @@ export default function Navbar({ cart = { count: 0 } }) {
     };
 
     document.addEventListener("mousedown", handleOutsideClick);
-    return () =>
-      document.removeEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
 
   /* ================= SEARCH FILTER ================= */
@@ -483,8 +480,8 @@ export default function Navbar({ cart = { count: 0 } }) {
         </div>
 
         <ul className="navbar-menu">
-          {navbar?.menu?.map((item, i) => (
-            <li key={i}>
+          {navbar?.menu?.map((item) => (
+            <li key={item.id || item.name}>
               <a href={item.link}>{item.name}</a>
             </li>
           ))}
@@ -496,13 +493,10 @@ export default function Navbar({ cart = { count: 0 } }) {
             <input
               type="text"
               className="navbar-search"
-              placeholder={
-                navbar?.search?.placeholder || "Search products"
-              }
+              placeholder={navbar?.search?.placeholder || "Search products"}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-
             {query && (
               <div className="search-dropdown">
                 {searchResults.length > 0 ? (
@@ -515,12 +509,7 @@ export default function Navbar({ cart = { count: 0 } }) {
                         setQuery("");
                       }}
                     >
-                      <img
-                        src={getImageUrl(
-                          p.images?.[0] || p.image
-                        )}
-                        alt={p.name}
-                      />
+                      <img src={getImageUrl(p.images?.[0] || p.image)} alt={p.name} />
                       <div>
                         <p>{p.name}</p>
                         <span>₹{p.price}</span>
@@ -528,9 +517,7 @@ export default function Navbar({ cart = { count: 0 } }) {
                     </div>
                   ))
                 ) : (
-                  <div className="search-empty">
-                    No products found
-                  </div>
+                  <div className="search-empty">No products found</div>
                 )}
               </div>
             )}
@@ -540,13 +527,8 @@ export default function Navbar({ cart = { count: 0 } }) {
         {/* ================= RIGHT SIDE ================= */}
         <div className="navbar-right">
           <div className="nav-cart" onClick={handleCartClick}>
-            <img
-              src={getImageUrl(navbar?.cart?.icon)}
-              alt="cart"
-            />
-            <span className="cart-count">
-              {user ? cart.count : 0}
-            </span>
+            <img src={getImageUrl(navbar?.cart?.icon)} alt="cart" />
+            <span className="cart-count">{user ? cart.count : 0}</span>
           </div>
 
           {user ? (
@@ -557,9 +539,7 @@ export default function Navbar({ cart = { count: 0 } }) {
                 className="nav-user-img"
                 onClick={() => setSidebarOpen(true)}
               />
-              <span className="nav-user-name">
-                {user?.name}
-              </span>
+              <span className="nav-user-name">{user?.name}</span>
               <span
                 className="hamburger-btn"
                 onClick={() => setSidebarOpen(true)}
@@ -568,10 +548,7 @@ export default function Navbar({ cart = { count: 0 } }) {
               </span>
             </div>
           ) : (
-            <button
-              className="nav-login"
-              onClick={() => navigate("/login")}
-            >
+            <button className="nav-login" onClick={() => navigate("/login")}>
               Login
             </button>
           )}
@@ -583,9 +560,7 @@ export default function Navbar({ cart = { count: 0 } }) {
 
       <div
         ref={sidebarRef}
-        className={`profile-sidebar ${
-          sidebarOpen ? "open" : ""
-        }`}
+        className={`profile-sidebar ${sidebarOpen ? "open" : ""}`}
       >
         <div className="sidebar-header">
           <div className="sidebar-user center-content">
@@ -603,21 +578,17 @@ export default function Navbar({ cart = { count: 0 } }) {
 
         <ul className="sidebar-menu">
           <li onClick={() => navigate("/profile")}>
-            Edit Profile
+            {navbar?.account?.title || "Edit Profile"}
           </li>
           <li onClick={() => navigate("/user-orders")}>
-            Orders ({orders.length})
+            {navbar?.orders?.line1 || "You have"} ({orders.length}){" "}
+            {navbar?.orders?.line2 || "orders"}
           </li>
-          <li onClick={() => navigate("/settings")}>
-            Settings
-          </li>
+          <li onClick={() => navigate("/settings")}>Settings</li>
         </ul>
 
         <div className="sidebar-footer">
-          <button
-            className="logout-btn"
-            onClick={handleLogout}
-          >
+          <button className="logout-btn" onClick={handleLogout}>
             Logout
           </button>
         </div>

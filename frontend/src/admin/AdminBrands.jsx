@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import BASE_URL from "../config"; // backend Render URL
 import "./AdminBrands.css";
 
 export default function AdminBrands() {
@@ -14,8 +15,13 @@ export default function AdminBrands() {
   }, []);
 
   const fetchBrands = async () => {
-    const res = await axios.get("http://localhost:5000/admin/brands");
-    setBrands(res.data);
+    try {
+      const res = await axios.get(`${BASE_URL}/admin/brands`);
+      setBrands(res.data);
+    } catch (err) {
+      console.error("Error fetching brands:", err);
+      alert("Failed to fetch brands from server.");
+    }
   };
 
   const resetForm = () => {
@@ -43,19 +49,15 @@ export default function AdminBrands() {
       }
 
       if (editId) {
-        // ✅ EDIT
-        await axios.put(
-          `http://localhost:5000/admin/brands/${editId}`,
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
+        // EDIT
+        await axios.put(`${BASE_URL}/admin/brands/${editId}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       } else {
-        // ✅ ADD
-        await axios.post(
-          "http://localhost:5000/admin/brands",
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
+        // ADD
+        await axios.post(`${BASE_URL}/admin/brands`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       }
 
       resetForm();
@@ -75,8 +77,14 @@ export default function AdminBrands() {
 
   const deleteBrand = async (id) => {
     if (!window.confirm("Delete this brand?")) return;
-    await axios.delete(`http://localhost:5000/admin/brands/${id}`);
-    fetchBrands();
+
+    try {
+      await axios.delete(`${BASE_URL}/admin/brands/${id}`);
+      fetchBrands();
+    } catch (err) {
+      console.error("Brand delete failed", err);
+      alert("Failed to delete brand.");
+    }
   };
 
   return (

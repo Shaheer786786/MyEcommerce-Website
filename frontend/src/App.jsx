@@ -96,7 +96,7 @@
 
 //   // Favicon
 //   useEffect(() => {
-//     fetch("https://mye-commerce-website.onrender.com/site-config")
+//     fetch("http://localhost:5000/site-config")
 //       .then((res) => res.json())
 //       .then((data) => {
 //         if (!data?.favicon) return;
@@ -221,10 +221,9 @@
 // }
 
 // export default App;
-
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
- import BASE_URL from "./config";
+import BASE_URL from "../config";
 
 
 import ScrollToTop from "./components/ScrollToTop";
@@ -330,27 +329,27 @@ function App() {
       return newCart;
     });
   };
-const BASE_URL = "https://my-backend-93up.onrender.com";
-  // Favicon
 
-// Example: Favicon fetch
-useEffect(() => {
-  fetch(`${BASE_URL}/site-config`)
-    .then(res => res.json())
-    .then(data => {
-      if (!data?.favicon) return;
-      let link =
-        document.querySelector("link[rel='icon']") ||
-        document.createElement("link");
-      link.rel = "icon";
-      link.type = "image/png";
-      link.href = data.favicon.startsWith("http")
-        ? data.favicon
-        : `${BASE_URL}/images/${data.favicon}?v=${Date.now()}`;
-      document.head.appendChild(link);
-    })
-    .catch(err => console.error("Favicon load error:", err));
-}, []);
+  // Favicon
+  useEffect(() => {
+    // fetch("http://localhost:5000/site-config")
+                    fetch(`${BASE_URL}/site-config`)
+
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data?.favicon) return;
+        let link =
+          document.querySelector("link[rel='icon']") ||
+          document.createElement("link");
+        link.rel = "icon";
+        link.type = "image/png";
+        link.href = data.favicon.startsWith("http")
+          ? data.favicon
+          : `http://localhost:5000/images/${data.favicon}?v=${Date.now()}`;
+        document.head.appendChild(link);
+      })
+      .catch((err) => console.error("Favicon load error:", err));
+  }, []);
 
   // Admin private route wrapper
   const AdminPrivateRoute = ({ children }) => {

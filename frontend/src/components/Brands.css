@@ -5,7 +5,6 @@
   padding: 24px 16px;
   max-width: 1200px;
   margin: 30px auto;
-  
 }
 
 .brands-title {
@@ -25,6 +24,7 @@
   gap: 25px;
   position: relative;
   top: 40px;
+  justify-content: center; /* center on smaller screens */
 }
 
 /* ===============================
@@ -38,7 +38,6 @@
   cursor: pointer;
   transition: transform 0.25s ease;
   padding-bottom: 50px;
-  
 }
 
 .brand-card:hover {
@@ -53,14 +52,13 @@
   height: 90px;
   overflow: hidden;
   border-radius: 50%;        /* circle look */
-  background: transparent;  /* 🔴 IMPORTANT */
+  background: transparent;   /* 🔴 IMPORTANT */
 }
 
-/* image fix */
 .brand-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;        /* 🔥 MAIN FIX */
+  object-fit: cover;         /* 🔥 MAIN FIX */
   display: block;
 }
 
@@ -76,24 +74,65 @@
   line-height: 1.2;
 }
 
-#brands{
-    scroll-margin-top:250px ;
+#brands {
+  scroll-margin-top: 250px;
 }
 
 /* ===============================
    RESPONSIVE
 ================================ */
+
+/* Tablets & small desktops */
+@media (max-width: 1024px) {
+  .brands-container {
+    gap: 20px;
+  }
+  .brand-card {
+    width: 80px;
+    padding-bottom: 40px;
+  }
+  .brand-image {
+    width: 80px;
+    height: 80px;
+  }
+  .brand-name {
+    font-size: 12px;
+  }
+}
+
+/* Tablets / large mobiles */
+@media (max-width: 768px) {
+  .brands-container {
+    gap: 18px;
+  }
+  .brand-card {
+    width: 75px;
+    padding-bottom: 35px;
+  }
+  .brand-image {
+    width: 75px;
+    height: 75px;
+  }
+  .brand-name {
+    font-size: 11px;
+  }
+}
+
+/* Small mobiles */
 @media (max-width: 480px) {
+  .brands-container {
+    gap: 15px;
+    top: 20px;
+  }
   .brand-card {
     width: 70px;
+    padding-bottom: 30px;
   }
-
   .brand-image {
     width: 70px;
     height: 70px;
   }
-
   .brand-name {
-    font-size: 11px;
+    font-size: 10px;
   }
 }

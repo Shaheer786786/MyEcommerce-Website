@@ -1,12 +1,16 @@
+/* =========================
+   BANNER / BT SECTION
+========================= */
+
 /* MAIN WRAPPER CENTER + OUTER SPACING */
 .bt-wrapper {
   width: 100%;
-  max-width: 1400px;     /* center width */
-  margin: 100px auto;     /* UP/DOWN + AUTO CENTER */
-  padding: 0 20px;       /* left/right inner padding */
+  max-width: 1400px; /* center width */
+  margin: 100px auto; /* top-bottom + auto center */
+  padding: 0 20px; /* left-right inner padding */
   display: grid;
   grid-template-columns: 1.5fr 2fr;
-  gap: 25px;             /* BETTER GAP */
+  gap: 25px; /* spacing between left & right */
 }
 
 /* LARGE LEFT BOX */
@@ -17,7 +21,7 @@
   overflow: hidden;
   padding: 25px;
   height: 450px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);  /* PREMIUM LOOK */
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
 .bt-large-box img {
@@ -36,13 +40,36 @@
   left: 30px;
   color: white;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.bt-text button {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 8px;
+  background-color: #ff6b6b;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100px;
+}
+
+.bt-text button:hover {
+  background-color: #ff4757;
+  transform: translateY(-2px);
 }
 
 /* RIGHT GRID */
 .bt-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;             /* better spacing */
+  gap: 20px;
 }
 
 /* SMALL BOXES */
@@ -53,7 +80,7 @@
   position: relative;
   overflow: hidden;
   height: 210px;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.18); /* PREMIUM */
+  box-shadow: 0 4px 18px rgba(0,0,0,0.18);
 }
 
 .bt-small-box img {
@@ -71,39 +98,147 @@
   top: 60px;
   z-index: 2;
   color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
-/* BUTTON STYLING FOR BANNERS */
-.bt-text button,
+
 .bt-small-text button {
-  display: inline-block;        /* make button respect padding */
-  margin-top: 10px;             /* space below the text */
-  padding: 8px 8px;            /* top-bottom, left-right padding */
-  background-color: #ff6b6b;    /* nice primary color */
-  color: #fff;                  /* white text */
-  border: none;                 /* remove default border */
-  border-radius: 5px;           /* rounded corners */
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 8px;
+  background-color: #ff6b6b;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;    /* smooth hover effect */
-  text-align: center;
+  transition: all 0.3s ease;
   width: 100px;
 }
 
-.bt-text button:hover,
 .bt-small-text button:hover {
-  background-color: #ff4757;    /* slightly darker on hover */
-  transform: translateY(-2px);  /* subtle lift effect */
+  background-color: #ff4757;
+  transform: translateY(-2px);
 }
 
-/* Ensure buttons are below text */
-.bt-text,
-.bt-small-text {
-  display: flex;
-  flex-direction: column;       /* stack text + button vertically */
-  justify-content: flex-start;
-}
 #big-sale {
-    scroll-margin-top:180px;
- 
+  scroll-margin-top:180px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+/* Tablets (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .bt-wrapper {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 80px auto;
+  }
+
+  .bt-large-box {
+    height: 350px;
+  }
+
+  .bt-small-box {
+    height: 180px;
+  }
+
+  .bt-text h2,
+  .bt-small-text h2 {
+    font-size: 22px;
+  }
+
+  .bt-text p,
+  .bt-small-text p {
+    font-size: 13px;
+  }
+
+  .bt-text button,
+  .bt-small-text button {
+    font-size: 13px;
+    width: 90px;
+  }
+}
+
+/* Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+  .bt-wrapper {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin: 60px auto;
+  }
+
+  .bt-large-box,
+  .bt-small-box {
+    height: 220px;
+    padding: 15px;
+  }
+
+  .bt-text {
+    bottom: 15px;
+    left: 15px;
+  }
+
+  .bt-text h2,
+  .bt-small-text h2 {
+    font-size: 18px;
+  }
+
+  .bt-text p,
+  .bt-small-text p {
+    font-size: 12px;
+  }
+
+  .bt-text button,
+  .bt-small-text button {
+    width: 80px;
+    font-size: 12px;
+    padding: 6px 6px;
+  }
+
+  .bt-small-text {
+    top: 40px;
+  }
+}
+
+/* Extra Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+  .bt-wrapper {
+    padding: 0 10px;
+    margin: 50px auto;
+  }
+
+  .bt-large-box,
+  .bt-small-box {
+    height: 180px;
+    padding: 10px;
+  }
+
+  .bt-text,
+  .bt-small-text {
+    bottom: 10px;
+    left: 10px;
+    top: auto;
+  }
+
+  .bt-text h2,
+  .bt-small-text h2 {
+    font-size: 16px;
+  }
+
+  .bt-text p,
+  .bt-small-text p {
+    font-size: 11px;
+  }
+
+  .bt-text button,
+  .bt-small-text button {
+    width: 70px;
+    font-size: 11px;
+    padding: 5px 5px;
+  }
 }

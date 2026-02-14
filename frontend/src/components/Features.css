@@ -1,3 +1,6 @@
+/* ===============================
+   FEATURES SECTION
+================================ */
 .features-wrapper {
   max-width: 100%;
   margin: 30px auto;
@@ -5,34 +8,48 @@
   padding: 50px 40px;
   border-radius: 14px;
   text-align: center;
-  
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
 }
 
 .features-wrapper h2 {
   font-size: 28px;
   font-weight: 600;
   margin-bottom: 40px;
+  color: #222;
 }
 
+/* Features boxes row */
 .features-box {
   display: flex;
   gap: 70px;
   justify-content: center;
+  flex-wrap: wrap;
   margin-bottom: 30px;
 }
 
 .feature-item {
   max-width: 260px;
+  flex: 1 1 200px;
+  padding: 20px;
+  border-radius: 12px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.feature-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
 .feature-icon {
   font-size: 34px;
   margin-bottom: 15px;
+  color: #2563eb;
 }
 
 .feature-item h4 {
   font-size: 18px;
   margin-bottom: 10px;
+  color: #111;
 }
 
 .feature-item p {
@@ -41,6 +58,7 @@
   line-height: 1.6;
 }
 
+/* Button */
 .features-btn {
   padding: 10px 24px;
   background: #2563eb;
@@ -49,4 +67,80 @@
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.features-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+
+/* Tablets & small desktops */
+@media (max-width: 1024px) {
+  .features-box {
+    gap: 50px;
+  }
+  .feature-item {
+    max-width: 220px;
+  }
+}
+
+/* Tablets / large mobiles */
+@media (max-width: 768px) {
+  .features-wrapper {
+    padding: 40px 25px;
+  }
+  .features-wrapper h2 {
+    font-size: 24px;
+  }
+  .features-box {
+    gap: 30px;
+  }
+  .feature-item {
+    max-width: 180px;
+  }
+  .feature-icon {
+    font-size: 28px;
+  }
+  .feature-item h4 {
+    font-size: 16px;
+  }
+  .feature-item p {
+    font-size: 13px;
+  }
+}
+
+/* Small mobiles */
+@media (max-width: 480px) {
+  .features-wrapper {
+    padding: 30px 15px;
+  }
+  .features-wrapper h2 {
+    font-size: 20px;
+  }
+  .features-box {
+    gap: 20px;
+    flex-direction: column;
+    align-items: center;
+  }
+  .feature-item {
+    max-width: 100%;
+  }
+  .feature-icon {
+    font-size: 24px;
+  }
+  .feature-item h4 {
+    font-size: 15px;
+  }
+  .feature-item p {
+    font-size: 12px;
+  }
+  .features-btn {
+    padding: 8px 20px;
+    font-size: 13px;
+  }
 }

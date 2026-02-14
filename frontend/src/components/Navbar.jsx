@@ -378,7 +378,7 @@ export default function Navbar({ cart = { count: 0 } }) {
     logo: { name: "", image: "" },
     menu: [],
     search: { placeholder: "Search products", button: "Search" },
-    account: { greeting: "Hello,", title: "Sign in", subtitle: "Account & Lists" },
+    account: { greeting: "Hello,", title: "Sign In" },
     orders: { line1: "Returns", line2: "& Orders" },
     cart: { count: 0, icon: "" },
   });
@@ -396,17 +396,7 @@ export default function Navbar({ cart = { count: 0 } }) {
   useEffect(() => {
     fetch(`${BASE_URL}/navbar`)
       .then((res) => res.json())
-      .then((data) => {
-        // Merge admin navbar config with defaults
-        setNavbar({
-          logo: data.logo || { name: "", image: "" },
-          menu: data.menu || [],
-          search: data.search || { placeholder: "Search products", button: "Search" },
-          account: data.account || { greeting: "Hello,", title: "Sign in", subtitle: "Account & Lists" },
-          orders: data.orders || { line1: "Returns", line2: "& Orders" },
-          cart: data.cart || { count: 0, icon: "" },
-        });
-      })
+      .then((data) => setNavbar(data))
       .catch((err) => {
         console.error("Navbar fetch error:", err);
         setNavbar({});
@@ -480,15 +470,15 @@ export default function Navbar({ cart = { count: 0 } }) {
       <nav className="navbar">
         <div className="navbar-left">
           <img
-            src={getImageUrl(navbar?.logo?.image)}
+            src={getImageUrl(navbar.logo.image)}
             alt="logo"
             className="navbar-logo"
           />
-          <span className="navbar-brand">{navbar?.logo?.name || "Brand"}</span>
+          <span className="navbar-brand">{navbar.logo.name || "Brand"}</span>
         </div>
 
         <ul className="navbar-menu">
-          {navbar?.menu?.map((item) => (
+          {navbar.menu.map((item) => (
             <li key={item.id || item.name}>
               <a href={item.link}>{item.name}</a>
             </li>
@@ -501,7 +491,7 @@ export default function Navbar({ cart = { count: 0 } }) {
             <input
               type="text"
               className="navbar-search"
-              placeholder={navbar?.search?.placeholder || "Search products"}
+              placeholder={navbar.search.placeholder || "Search products"}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -535,24 +525,34 @@ export default function Navbar({ cart = { count: 0 } }) {
         {/* ================= RIGHT SIDE ================= */}
         <div className="navbar-right">
           <div className="nav-account">
-            <span>{navbar.account.greeting} </span>
-            <span>{user ? user.name : navbar.account.title}</span>
-            <span className="account-subtitle">
-              {navbar.account.subtitle || "Account & Lists"}
-            </span>
+            <span className="nav-greeting">{navbar.account.greeting}</span>
+            <span className="nav-title">{user ? user.name : navbar.account.title}</span>
           </div>
 
-          <div className="nav-orders" onClick={() => navigate("/user-orders")}>
-            <span>{navbar.orders.line1 || "Returns"} </span>
-            <span>{navbar.orders.line2 || "& Orders"}</span>
+          <div className="nav-orders">
+            <span>{navbar.orders.line1}</span>
+            <span>{user ? `(${orders.length})` : ""}</span>
+            <span>{navbar.orders.line2}</span>
           </div>
 
           <div className="nav-cart" onClick={handleCartClick}>
-            <img src={getImageUrl(navbar?.cart?.icon)} alt="cart" />
+            <img src={getImageUrl(navbar.cart.icon)} alt="cart" />
             <span className="cart-count">{user ? cart.count : 0}</span>
           </div>
 
-          {!user && (
+          {user ? (
+            <div className="nav-user">
+              <img
+                src={getImageUrl(user.image)}
+                alt={user.name}
+                className="nav-user-img"
+                onClick={() => setSidebarOpen(true)}
+              />
+              <span className="hamburger-btn" onClick={() => setSidebarOpen(true)}>
+                &#9776;
+              </span>
+            </div>
+          ) : (
             <button className="nav-login" onClick={() => navigate("/login")}>
               Login
             </button>
@@ -565,20 +565,26 @@ export default function Navbar({ cart = { count: 0 } }) {
       <div ref={sidebarRef} className={`profile-sidebar ${sidebarOpen ? "open" : ""}`}>
         <div className="sidebar-header">
           <div className="sidebar-user center-content">
-            <img src={getImageUrl(user?.image)} alt={user?.name} className="sidebar-user-img-large" />
+            <img
+              src={getImageUrl(user?.image)}
+              alt={user?.name}
+              className="sidebar-user-img-large"
+            />
             <div className="sidebar-user-info">
               <h3>{user?.name}</h3>
               <p>{user?.email}</p>
             </div>
           </div>
         </div>
+
         <ul className="sidebar-menu">
-          <li onClick={() => navigate("/profile")}>{navbar.account.subtitle || "Account & Lists"}</li>
+          <li onClick={() => navigate("/profile")}>Edit Profile</li>
           <li onClick={() => navigate("/user-orders")}>
-            {navbar.orders.line1} ({orders.length}) {navbar.orders.line2}
+            Orders ({orders.length})
           </li>
           <li onClick={() => navigate("/settings")}>Settings</li>
         </ul>
+
         <div className="sidebar-footer">
           <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>

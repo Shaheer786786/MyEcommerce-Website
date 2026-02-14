@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import BASE_URL from "../config"; // BASE_URL import
 import "./AdminPromo.css";
 
 function AdminPromo() {
@@ -15,9 +16,14 @@ function AdminPromo() {
   const [message, setMessage] = useState(null);
 
   const fetchPromos = async () => {
-    const res = await fetch("http://127.0.0.1:5000/admin/promo");
-    const data = await res.json();
-    setPromos(Array.isArray(data) ? data : []);
+    try {
+      const res = await fetch(`${BASE_URL}/admin/promo`);
+      const data = await res.json();
+      setPromos(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Failed to fetch promos:", err);
+      setPromos([]);
+    }
   };
 
   useEffect(() => {
@@ -33,22 +39,30 @@ function AdminPromo() {
     e.preventDefault();
 
     const url = editingId
-      ? `http://127.0.0.1:5000/admin/promo/${editingId}`
-      : "http://127.0.0.1:5000/admin/promo";
+      ? `${BASE_URL}/admin/promo/${editingId}`
+      : `${BASE_URL}/admin/promo`;
     const method = editingId ? "PUT" : "POST";
 
-    await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
-    setMessage(editingId ? "Promo updated!" : "Promo added!");
-    setForm({ title: "", subtitle: "", image: "", buttonText: "", buttonLink: "", bgColor: "" });
-    setEditingId(null);
-    fetchPromos();
+      if (!res.ok) throw new Error("Failed");
 
-    setTimeout(() => setMessage(null), 2000);
+      setMessage(editingId ? "Promo updated!" : "Promo added!");
+      setForm({ title: "", subtitle: "", image: "", buttonText: "", buttonLink: "", bgColor: "" });
+      setEditingId(null);
+      fetchPromos();
+
+      setTimeout(() => setMessage(null), 2000);
+    } catch (err) {
+      console.error(err);
+      setMessage("Operation failed!");
+      setTimeout(() => setMessage(null), 2000);
+    }
   };
 
   const handleEdit = (p) => {
@@ -64,28 +78,27 @@ function AdminPromo() {
   };
 
   const handleDelete = async (id) => {
-    await fetch(`http://127.0.0.1:5000/admin/promo/${id}`, { method: "DELETE" });
+    await fetch(`${BASE_URL}/admin/promo/${id}`, { method: "DELETE" });
     setMessage("Promo deleted!");
     fetchPromos();
   };
 
   const handleRecover = async (id) => {
-    await fetch(`http://127.0.0.1:5000/admin/promo/recover/${id}`, { method: "PUT" });
+    await fetch(`${BASE_URL}/admin/promo/recover/${id}`, { method: "PUT" });
     setMessage("Promo recovered!");
     fetchPromos();
   };
 
   const handlePermanentDelete = async (id) => {
     if (!window.confirm("Permanent delete?")) return;
-    await fetch(`http://127.0.0.1:5000/admin/promo/permanent/${id}`, { method: "DELETE" });
+    await fetch(`${BASE_URL}/admin/promo/permanent/${id}`, { method: "DELETE" });
     setMessage("Promo permanently deleted!");
     fetchPromos();
   };
 
   const getPromoImageUrl = (img) => {
     if (!img) return "";
-    if (img.startsWith("http")) return img; 
-    return `http://127.0.0.1:5000/images/${img}`; 
+    return img.startsWith("http") ? img : `${BASE_URL}/images/${img}`;
   };
 
   return (
@@ -103,7 +116,6 @@ function AdminPromo() {
           onChange={handleChange}
           required
         />
-
         <input
           className="admin-promo-input"
           name="subtitle"
@@ -112,7 +124,6 @@ function AdminPromo() {
           onChange={handleChange}
           required
         />
-
         <input
           className="admin-promo-input"
           name="image"
@@ -121,7 +132,6 @@ function AdminPromo() {
           onChange={handleChange}
           required
         />
-
         <input
           className="admin-promo-input"
           name="buttonText"
@@ -129,7 +139,6 @@ function AdminPromo() {
           value={form.buttonText}
           onChange={handleChange}
         />
-
         <input
           className="admin-promo-input"
           name="buttonLink"
@@ -137,7 +146,6 @@ function AdminPromo() {
           value={form.buttonLink}
           onChange={handleChange}
         />
-
         <input
           className="admin-promo-input"
           name="bgColor"
@@ -145,7 +153,6 @@ function AdminPromo() {
           value={form.bgColor}
           onChange={handleChange}
         />
-
         <button className="admin-promo-submit-btn" type="submit">
           {editingId ? "Update Promo" : "Add Promo"}
         </button>
@@ -156,7 +163,7 @@ function AdminPromo() {
           <tr>
             <th className="admin-promo-th">Image</th>
             <th className="admin-promo-th">Title</th>
-            <th classclassName="admin-promo-th Subtitle">Subtitle</th>
+            <th className="admin-promo-th">Subtitle</th>
             <th className="admin-promo-th">Actions</th>
           </tr>
         </thead>
@@ -166,11 +173,7 @@ function AdminPromo() {
               <tr className="admin-promo-tr" key={p.id}>
                 <td className="admin-promo-td">
                   {getPromoImageUrl(p.image) ? (
-                    <img
-                      src={getPromoImageUrl(p.image)}
-                      alt={p.title}
-                      className="admin-promo-thumb"
-                    />
+                    <img src={getPromoImageUrl(p.image)} alt={p.title} className="admin-promo-thumb" />
                   ) : (
                     <span>No Image</span>
                   )}
@@ -180,33 +183,13 @@ function AdminPromo() {
                 <td className="admin-promo-td">
                   {!p.deleted ? (
                     <>
-                      <button
-                        className="admin-promo-edit-btn"
-                        onClick={() => handleEdit(p)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="admin-promo-delete-btn"
-                        onClick={() => handleDelete(p.id)}
-                      >
-                        Delete
-                      </button>
+                      <button className="admin-promo-edit-btn" onClick={() => handleEdit(p)}>Edit</button>
+                      <button className="admin-promo-delete-btn" onClick={() => handleDelete(p.id)}>Delete</button>
                     </>
                   ) : (
                     <>
-                      <button
-                        className="admin-promo-recover-btn"
-                        onClick={() => handleRecover(p.id)}
-                      >
-                        Recover
-                      </button>
-                      <button
-                        className="admin-promo-perm-btn"
-                        onClick={() => handlePermanentDelete(p.id)}
-                      >
-                        Permanent
-                      </button>
+                      <button className="admin-promo-recover-btn" onClick={() => handleRecover(p.id)}>Recover</button>
+                      <button className="admin-promo-perm-btn" onClick={() => handlePermanentDelete(p.id)}>Permanent</button>
                     </>
                   )}
                 </td>
@@ -214,9 +197,7 @@ function AdminPromo() {
             ))
           ) : (
             <tr>
-              <td colSpan="4" className="admin-promo-no-data">
-                No promos available.
-              </td>
+              <td colSpan="4" className="admin-promo-no-data">No promos available.</td>
             </tr>
           )}
         </tbody>

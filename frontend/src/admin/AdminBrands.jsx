@@ -128,10 +128,8 @@ export default function AdminBrands() {
             <span>{b.name}</span>
 
             <div className="brand-actions">
-              <button onClick={() => editBrand(b)}>Edit</button>
-              <button className="delete-btn" onClick={() => deleteBrand(b.id)}>
-                Delete
-              </button>
+<button onClick={() => editBrand(b)}>Edit</button>
+<button className="delete-btn" onClick={() => deleteBrand(b.id)}>Delete</button>
             </div>
           </li>
         )) : <li>No brands available</li>}

@@ -32,7 +32,9 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./Auth.css"; // Optional CSS for styling
+import BASE_URL from "../config";
+
+import "./Auth.css"; 
 
 export default function Signup() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -50,7 +52,10 @@ export default function Signup() {
 
     setLoading(true);
     try {
-      await axios.post("http://127.0.0.1:5000/auth/signup", form);
+      await axios.
+      // post("http://127.0.0.1:5000/auth/signup", form);
+                      fetch(`${BASE_URL}/auth/signup`,form);
+
       alert("Signup successful!");
       navigate("/login");
     } catch (err) {

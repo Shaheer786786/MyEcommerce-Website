@@ -51,7 +51,9 @@
 
 
 import { useEffect, useState } from "react";
-import "./UserOrders.css"; // optional CSS file for styling
+import BASE_URL from "../config";
+
+import "./UserOrders.css"; 
 
 export default function UserOrders() {
   const [orders, setOrders] = useState([]);
@@ -64,7 +66,9 @@ export default function UserOrders() {
       return;
     }
 
-    fetch(`http://127.0.0.1:5000/user-orders/${user.id}`)
+    // fetch(`http://127.0.0.1:5000/user-orders/${user.id}`)
+            fetch(`${BASE_URL}/user-orders/${user.id}`)
+
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched orders:", data);

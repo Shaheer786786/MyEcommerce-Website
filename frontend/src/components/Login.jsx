@@ -50,6 +50,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import BASE_URL from "../config";
+
 import "./Auth.css";
 
 export default function Login() {
@@ -59,7 +61,11 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://127.0.0.1:5000/auth/login", form);
+      const res = await axios.
+      // post("http://127.0.0.1:5000/auth/login", form);
+                  post(`${BASE_URL}/auth/login`,form);
+
+
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
       navigate("/profile");

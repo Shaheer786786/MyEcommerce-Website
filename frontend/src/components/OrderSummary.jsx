@@ -154,6 +154,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import StepsTracker from "./StepsTracker";
+import BASE_URL from "../config";
+
 import "./OrderSummary.css";
 
 function OrderSummary() {
@@ -207,7 +209,11 @@ function OrderSummary() {
     };
 
     try {
-      const res = await fetch("http://127.0.0.1:5000/orders", {
+      const res = await 
+      // fetch("http://127.0.0.1:5000/orders",
+        fetch(`${BASE_URL}/orders`,
+
+         {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import BASE_URL from "../config"; // BASE_URL import for easy switching
 import "./AdminFooter.css";
 
 const emptyFooter = {
@@ -13,15 +14,22 @@ function AdminFooter() {
   const [footer, setFooter] = useState(emptyFooter);
   const [loading, setLoading] = useState(false);
   const [newHeadingKey, setNewHeadingKey] = useState("");
-  const [toasts, setToasts] = useState([]); 
+  const [toasts, setToasts] = useState([]);
 
-  const loadFooter = () => {
+  const loadFooter = async () => {
     setLoading(true);
-    fetch("http://127.0.0.1:5000/footer")
-      .then(res => res.json())
-      .then(data => setFooter({ ...emptyFooter, ...data }))
-      .catch(err => { console.error(err); setFooter(emptyFooter); })
-      .finally(() => setLoading(false));
+    try {
+      const res = await fetch(`${BASE_URL}/footer`);
+      if (!res.ok) throw new Error("Failed to load footer");
+      const data = await res.json();
+      setFooter({ ...emptyFooter, ...data });
+    } catch (err) {
+      console.error(err);
+      setFooter(emptyFooter);
+      showToast("Error loading footer: " + err.message, "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(loadFooter, []);
@@ -29,29 +37,27 @@ function AdminFooter() {
   const showToast = (message, type = "success") => {
     const id = Date.now();
     setToasts(prev => [...prev, { id, message, type }]);
-    setTimeout(() => {
-      setToasts(prev => prev.filter(t => t.id !== id));
-    }, 3000); 
+    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3000);
   };
 
-  const saveFooter = () => {
-    fetch("http://127.0.0.1:5000/admin/footer", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(footer)
-    })
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to save footer");
-        return res.json();
-      })
-      .then(() => showToast("Footer updated successfully!", "success"))
-      .catch(err => showToast("Error: " + err.message, "error"));
+  const saveFooter = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/admin/footer`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(footer)
+      });
+      if (!res.ok) throw new Error("Failed to save footer");
+      await res.json();
+      showToast("Footer updated successfully!", "success");
+    } catch (err) {
+      console.error(err);
+      showToast("Error: " + err.message, "error");
+    }
   };
 
-  const handleHeading = (key, value) => setFooter(prev => ({
-    ...prev,
-    headings: { ...prev.headings, [key]: value }
-  }));
+  const handleHeading = (key, value) =>
+    setFooter(prev => ({ ...prev, headings: { ...prev.headings, [key]: value } }));
 
   const addHeading = () => {
     const key = newHeadingKey.trim().toLowerCase().replace(/\s+/g, "-");
@@ -98,10 +104,8 @@ function AdminFooter() {
     showToast(`Item removed from "${col}"`);
   };
 
-  const handleSocial = (platform, key, value) => setFooter(prev => ({
-    ...prev,
-    social: { ...prev.social, [platform]: { ...prev.social[platform], [key]: value } }
-  }));
+  const handleSocial = (platform, key, value) =>
+    setFooter(prev => ({ ...prev, social: { ...prev.social, [platform]: { ...prev.social[platform], [key]: value } } }));
 
   const addSocial = platform => {
     const key = platform.trim().toLowerCase().replace(/\s+/g, "-");
@@ -122,13 +126,11 @@ function AdminFooter() {
     });
   };
 
-  const handleNewsletter = (key, value) => setFooter(prev => ({
-    ...prev, newsletter: { ...prev.newsletter, [key]: value }
-  }));
+  const handleNewsletter = (key, value) =>
+    setFooter(prev => ({ ...prev, newsletter: { ...prev.newsletter, [key]: value } }));
 
-  const handleFooterBottom = value => setFooter(prev => ({
-    ...prev, footerBottom: { ...prev.footerBottom, copyright: value }
-  }));
+  const handleFooterBottom = value =>
+    setFooter(prev => ({ ...prev, footerBottom: { ...prev.footerBottom, copyright: value } }));
 
   return (
     <div className="admin-footer-page">
@@ -136,46 +138,30 @@ function AdminFooter() {
       {loading && <small>Loading footer...</small>}
 
       <div className="admin-card">
-
+        {/* Headings */}
         <h3>Headings</h3>
         <div className="add-heading">
-          <input
-            placeholder="New heading name"
-            value={newHeadingKey}
-            onChange={e => setNewHeadingKey(e.target.value)}
-          />
+          <input placeholder="New heading name" value={newHeadingKey} onChange={e => setNewHeadingKey(e.target.value)} />
           <button className="add-btn" onClick={addHeading}>+ Add Heading</button>
         </div>
-
         {Object.keys(footer.headings).map(h => (
           <div key={h} className="heading-item">
-            <input
-              placeholder="Heading text"
-              value={footer.headings[h]}
-              onChange={e => handleHeading(h, e.target.value)}
-            />
+            <input placeholder="Heading text" value={footer.headings[h]} onChange={e => handleHeading(h, e.target.value)} />
             <button className="delete-btn" onClick={() => deleteHeading(h)}>Delete</button>
           </div>
         ))}
 
+        {/* Columns */}
         <h3>Columns</h3>
         {Object.keys(footer.columns)
           .filter(col => footer.headings.hasOwnProperty(col))
           .map(col => (
             <div key={col} className="column-section">
-              <h4>{footer.headings[col] || col}</h4>
+              <h4>{footer.headings[col]}</h4>
               {footer.columns[col].map((item, idx) => (
                 <div key={idx} className="column-item">
-                  <input
-                    placeholder="Text"
-                    value={item.text}
-                    onChange={e => handleColumn(col, idx, "text", e.target.value)}
-                  />
-                  <input
-                    placeholder="URL"
-                    value={item.url}
-                    onChange={e => handleColumn(col, idx, "url", e.target.value)}
-                  />
+                  <input placeholder="Text" value={item.text} onChange={e => handleColumn(col, idx, "text", e.target.value)} />
+                  <input placeholder="URL" value={item.url} onChange={e => handleColumn(col, idx, "url", e.target.value)} />
                   <button className="delete-btn" onClick={() => removeColumnItem(col, idx)}>Remove</button>
                 </div>
               ))}
@@ -183,53 +169,33 @@ function AdminFooter() {
             </div>
           ))}
 
+        {/* Social */}
         <h3>Social Links</h3>
         <div className="add-heading">
-          <input
-            placeholder="New platform name"
-            value={newHeadingKey}
-            onChange={e => setNewHeadingKey(e.target.value)}
-          />
+          <input placeholder="New platform name" value={newHeadingKey} onChange={e => setNewHeadingKey(e.target.value)} />
           <button className="add-btn" onClick={() => addSocial(newHeadingKey)}>+ Add Social</button>
         </div>
         {Object.keys(footer.social).map(s => (
           <div key={s} className="column-item">
-            <input
-              placeholder="Name"
-              value={footer.social[s].name}
-              onChange={e => handleSocial(s, "name", e.target.value)}
-            />
-            <input
-              placeholder="URL"
-              value={footer.social[s].url}
-              onChange={e => handleSocial(s, "url", e.target.value)}
-            />
+            <input placeholder="Name" value={footer.social[s].name} onChange={e => handleSocial(s, "name", e.target.value)} />
+            <input placeholder="URL" value={footer.social[s].url} onChange={e => handleSocial(s, "url", e.target.value)} />
             <button className="delete-btn" onClick={() => removeSocial(s)}>Remove</button>
           </div>
         ))}
 
+        {/* Newsletter */}
         <h3>Newsletter</h3>
-        <textarea
-          placeholder="Text"
-          value={footer.newsletter.text}
-          onChange={e => handleNewsletter("text", e.target.value)}
-        />
-        <input
-          placeholder="Button"
-          value={footer.newsletter.button}
-          onChange={e => handleNewsletter("button", e.target.value)}
-        />
+        <textarea placeholder="Text" value={footer.newsletter.text} onChange={e => handleNewsletter("text", e.target.value)} />
+        <input placeholder="Button" value={footer.newsletter.button} onChange={e => handleNewsletter("button", e.target.value)} />
 
+        {/* Footer Bottom */}
         <h3>Footer Bottom</h3>
-        <input
-          placeholder="Copyright"
-          value={footer.footerBottom.copyright}
-          onChange={e => handleFooterBottom(e.target.value)}
-        />
+        <input placeholder="Copyright" value={footer.footerBottom.copyright} onChange={e => handleFooterBottom(e.target.value)} />
 
         <button className="save-btn" onClick={saveFooter}>Save Footer</button>
       </div>
 
+      {/* Toasts */}
       <div className="toast-container">
         {toasts.map(t => (
           <div key={t.id} className={`toast ${t.type}`}>
@@ -237,7 +203,6 @@ function AdminFooter() {
           </div>
         ))}
       </div>
-
     </div>
   );
 }

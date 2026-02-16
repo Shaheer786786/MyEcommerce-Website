@@ -437,3 +437,111 @@
   background-color: #4caf50;
   color: #fff;
 }
+/* ================== TABLET RESPONSIVE (≤1024px) ================== */
+@media (max-width: 1024px) {
+  .ap-product-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ap-product-form {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ap-product-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .ap-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .ap-topbar input {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* ================== MOBILE RESPONSIVE (≤768px) ================== */
+@media (max-width: 768px) {
+  .ap-page {
+    padding: 0 10px;
+  }
+
+  .ap-product-form input,
+  .ap-product-form select,
+  .ap-product-form button {
+    flex: 1 1 100%;
+  }
+
+  .ap-product-actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .ap-product-info {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .ap-image-wrapper {
+    width: 100px;
+    height: 100px;
+  }
+
+  .ap-topbar {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* ================== SMALL MOBILE (≤480px) ================== */
+@media (max-width: 480px) {
+  .ap-topbar h2 {
+    font-size: 18px;
+  }
+
+  .ap-topbar input {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+
+  .ap-product-actions button {
+    font-size: 0.8rem;
+    padding: 5px 8px;
+  }
+
+  .ap-details h4 {
+    font-size: 16px;
+  }
+
+  .ap-details p,
+  .ap-details ul li {
+    font-size: 13px;
+  }
+
+  .ap-image-wrapper {
+    width: 80px;
+    height: 80px;
+  }
+
+  .ap-product-form {
+    padding: 15px;
+  }
+
+  .ap-product-list,
+  .ap-list {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .ap-actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+}

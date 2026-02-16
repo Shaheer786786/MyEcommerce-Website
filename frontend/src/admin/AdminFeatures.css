@@ -47,3 +47,85 @@
 .admin-table img {
   width: 40px;
 }
+/* =================== TABLET (≤1024px) =================== */
+@media (max-width: 1024px) {
+  .admin-form input {
+    font-size: 14px;
+    padding: 7px;
+  }
+
+  .admin-form button {
+    font-size: 14px;
+    padding: 7px 12px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 6px 8px;
+    font-size: 13px;
+  }
+
+  .admin-table img {
+    width: 35px;
+  }
+}
+
+
+/* =================== MOBILE (≤768px) =================== */
+@media (max-width: 768px) {
+  .admin-form input {
+    font-size: 13px;
+    padding: 6px;
+  }
+
+  .admin-form button {
+    width: 100%;
+    font-size: 13px;
+    padding: 7px 0;
+  }
+
+  .admin-table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    font-size: 12px;
+    padding: 5px 6px;
+  }
+
+  .admin-table img {
+    width: 30px;
+  }
+}
+
+
+/* =================== SMALL MOBILE (≤480px) =================== */
+@media (max-width: 480px) {
+  .af-message {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .admin-form input {
+    font-size: 12px;
+    padding: 5px;
+  }
+
+  .admin-form button {
+    font-size: 12px;
+    padding: 6px 0;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    font-size: 11px;
+    padding: 4px 5px;
+  }
+
+  .admin-table img {
+    width: 25px;
+  }
+}

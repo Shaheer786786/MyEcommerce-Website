@@ -105,19 +105,127 @@ button.delete-btn:hover {
   background-color: #f44336; /* Red */
 }
 
-/* Animations */
-@keyframes slideIn {
-  0% {
-    transform: translateX(100%);
-    opacity: 0;
+/* =================== TABLET (≤1024px) =================== */
+@media (max-width: 1024px) {
+  .heading-item,
+  .column-item,
+  .add-heading {
+    gap: 8px;
   }
-  100% {
-    transform: translateX(0);
-    opacity: 1;
+
+  input[type="text"],
+  input[type="url"],
+  textarea {
+    font-size: 14px;
+    padding: 7px 10px;
+  }
+
+  button.add-btn,
+  button.delete-btn {
+    padding: 7px 14px;
+    font-size: 13px;
+  }
+
+  .save-btn {
+    font-size: 16px;
+    padding: 12px 0;
+  }
+
+  .toast-message {
+    font-size: 13px;
+  }
+
+  .toast-close {
+    font-size: 16px;
   }
 }
 
-@keyframes fadeOut {
-  0% { opacity: 1; }
-  100% { opacity: 0; }
+/* =================== MOBILE (≤768px) =================== */
+@media (max-width: 768px) {
+  .heading-item,
+  .column-item,
+  .add-heading {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  input[type="text"],
+  input[type="url"],
+  textarea {
+    width: 100%;
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+
+  button.add-btn,
+  button.delete-btn {
+    width: 100%;
+    padding: 8px 0;
+    font-size: 13px;
+  }
+
+  .save-btn {
+    width: 100%;
+    font-size: 15px;
+    padding: 10px 0;
+  }
+
+  .toast {
+    width: 90%;
+    min-width: unset;
+    right: 5%;
+    top: 15px;
+    padding: 12px 15px;
+  }
+
+  .toast-message {
+    font-size: 12px;
+    margin-right: 8px;
+  }
+
+  .toast-close {
+    font-size: 16px;
+  }
+}
+
+/* =================== SMALL MOBILE (≤480px) =================== */
+@media (max-width: 480px) {
+  .heading-item,
+  .column-item,
+  .add-heading {
+    gap: 4px;
+  }
+
+  input[type="text"],
+  input[type="url"],
+  textarea {
+    font-size: 12px;
+    padding: 5px 8px;
+  }
+
+  button.add-btn,
+  button.delete-btn {
+    font-size: 12px;
+    padding: 6px 0;
+  }
+
+  .save-btn {
+    font-size: 14px;
+    padding: 8px 0;
+  }
+
+  .toast {
+    width: 95%;
+    right: 2.5%;
+    padding: 10px 12px;
+  }
+
+  .toast-message {
+    font-size: 11px;
+  }
+
+  .toast-close {
+    font-size: 15px;
+  }
 }

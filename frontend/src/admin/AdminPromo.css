@@ -114,3 +114,100 @@
 .admin-promo-perm-btn:hover {
   background: #5a6268;
 }
+/* ================== TABLET RESPONSIVE (≤1024px) ================== */
+@media (max-width: 1024px) {
+  .admin-promo-form {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .admin-promo-input,
+  .admin-promo-submit-btn {
+    width: 100%;
+  }
+
+  .admin-promo-table {
+    font-size: 14px;
+  }
+
+  .admin-promo-thumb {
+    width: 50px;
+  }
+}
+
+/* ================== MOBILE RESPONSIVE (≤768px) ================== */
+@media (max-width: 768px) {
+  .admin-promo-container {
+    padding: 15px;
+  }
+
+  .admin-promo-heading {
+    font-size: 20px;
+  }
+
+  .admin-promo-form {
+    gap: 8px;
+  }
+
+  .admin-promo-input {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .admin-promo-submit-btn {
+    padding: 10px 0;
+    font-size: 14px;
+  }
+
+  .admin-promo-table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  .admin-promo-th,
+  .admin-promo-td {
+    padding: 6px 8px;
+  }
+
+  .admin-promo-thumb {
+    width: 40px;
+  }
+}
+
+/* ================== SMALL MOBILE (≤480px) ================== */
+@media (max-width: 480px) {
+  .admin-promo-container {
+    padding: 10px;
+  }
+
+  .admin-promo-heading {
+    font-size: 18px;
+  }
+
+  .admin-promo-form input,
+  .admin-promo-input,
+  .admin-promo-submit-btn {
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+
+  .admin-promo-table th,
+  .admin-promo-table td {
+    font-size: 12px;
+    padding: 4px 6px;
+  }
+
+  .admin-promo-thumb {
+    width: 30px;
+  }
+
+  .admin-promo-edit-btn,
+  .admin-promo-delete-btn,
+  .admin-promo-recover-btn,
+  .admin-promo-perm-btn {
+    padding: 4px 6px;
+    font-size: 12px;
+    margin: 2px 2px;
+  }
+}

@@ -42,19 +42,18 @@
 
   // export default AdminSidebar;
 
-
-  import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import BASE_URL from "../config"; // ensure config me backend URL hai
+import BASE_URL from "../config";
 import "./admin.css";
 
 function AdminSidebar() {
   const [sidebar, setSidebar] = useState({ title: "Admin Panel", menus: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isOpen, setIsOpen] = useState(false); // ⭐ mobile toggle
 
   useEffect(() => {
-    // use BASE_URL for both localhost and deployed server
     fetch(`${BASE_URL}/admin/sidebar`)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
@@ -76,25 +75,39 @@ function AdminSidebar() {
   if (error) return <aside className="admin-sidebar">{error}</aside>;
 
   return (
-    <aside className="admin-sidebar">
-      <div className="sidebar-header">
-        <h2>{sidebar.title || "Admin Panel"}</h2>
+    <>
+      {/* ⭐ Mobile Top Bar */}
+      <div className="admin-mobile-bar">
+        <button
+          className="admin-hamburger"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          ☰
+        </button>
+        <span className="mobile-title">{sidebar.title}</span>
       </div>
 
-      <nav className="sidebar-nav">
-        {sidebar.menus.map((menu, i) => (
-          <NavLink
-            key={i}
-            to={menu.path}
-            className={({ isActive }) =>
-              isActive ? "admin-link active" : "admin-link"
-            }
-          >
-            {menu.name}
-          </NavLink>
-        ))}
-      </nav>
-    </aside>
+      <aside className={`admin-sidebar ${isOpen ? "show" : ""}`}>
+        <div className="sidebar-header">
+          <h2>{sidebar.title || "Admin Panel"}</h2>
+        </div>
+
+        <nav className="sidebar-nav">
+          {sidebar.menus.map((menu, i) => (
+            <NavLink
+              key={i}
+              to={menu.path}
+              className={({ isActive }) =>
+                isActive ? "admin-link active" : "admin-link"
+              }
+              onClick={() => setIsOpen(false)} // mobile pe click kare to close
+            >
+              {menu.name}
+            </NavLink>
+          ))}
+        </nav>
+      </aside>
+    </>
   );
 }
 

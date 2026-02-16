@@ -225,3 +225,122 @@ button:hover {
   border-radius: 4px;
   font-size: 12px;
 }
+/* =================== TABLET (≤1024px) =================== */
+@media (max-width: 1024px) {
+  .admin-form {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 15px;
+  }
+
+  .product-thumb {
+    width: 60px;
+    height: 60px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  button {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  .ap-product-preview h3 {
+    font-size: 18px;
+  }
+
+  .inline-offer,
+  .inline-tag {
+    font-size: 11px;
+    padding: 2px 5px;
+  }
+}
+
+/* =================== MOBILE (≤768px) =================== */
+@media (max-width: 768px) {
+  .admin-form {
+    grid-template-columns: 1fr;
+    gap: 10px 0;
+    padding: 15px;
+  }
+
+  .admin-table thead {
+    display: none;
+  }
+
+  .admin-table tbody tr {
+    display: block;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .admin-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 8px;
+    white-space: normal;
+    border-right: none;
+  }
+
+  .admin-table tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    flex-basis: 40%;
+    color: #555;
+  }
+
+  .product-thumb {
+    width: 50px;
+    height: 50px;
+  }
+
+  button {
+    font-size: 12px;
+    padding: 5px 8px;
+  }
+
+  .ap-product-preview h3 {
+    font-size: 16px;
+  }
+
+  .inline-offer,
+  .inline-tag {
+    font-size: 10px;
+    padding: 1px 4px;
+  }
+}
+
+/* =================== SMALL MOBILE (≤480px) =================== */
+@media (max-width: 480px) {
+  .admin-form {
+    padding: 10px;
+    gap: 8px 0;
+  }
+
+  .product-thumb {
+    width: 40px;
+    height: 40px;
+  }
+
+  button {
+    font-size: 11px;
+    padding: 4px 6px;
+  }
+
+  .ap-product-preview {
+    margin: 20px 10px;
+  }
+
+  .ap-product-preview h3 {
+    font-size: 15px;
+  }
+
+  .inline-offer,
+  .inline-tag {
+    font-size: 9px;
+    padding: 1px 3px;
+  }
+}

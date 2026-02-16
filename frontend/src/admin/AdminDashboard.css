@@ -407,4 +407,169 @@ h2 {
 
   background-color: rgb(133, 61, 61);
 
+}/* ================= EXTRA RESPONSIVE IMPROVEMENTS ================= */
+
+/* Large Tablets */
+@media (max-width: 1024px) {
+
+  .dashboard-container {
+    padding: 20px;
+  }
+
+  .summary-cards {
+    justify-content: center;
+  }
+
+  .logout-btn1 {
+    margin-left: 0;
+    position: static;
+    margin-top: 10px;
+  }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+
+  .dashboard-container {
+    padding: 15px;
+  }
+
+  .profile-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .profile-image {
+    margin-right: 0;
+  }
+
+  .summary-cards {
+    flex-direction: column;
+  }
+
+  .summary-card {
+    width: 100%;
+  }
+
+  /* Table scroll fix */
+  .orders-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .orders-table {
+    min-width: 700px;
+  }
+
+  .products-list {
+    gap: 6px;
+  }
+
+  .product-row {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .product-thumb {
+    width: 45px;
+    height: 45px;
+  }
+
+  .tp-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+
+  .logout-btn1 {
+    width: 100%;
+    margin-top: 15px;
+  }
+}
+
+/* Mobile Phones */
+@media (max-width: 480px) {
+
+  body {
+    font-size: 14px;
+  }
+
+  .dashboard-container {
+    padding: 12px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  .profile-card {
+    padding: 15px;
+  }
+
+  .profile-image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .profile-info h2 {
+    font-size: 18px;
+  }
+
+  .summary-card {
+    padding: 15px;
+  }
+
+  .summary-icon {
+    font-size: 26px;
+  }
+
+  .summary-info p {
+    font-size: 16px;
+  }
+
+  /* Table mobile readability */
+  .orders-table {
+    min-width: 600px;
+  }
+
+  .orders-table th,
+  .orders-table td {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .products-section ul {
+    max-height: 200px;
+  }
+
+  .products-section li {
+    font-size: 12px;
+  }
+
+  .tp-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tp-thumb {
+    width: 80px;
+    height: 80px;
+  }
+
+  .tp-name {
+    font-size: 13px;
+  }
+
+  .user-activity-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .logout-btn1 {
+    width: 100%;
+    margin: 20px 0 0 0;
+    position: static;
+  }
 }

@@ -147,18 +147,123 @@
   background-color: #e03b3b;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .abt-list li {
-    flex-direction: column;
-    align-items: flex-start;
+/* ================= TABLET (≤1024px) ================= */
+@media (max-width: 1024px) {
+
+  .abt-container {
+    max-width: 95%;
+    margin: 25px auto;
+    padding: 18px;
+  }
+
+  .abt-container h2 {
+    font-size: 1.6rem;
+  }
+
+  .abt-container input {
+    font-size: 0.95rem;
+    padding: 9px 10px;
+  }
+
+  .abt-container button {
+    font-size: 0.95rem;
+    padding: 9px 16px;
   }
 
   .abt-list li img {
-    margin-bottom: 8px;
+    width: 70px;
+    height: 55px;
+  }
+}
+
+
+/* ================= MOBILE (≤768px) ================= */
+@media (max-width: 768px) {
+
+  .abt-container {
+    width: 95%;
+    padding: 16px;
+  }
+
+  .abt-container h2 {
+    font-size: 1.4rem;
+  }
+
+  /* Stack list properly */
+  .abt-list li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .abt-list li img {
+    width: 100%;
+    height: auto;
+    max-height: 180px;
+    margin-right: 0;
+  }
+
+  .abt-list li div {
+    width: 100%;
   }
 
   .abt-list li button {
-    margin: 5px 5px 0 0;
+    margin: 6px 6px 0 0;
   }
+}
+
+
+/* ================= SMALL MOBILE (≤480px) ================= */
+@media (max-width: 480px) {
+
+  .abt-container {
+    padding: 14px;
+    border-radius: 10px;
+  }
+
+  .abt-container h2 {
+    font-size: 1.2rem;
+  }
+
+  .abt-container input {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  .abt-container button {
+    width: 100%;
+    margin: 6px 0;
+    font-size: 0.9rem;
+  }
+
+  /* Buttons full width in list */
+  .abt-list li button {
+    width: 100%;
+  }
+
+  .abt-list li div strong {
+    font-size: 1rem;
+  }
+
+  .abt-list li div p {
+    font-size: 0.85rem;
+  }
+}
+
+
+/* ================= EXTRA SMALL DEVICES (≤360px) ================= */
+@media (max-width: 360px) {
+
+  .abt-container {
+    padding: 10px;
+  }
+
+  .abt-container h2 {
+    font-size: 1.1rem;
+  }
+
+  .abt-list li img {
+    max-height: 140px;
+  }
+
 }

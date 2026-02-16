@@ -89,17 +89,31 @@ button:hover {
   background-color: #b91c1c;
 }
 
+/* ====================== MOBILE RESPONSIVE (≤600px) ====================== */
 @media (max-width: 600px) {
+  /* Card inputs full width */
   .anav-card input {
     width: 100%;
+    margin: 5px 0 10px 0;
   }
 
+  /* Rows stacked vertically */
   .anav-row {
     flex-direction: column;
     align-items: flex-start;
+    gap: 5px;
   }
 
+  /* Delete button spacing */
   .anav-delete {
     margin-top: 5px;
+    width: auto;
+  }
+
+  /* Save button full width */
+  .anav-save {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
   }
 }

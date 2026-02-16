@@ -70,3 +70,91 @@
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+/* =================== TABLET (≤1024px) =================== */
+@media (max-width: 1024px) {
+  .admin-favicon-container {
+    padding: 18px;
+    max-width: 400px;
+  }
+
+  .admin-favicon-container h3 {
+    font-size: 1.2rem;
+  }
+
+  .admin-favicon-container input[type="file"],
+  .admin-favicon-container input[type="text"] {
+    font-size: 0.9rem;
+    padding: 9px;
+  }
+
+  .admin-favicon-container button {
+    font-size: 0.9rem;
+    padding: 9px 18px;
+  }
+}
+
+
+/* =================== MOBILE (≤768px) =================== */
+@media (max-width: 768px) {
+  .admin-favicon-container {
+    padding: 15px;
+    margin: 20px 10px;
+  }
+
+  .admin-favicon-container h3 {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  .admin-favicon-container input[type="file"],
+  .admin-favicon-container input[type="text"] {
+    font-size: 0.88rem;
+    padding: 8px;
+  }
+
+  .admin-favicon-container button {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .favicon-preview {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .favicon-preview img {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+
+/* =================== SMALL MOBILE (≤480px) =================== */
+@media (max-width: 480px) {
+  .admin-favicon-container {
+    padding: 12px;
+    margin: 15px 10px;
+  }
+
+  .admin-favicon-container h3 {
+    font-size: 1rem;
+  }
+
+  .admin-favicon-container input[type="file"],
+  .admin-favicon-container input[type="text"] {
+    font-size: 0.85rem;
+    padding: 7px;
+  }
+
+  .admin-favicon-container button {
+    font-size: 0.85rem;
+    padding: 9px;
+  }
+
+  .favicon-preview img {
+    width: 24px;
+    height: 24px;
+  }
+}

@@ -94,3 +94,134 @@
 .brand-item button:hover {
   background-color: #0056b3;
 }
+/* ================= TABLET (≤1024px) ================= */
+@media (max-width: 1024px) {
+
+  .admin-brands {
+    max-width: 95%;
+    padding: 25px;
+  }
+
+  .admin-brands h2 {
+    font-size: 22px;
+  }
+
+  .brand-item {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .brand-item img {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+
+/* ================= MOBILE (≤768px) ================= */
+@media (max-width: 768px) {
+
+  .admin-brands {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .admin-brands h2 {
+    font-size: 20px;
+  }
+
+  /* Add Brand Section Stack */
+  .add-brand {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .add-brand input[type="text"],
+  .add-brand input[type="file"],
+  .add-brand button {
+    width: 100%;
+  }
+
+  /* Brand Item Stack Layout */
+  .brand-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .brand-item img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .brand-item p {
+    width: 100%;
+  }
+
+  .brand-item input[type="text"],
+  .brand-item input[type="file"] {
+    width: 100%;
+  }
+
+  .brand-item button {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+
+/* ================= SMALL MOBILE (≤480px) ================= */
+@media (max-width: 480px) {
+
+  .admin-brands {
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .admin-brands h2 {
+    font-size: 18px;
+  }
+
+  .add-brand input,
+  .add-brand button {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .brand-item {
+    padding: 12px;
+  }
+
+  .brand-item img {
+    width: 55px;
+    height: 55px;
+  }
+
+  .brand-item p {
+    font-size: 14px;
+  }
+
+  .brand-item button {
+    font-size: 13px;
+    padding: 8px;
+  }
+}
+
+
+/* ================= EXTRA SMALL DEVICES (≤360px) ================= */
+@media (max-width: 360px) {
+
+  .admin-brands {
+    padding: 12px;
+  }
+
+  .admin-brands h2 {
+    font-size: 16px;
+  }
+
+  .brand-item img {
+    width: 50px;
+    height: 50px;
+  }
+
+}

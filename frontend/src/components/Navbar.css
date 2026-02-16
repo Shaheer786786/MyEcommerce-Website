@@ -345,12 +345,50 @@
 
 /* ================= Media Queries (Responsive) ================= */
 @media (max-width: 1024px) {
-  .navbar-menu {
-    display: none;
+
+  .navbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 12px 20px;
   }
+
+  /* ===== LEFT (Logo) ===== */
+  .navbar-left {
+    order: 1;
+    width: 50%;
+  }
+
+  /* ===== RIGHT (Cart/User) ===== */
+  .navbar-right {
+    order: 2;
+    width: 50%;
+    justify-content: flex-end;
+  }
+
+  /* ===== SEARCH BAR FULL WIDTH ===== */
   .navbar-center {
-    max-width: 300px;
+    order: 3;
+    width: 100%;
+    max-width: 100%;
+    margin: 12px 0;
   }
+
+  /* ===== MENU FULL WIDTH BELOW SEARCH ===== */
+  .navbar-menu {
+    order: 4;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 10px 0 5px;
+  }
+
+  .navbar-menu a {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+
 }
 
 @media (max-width: 768px) {

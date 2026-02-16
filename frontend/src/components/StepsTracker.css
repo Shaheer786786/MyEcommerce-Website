@@ -120,6 +120,7 @@
   .steps-tracker {
     margin: 30px 0;
     gap: 25px;
+    margin-top:160px;
   }
 
   .step-number {

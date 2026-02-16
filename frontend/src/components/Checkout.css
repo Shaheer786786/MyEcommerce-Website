@@ -41,28 +41,22 @@
 
 .co-input-group {
   display: flex;
-  gap: 15px;
+  gap: 16px;
 }
 
-/* ================= BIG & CLEAN INPUTS ================= */
+/* Inputs */
 .co-form input {
   width: 100%;
-  padding: 15px 15px;          /* 🔥 bigger height */
-  margin-bottom: 18px;         /* 🔥 better spacing */
-  border-radius: 14px;         /* 🔥 smooth corners */
+  padding: 15px 15px;
+  margin-bottom: 18px;
+  border-radius: 14px;
   border: 1.5px solid #d1d5db;
-  font-size: 15.5px;           /* 🔥 more readable */
+  font-size: 15.5px;
   font-weight: 500;
   background: #fafafa;
-  transition: all 0.25s ease;
+  transition: 0.25s ease;
 }
 
-.co-form input::placeholder {
-  color: #9ca3af;
-  font-size: 14.5px;
-}
-
-/* focus = premium */
 .co-form input:focus {
   outline: none;
   background: #fff;
@@ -70,37 +64,15 @@
   box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.12);
 }
 
-/* group spacing */
-.co-input-group {
-  display: flex;
-  gap: 16px;
-}
-
-/* mobile comfort */
-@media (max-width: 600px) {
-  .co-form input {
-    padding: 17px 16px;
-    font-size: 15px;
-  }
-}
-
-
 /* Payment */
 .co-payment-options {
   display: flex;
   gap: 25px;
   margin: 10px 0 20px;
+  flex-wrap: wrap;
 }
 
-.co-payment-options label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-/* Errors */
+/* Error */
 .co-error {
   font-size: 12px;
   color: #dc2626;
@@ -108,7 +80,7 @@
   margin-bottom: 10px;
 }
 
-/* Place Order */
+/* Place Button */
 .co-place-btn {
   margin-top: 20px;
   padding: 15px;
@@ -119,33 +91,26 @@
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: 0.2s ease;
 }
 
 .co-place-btn:hover {
   background: #000;
 }
 
-/* ================= ORDER SUMMARY ================= */
+/* ================= SUMMARY ================= */
 .co-summary {
   flex: 0 0 35%;
   max-width: 450px;
-  height: 520px;                 /* 🔥 MUST */
+  min-height: 520px;
   background: #ffffff29;
   border: 1px solid #e5e7eb;
   border-radius: 14px;
   padding: 16px;
-
-  display: flex;                /* 🔥 MUST */
-  flex-direction: column;       /* 🔥 MUST */
+  display: flex;
+  flex-direction: column;
 }
 
-.co-summary h3 {
-  font-size: 18px;
-  margin-bottom: 20px;
-}
-
-/* Header */
 .co-summary-header {
   display: grid;
   grid-template-columns: 1fr 100px 70px;
@@ -153,25 +118,15 @@
   font-weight: 700;
   border-bottom: 2px solid #d1d5db;
   padding-bottom: 10px;
-  
 }
 
-/* ================= REAL SCROLL ================= */
+/* Scroll Area */
 .co-summary-items {
-  flex: 1;                      /* 🔥 MOST IMPORTANT */
-  overflow-y: auto;             /* 🔥 ENABLE SCROLL */
+  flex: 1;
+  overflow-y: auto;
   overflow-x: hidden;
   margin-top: 10px;
   padding-right: 6px;
-}
-
-/* scrollbar (optional but visible) */
-.co-summary-items::-webkit-scrollbar {
-  width: 6px;
-}
-.co-summary-items::-webkit-scrollbar-thumb {
-  background: #bdbdbd;
-  border-radius: 6px;
 }
 
 /* Items */
@@ -184,7 +139,6 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
-/* Product */
 .co-product-name {
   display: flex;
   align-items: center;
@@ -201,10 +155,8 @@
 }
 
 .co-product-name span {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  line-height: 1.3;
-  width: 150px;
 }
 
 /* Quantity */
@@ -224,19 +176,18 @@
   border: none;
   cursor: pointer;
 }
-.co-qty-controls button:hover {
-background-color: black;
-}
 
+/* Total */
 .co-total {
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 2px solid #000000;
+  border-top: 2px solid #000;
   font-weight: 700;
   display: flex;
   justify-content: space-between;
 }
-/* ================= POPUP OVERLAY ================= */
+
+/* ================= POPUP ================= */
 .co-popup-overlay {
   position: fixed;
   inset: 0;
@@ -247,7 +198,6 @@ background-color: black;
   z-index: 9999;
 }
 
-/* ================= POPUP BOX ================= */
 .co-popup {
   background: #ffffff;
   padding: 32px 28px;
@@ -259,80 +209,100 @@ background-color: black;
   animation: popupScale 0.25s ease;
 }
 
-.co-popup h3 {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 10px;
-  color: #111827;
-}
-
-.co-popup p {
-  font-size: 15px;
-  color: #4b5563;
-  margin-bottom: 24px;
-}
-
-/* ================= ACTION BUTTONS ================= */
 .co-popup-actions {
   display: flex;
   gap: 14px;
+  flex-wrap: wrap;
 }
 
-/* ❌ CANCEL */
-.co-popup-cancel {
-  flex: 1;
-  padding: 14px 0;
-  border-radius: 14px;
-  border: none;
-  background: #dc2626;
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.15s ease;
-}
+/* ================= RESPONSIVE ================= */
 
-.co-popup-cancel:hover {
-  background: #b91c1c;
-  transform: translateY(-1px);
-}
+/* ---------- Tablet ---------- */
+@media (max-width: 1024px) {
 
-/* ✅ CONFIRM */
-.co-popup-confirm {
-  flex: 1;
-  padding: 14px 0;
-  border-radius: 14px;
-  border: none;
-  background: #111827;
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.15s ease;
-}
-
-.co-popup-confirm:hover {
-  background: #000;
-  transform: translateY(-1px);
-}
-
-/* ================= ANIMATION ================= */
-@keyframes popupScale {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
+  .co-content {
+    flex-direction: column;
   }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
 
-
-/* Mobile */
-@media (max-width: 900px) {
+  .co-form,
   .co-summary {
-    height: 420px;
+    flex: 1 1 100%;
     max-width: 100%;
   }
+
+  .co-summary {
+    min-height: 420px;
+  }
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 768px) {
+
+  .co-page {
+    margin: 30px auto;
+    padding: 15px;
+  }
+
+  .co-title {
+    font-size: 22px;
+  }
+
+  .co-input-group {
+    flex-direction: column;
+  }
+
+  .co-summary-header {
+    grid-template-columns: 1fr 70px 60px;
+    font-size: 13px;
+  }
+
+  .co-summary-item {
+    grid-template-columns: 1fr 70px 60px;
+  }
+
+  .co-product-name span {
+    font-size: 14px;
+  }
+
+  .co-qty-controls button {
+    width: 24px;
+    height: 24px;
+    font-size: 13px;
+  }
+
+  .co-popup-actions {
+    flex-direction: column;
+  }
+}
+
+/* ---------- Small Mobile ---------- */
+@media (max-width: 480px) {
+
+  .co-form {
+    padding: 20px;
+  }
+
+  .co-form input {
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  .co-place-btn {
+    padding: 13px;
+    font-size: 14px;
+  }
+
+  .co-summary {
+    padding: 14px;
+  }
+
+  .co-product-name img {
+    width: 42px;
+    height: 42px;
+  }
+
+  .co-product-name span {
+    font-size: 13px;
+  }
+
 }

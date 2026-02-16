@@ -152,21 +152,22 @@
     width: 100%;
   }
 } */
-/* PAGE */
+ /* PAGE */
 .cart-page {
   background: #eef0f3;
-  padding: 30px 0;
+  padding: 30px 15px;
   font-family: "Inter", sans-serif;
   margin-top: 40px;
 }
+
 /* Cart Heading */
 .cartx-title {
   font-size: 28px;
   font-weight: 700;
   margin-bottom: 30px;
   color: #111827;
-  position: relative;
-  left: 160px;
+  text-align: center;   /* FIXED */
+  position: static;     /* Removed left positioning */
 }
 
 /* CONTAINER */
@@ -179,12 +180,11 @@
 }
 
 /* LEFT */
-/* CART LEFT FIX HEIGHT */
 .cart-left {
   background: #fff;
   border-radius: 18px;
   padding: 25px;
-  max-height: 75vh;        /* 👈 page height ke hisab se */
+  max-height: 75vh;
   display: flex;
   flex-direction: column;
 }
@@ -192,26 +192,18 @@
 /* PRODUCTS LIST SCROLL */
 .cart-list {
   margin-top: 20px;
-  overflow-y: auto;        /* 👈 scroll */
+  overflow-y: auto;
   padding-right: 8px;
+  flex: 1;
 }
 
-/* SMOOTH SCROLLBAR */
+/* SCROLLBAR */
 .cart-list::-webkit-scrollbar {
   width: 6px;
 }
-
-.cart-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
 .cart-list::-webkit-scrollbar-thumb {
   background: #ccc;
   border-radius: 10px;
-}
-
-.cart-list::-webkit-scrollbar-thumb:hover {
-  background: #999;
 }
 
 /* HEADER */
@@ -237,15 +229,8 @@
   cursor: pointer;
   font-weight: 600;
 }
-.clear-cart:hover {
-background-color: white;
-}
 
-/* CART ITEMS */
-.cart-list {
-  margin-top: 20px;
-}
-
+/* CART ITEM */
 .cart-item {
   display: grid;
   grid-template-columns: 80px 1fr 120px 120px 40px;
@@ -288,12 +273,9 @@ background-color: white;
   height: 32px;
   border-radius: 50%;
   border: 1px solid #ccc;
-  background: #000000;
+  background: #000;
+  color: #fff;
   cursor: pointer;
-  font-size: 18px;
-}
-.cart-qty button:hover {
- background-color: #000000;
 }
 
 .cart-qty span {
@@ -303,6 +285,7 @@ background-color: white;
 /* PRICE */
 .cart-price {
   font-weight: 600;
+  text-align: center;
 }
 
 /* REMOVE */
@@ -312,11 +295,6 @@ background-color: white;
   color: #e53935;
   font-size: 12px;
   cursor: pointer;
-  position: relative;
-  right: 20px;
-}
-.cart-remove:hover {
-background-color: rgba(255, 255, 255, 0.707);
 }
 
 /* RIGHT */
@@ -327,14 +305,11 @@ background-color: rgba(255, 255, 255, 0.707);
 }
 
 /* PROMO */
-.promo-box {
+.promo-box,
+.summary-box {
   background: #f7f7fb;
   border-radius: 18px;
   padding: 20px;
-}
-
-.promo-box h4 {
-  margin-bottom: 10px;
 }
 
 .promo-input {
@@ -357,30 +332,18 @@ background-color: rgba(255, 255, 255, 0.707);
   color: #fff;
   cursor: pointer;
 }
-.promo-input button:hover {
-background-color: black;
-}
 
 /* SUMMARY */
-.summary-box {
-  background: #f7f7fb;
-  border-radius: 18px;
-  padding: 20px;
-}
-
-.summary-Sub {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  font-size: 14px;
-}
+.summary-Sub,
 .summary-Dis {
   display: flex;
   justify-content: space-between;
   margin-bottom: 12px;
   font-size: 14px;
-  border-bottom: 2px solid black;
+}
 
+.summary-Dis {
+  border-bottom: 2px solid black;
 }
 
 .summary-total {
@@ -411,14 +374,65 @@ background-color: black;
   color: #777;
 }
 
-/* RESPONSIVE */
+/* ========================= */
+/* MOBILE RESPONSIVE */
+/* ========================= */
+
 @media (max-width: 900px) {
   .cart-container {
     grid-template-columns: 1fr;
   }
 
+  .cart-left {
+    max-height: none;
+  }
+
   .cart-item {
     grid-template-columns: 70px 1fr;
-    grid-template-rows: auto auto;
+    grid-template-rows: auto auto auto;
+    gap: 10px;
+  }
+
+  .cart-price,
+  .cart-qty,
+  .cart-remove {
+    justify-content: flex-start;
+    text-align: left;
+  }
+}
+
+/* EXTRA SMALL MOBILE */
+
+@media (max-width: 500px) {
+
+  .cart-page {
+    padding: 20px 10px;
+  }
+
+  .cartx-title {
+    font-size: 22px;
+  }
+
+  .cart-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cart-item img {
+    width: 100%;
+    height: auto;
+  }
+
+  .cart-qty {
+    justify-content: flex-start;
+  }
+
+  .promo-input {
+    flex-direction: column;
+  }
+
+  .promo-input button {
+    width: 100%;
   }
 }

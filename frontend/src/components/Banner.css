@@ -8,7 +8,7 @@
   background-repeat: no-repeat;
   position: relative;
   overflow: hidden;
-  margin-top: 80px; /* 🔥 IMPORTANT - navbar height ke equal */
+  margin-top: 10px; /* 🔥 IMPORTANT - navbar height ke equal */
 }
 
 .banner-overlay {
@@ -121,7 +121,7 @@
 
   .banner-slider {
     height: 300px;
-    margin-top: 130px;
+    margin-top: 70px;
   }
 
   .banner-content {

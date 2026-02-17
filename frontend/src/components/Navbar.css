@@ -398,16 +398,23 @@
   }
   .navbar-left {
     gap: 5px;
+    position: relative;
+    right: 120px;
   }
   .navbar-center {
     width: 100%;
-    margin: 10px 0;
+    margin: 0;
   }
   .search-wrapper input {
     width: 100%;
+    position: absolute;
+    right: 80px;
   }
   .navbar-right {
     gap: 10px;
+    position: relative;
+    left: 180px;
+    bottom: 40px;
   }
 }
 
@@ -427,5 +434,42 @@
   .search-wrapper input {
     font-size: 14px;
     padding: 6px 10px;
+  }
+}
+/* ================= HAMBURGER NEW ================= */
+.hamburger {
+  display: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: white;
+  margin-left: 15px;
+}
+
+/* ================= MOBILE ONLY ================= */
+@media (max-width: 768px) {
+
+  .hamburger {
+    display: block;
+  }
+
+  .navbar-menu {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 150px;
+    background: #232f3e;
+    padding: 10px 0;
+    z-index: 999;
+  }
+
+  .navbar-menu.active {
+    display: flex;
+  }
+
+  .navbar-menu li {
+    padding: 12px 20px;
+    border-top: 1px solid #444;
   }
 }

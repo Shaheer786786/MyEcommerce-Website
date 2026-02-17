@@ -391,6 +391,7 @@ export default function Navbar({ cart = { count: 0 } }) {
 
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   /* ================= FETCH NAVBAR & PRODUCTS ================= */
   useEffect(() => {
@@ -497,9 +498,14 @@ export default function Navbar({ cart = { count: 0 } }) {
           />
           <span className="navbar-brand">{navbar.logo.name || "Brand"}</span>
         </div>
-
-        <ul className="navbar-menu">
-          {navbar.menu.map((item) => (
+{/* HAMBURGER - MOBILE ONLY */}
+<div 
+  className="hamburger"
+  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+>
+  &#9776;
+</div>
+<ul className={`navbar-menu ${mobileMenuOpen ? "active" : ""}`}>          {navbar.menu.map((item) => (
             <li key={item.id || item.name}>
               <a href={item.link}>{item.name}</a>
             </li>

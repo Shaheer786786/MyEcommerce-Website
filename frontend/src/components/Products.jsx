@@ -444,8 +444,9 @@ function Products({ searchQuery = "", addToCart }) {
               className={`prd-product-card ${
                 index === 0 ? "prd-featured" : ""
               }`}
-              onClick={() => navigate(`/product/${product.id}`)}
-              style={{ cursor: "pointer" }}
+onClick={() =>
+  window.open(`/product/${product.id}`, "_blank")
+}              style={{ cursor: "pointer" }}
             >
               <div className="prd-product-img">
                 <img src={imageUrl} alt={product.name} />

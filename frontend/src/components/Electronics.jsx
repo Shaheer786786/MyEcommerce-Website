@@ -255,8 +255,9 @@ function Electronics({ searchQuery = "", addToCart }) {
             <div
               key={product.id}
               className={`el-product-card ${index === 0 ? "el-featured" : ""}`}
-              onClick={() => navigate(`/product/${product.id}`)}
-            >
+onClick={() =>
+  window.open(`/product/${product.id}`, "_blank")
+}            >
               <div className="el-product-img">
                 <img src={imageUrl} alt={product.name} />
               </div>

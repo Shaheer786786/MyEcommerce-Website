@@ -67,19 +67,20 @@
 .step.completed .step-line {
   background-color: #000;
 }
-
 /* =================================
         TABLET RESPONSIVE
 =================================*/
 @media (max-width: 1024px) {
   .steps-tracker {
-    gap: 50px;
+    gap: 40px;
+    justify-content: center;
   }
 
   .step-line {
-    width: 50px;
+    width: 40px;
   }
 }
+
 
 /* =================================
         MOBILE RESPONSIVE
@@ -87,30 +88,32 @@
 @media (max-width: 768px) {
 
   .steps-tracker {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 30px;
-    margin-left: 20px;
+    flex-direction: row;        /* KEEP HORIZONTAL */
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;            /* Prevent overflow */
+    margin: 40px 0;
   }
 
   .step {
-    flex-direction: row;
+    flex-direction: column;     /* Number upar, text niche */
     align-items: center;
+    text-align: center;
   }
 
-  /* Make line vertical */
   .step-line {
-    position: absolute;
-    left: 16px;
-    top: 36px;
-    width: 3px;
-    height: 40px;
+    width: 30px;                /* Horizontal line */
+    height: 3px;
+    position: static;
   }
 
   .step-label {
-    white-space: normal;
+    font-size: 14px;
+    white-space: nowrap;
   }
 }
+
 
 /* =================================
         SMALL MOBILE
@@ -118,22 +121,22 @@
 @media (max-width: 480px) {
 
   .steps-tracker {
-    margin: 30px 0;
-    gap: 25px;
-    margin-top:70px;
+    gap: 15px;
+    margin-top: 60px;
   }
 
   .step-number {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     font-size: 12px;
   }
 
   .step-label {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .step-line {
-    height: 35px;
+    width: 20px;
+    height: 3px;
   }
 }

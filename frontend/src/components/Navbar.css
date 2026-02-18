@@ -336,14 +336,13 @@
   opacity: 0.9;
   background-color: rgb(108, 56, 56);
 }
-
 /* ================= Animations ================= */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ================= Media Queries (Responsive) ================= */
+/* ================= Tablet (≤1024px) ================= */
 @media (max-width: 1024px) {
 
   .navbar {
@@ -352,28 +351,31 @@
     padding: 12px 20px;
   }
 
-  /* ===== LEFT (Logo) ===== */
+  /* Logo */
   .navbar-left {
     order: 1;
     width: 50%;
   }
 
-  /* ===== RIGHT (Cart/User) ===== */
+  /* Right section */
   .navbar-right {
     order: 2;
     width: 50%;
     justify-content: flex-end;
   }
 
-  /* ===== SEARCH BAR FULL WIDTH ===== */
+  /* Search full width */
   .navbar-center {
     order: 3;
     width: 100%;
-    max-width: 100%;
     margin: 12px 0;
   }
 
-  /* ===== MENU FULL WIDTH BELOW SEARCH ===== */
+  .search-wrapper input {
+    width: 100%;
+  }
+
+  /* Menu below search */
   .navbar-menu {
     order: 4;
     width: 100%;
@@ -384,92 +386,80 @@
     margin: 10px 0 5px;
   }
 
-  .navbar-menu a {
-    font-size: 14px;
-    padding: 6px 12px;
-  }
-
 }
 
+/* ================= Mobile (≤768px) ================= */
 @media (max-width: 768px) {
+
   .navbar {
     flex-wrap: wrap;
-    padding: 15px 20px;
+    padding: 12px 15px;
+    height: 110px;
   }
+
+  /* Logo Left */
   .navbar-left {
-    gap: 5px;
-    position: relative;
-    right: 120px;
+    order: 1;
+    width: 50%;
+    align-items: center;
   }
+
+  /* Right Icons */
+  .navbar-right {
+    order: 2;
+    width: 50%;
+    justify-content: flex-end;
+    gap: 15px;
+  }
+
+  /* Search Below */
   .navbar-center {
+    order: 3;
     width: 100%;
-    margin: 0;
+    margin-top: 10px;
   }
+
+  .search-wrapper {
+    width: 100%;
+    margin-right: 25px;
+  }
+
   .search-wrapper input {
     width: 100%;
-    position: absolute;
-    right: 80px;
+    position: static;   /* IMPORTANT FIX */
   }
-  .navbar-right {
-    gap: 10px;
-    position: relative;
-    left: 180px;
-    bottom: 40px;
-  }
-}
 
-@media (max-width: 480px) {
-  .nav-greeting, .nav-title, .nav-orders span {
+  /* Hide menu on mobile */
+  .navbar-menu {
     display: none;
   }
+
+}
+
+/* ================= Small Mobile (≤480px) ================= */
+@media (max-width: 480px) {
+
+  .nav-greeting,
+  .nav-title,
+  .nav-orders span {
+    display: none;
+  }
+
   .nav-cart img {
-    height: 28px;
+    height: 26px;
   }
+
   .hamburger-btn {
-    font-size: 24px;
+    font-size: 22px;
   }
+
   .navbar-left .navbar-brand {
-    font-size: 16px;
+    font-size: 15px;
   }
+
   .search-wrapper input {
     font-size: 14px;
     padding: 6px 10px;
   }
-}
-/* ================= HAMBURGER NEW ================= */
-.hamburger {
-  display: none;
-  font-size: 26px;
-  cursor: pointer;
-  color: white;
-  margin-left: 15px;
-}
 
-/* ================= MOBILE ONLY ================= */
-@media (max-width: 768px) {
-
-  .hamburger {
-    display: block;
-  }
-
-  .navbar-menu {
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    width: 150px;
-    background: #232f3e;
-    padding: 10px 0;
-    z-index: 999;
-  }
-
-  .navbar-menu.active {
-    display: flex;
-  }
-
-  .navbar-menu li {
-    padding: 12px 20px;
-    border-top: 1px solid #444;
-  }
 }

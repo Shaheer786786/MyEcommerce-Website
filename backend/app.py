@@ -8,6 +8,7 @@ from flask import abort
 import os
 import json
 import jwt
+from collections import defaultdict
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 
@@ -25,11 +26,11 @@ UPLOAD_FOLDER = os.path.join(BASE_DIR, "images")
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "ico"}
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-# MONGO_URI = "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
-# client = MongoClient(MONGO_URI)
-
-MONGO_URI = os.environ.get("MONGO_URI")
+MONGO_URI = "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
 client = MongoClient(MONGO_URI)
+
+# MONGO_URI = os.environ.get("MONGO_URI")
+# client = MongoClient(MONGO_URI)
 db = client["ecommerce"]
 collection = db["products"] 
 orders_col = db["orders"]      
@@ -178,6 +179,60 @@ def login():
         }
     })
 
+    # ================================
+# REAL REVENUE GRAPH API
+# ================================
+@app.route("/admin/dashboard/revenue")
+def admin_revenue():
+
+    data = read_data()
+    orders = data.get("orders", [])
+
+    revenue_by_day = defaultdict(float)
+
+    for order in orders:
+        # Only count completed orders
+        if order.get("status") == "Completed":
+            try:
+                date_obj = datetime.strptime(order["createdAt"], "%Y-%m-%d %H:%M:%S")
+                day_label = date_obj.strftime("%a")  # Mon, Tue, Wed
+                revenue_by_day[day_label] += float(order.get("total", 0))
+            except:
+                continue
+
+    # Convert to list format for frontend graph
+    result = [
+        {"date": day, "revenue": round(amount, 2)}
+        for day, amount in revenue_by_day.items()
+    ]
+
+    return jsonify(result)
+
+
+# ================================
+# REAL CONVERSION RATE API
+# ================================
+@app.route("/admin/dashboard/conversion")
+def admin_conversion():
+
+    data = read_data()
+    orders = data.get("orders", [])
+    users = data.get("users", [])
+
+    total_orders = len([o for o in orders if o.get("status") == "Completed"])
+    total_users = len(users)
+
+    if total_users == 0:
+        rate = 0
+    else:
+        rate = round((total_orders / total_users) * 100, 2)
+
+    return jsonify({
+        "totalUsers": total_users,
+        "totalCompletedOrders": total_orders,
+        "conversionRate": rate
+    })
+
 @app.route("/admin/dashboard/stats")
 def admin_dashboard_stats():
     total_customers = db.users.count_documents({})
@@ -237,10 +292,7 @@ def banners():
     return jsonify(get_list(data, "banners"))
 
 
-@app.route("/brands")
-def brands():
-    data = read_data()
-    return jsonify(get_list(data, "brands"))
+
 @app.route("/brands")
 def brands():
     data = read_data()

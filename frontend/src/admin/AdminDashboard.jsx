@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../config"; 
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell
+} from "recharts";
 import "./AdminDashboard.css";
 
 const SummaryCard = ({ title, value, icon, bgColor }) => (
@@ -72,6 +83,8 @@ export default function AdminDashboard() {
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [activities, setActivities] = useState([]);
+  const [revenueData, setRevenueData] = useState([]);
+const [conversionData, setConversionData] = useState(0);
 
   useEffect(() => {
     const admin = JSON.parse(localStorage.getItem("adminLoggedIn"));
@@ -81,6 +94,18 @@ export default function AdminDashboard() {
   }, [navigate]);
 
   useEffect(() => {
+
+    // Revenue Graph
+fetch(`${BASE_URL}/admin/dashboard/revenue`)
+  .then((res) => res.json())
+  .then(setRevenueData)
+  .catch((err) => console.error("Revenue fetch error:", err));
+
+// Conversion
+fetch(`${BASE_URL}/admin/dashboard/conversion`)
+  .then((res) => res.json())
+  .then((data) => setConversionData(data.conversion))
+  .catch((err) => console.error("Conversion fetch error:", err));
     // Profile
     fetch(`${BASE_URL}/admin/dashboard/profile`)
       .then((res) => res.json())
@@ -149,6 +174,61 @@ export default function AdminDashboard() {
       <button className="logout-btn1" onClick={handleLogout}>
         Logout
       </button>
+
+      <section className="analytics-row">
+
+  {/* 📈 Revenue Line Graph */}
+  <div className="session-card">
+    <h3>Sessions Over Time</h3>
+
+    <ResponsiveContainer width="100%" height={250}>
+      <LineChart data={revenueData}>
+        <XAxis dataKey="day" />
+        <YAxis />
+        <Tooltip />
+        <Line
+          type="monotone"
+          dataKey="value"
+          stroke="#5b4dfc"
+          strokeWidth={3}
+          dot={false}
+        />
+      </LineChart>
+    </ResponsiveContainer>
+  </div>
+
+  {/* 🎯 Conversion Gauge */}
+  <div className="conversion-card2">
+    <h3>Conversion</h3>
+
+    <div className="gauge-wrapper">
+      <ResponsiveContainer width="100%" height={200}>
+        <PieChart>
+          <Pie
+            data={[
+              { name: "Converted", value: conversionData },
+              { name: "Remaining", value: 100 - conversionData }
+            ]}
+            startAngle={180}
+            endAngle={0}
+            innerRadius={70}
+            outerRadius={100}
+            dataKey="value"
+          >
+            <Cell fill="#5b4dfc" />
+            <Cell fill="#e0e0e0" />
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
+
+      <div className="gauge-center">
+        <h2>{conversionData}%</h2>
+        <span>Live</span>
+      </div>
+    </div>
+  </div>
+
+</section>
 
       {profile && <ProfileCard profile={profile} />}
 

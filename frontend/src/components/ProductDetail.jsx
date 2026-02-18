@@ -227,8 +227,7 @@ function ProductDetail({ addToCart }) {
 
             <button
               className="pdx-add"
-              onClick={handleAddToCart}
-              disabled={product.stock === 0}
+onClick={() => handleAddToCart(product)}              disabled={product.stock === 0}
             >
               Add to Cart
             </button>

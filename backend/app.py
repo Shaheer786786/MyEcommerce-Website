@@ -179,28 +179,27 @@ def login():
         }
     })
 
-    # ================================
-# REAL REVENUE GRAPH API
-# ================================
 @app.route("/admin/dashboard/revenue")
 def admin_revenue():
 
-    data = read_data()
-    orders = data.get("orders", [])
-
     revenue_by_day = defaultdict(float)
 
-    for order in orders:
-        # Only count completed orders
-        if order.get("status") == "Completed":
-            try:
-                date_obj = datetime.strptime(order["createdAt"], "%Y-%m-%d %H:%M:%S")
-                day_label = date_obj.strftime("%a")  # Mon, Tue, Wed
-                revenue_by_day[day_label] += float(order.get("total", 0))
-            except:
-                continue
+    orders = list(orders_col.find({"status": {"$regex": "^completed$", "$options": "i"}}))
 
-    # Convert to list format for frontend graph
+    for order in orders:
+        try:
+            date_obj = order.get("createdAt")
+            
+            # If createdAt stored as string
+            if isinstance(date_obj, str):
+                date_obj = datetime.strptime(date_obj, "%Y-%m-%d %H:%M:%S")
+
+            day_label = date_obj.strftime("%a")
+            revenue_by_day[day_label] += float(order.get("total", 0))
+
+        except:
+            continue
+
     result = [
         {"date": day, "revenue": round(amount, 2)}
         for day, amount in revenue_by_day.items()
@@ -209,27 +208,22 @@ def admin_revenue():
     return jsonify(result)
 
 
-# ================================
-# REAL CONVERSION RATE API
-# ================================
 @app.route("/admin/dashboard/conversion")
 def admin_conversion():
 
-    data = read_data()
-    orders = data.get("orders", [])
-    users = data.get("users", [])
-
-    total_orders = len([o for o in orders if o.get("status") == "Completed"])
-    total_users = len(users)
+    total_users = db.users.count_documents({})
+    total_completed_orders = orders_col.count_documents({
+        "status": {"$regex": "^completed$", "$options": "i"}
+    })
 
     if total_users == 0:
         rate = 0
     else:
-        rate = round((total_orders / total_users) * 100, 2)
+        rate = round((total_completed_orders / total_users) * 100, 2)
 
     return jsonify({
         "totalUsers": total_users,
-        "totalCompletedOrders": total_orders,
+        "totalCompletedOrders": total_completed_orders,
         "conversionRate": rate
     })
 

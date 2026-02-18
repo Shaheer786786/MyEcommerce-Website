@@ -241,6 +241,11 @@ def banners():
 def brands():
     data = read_data()
     return jsonify(get_list(data, "brands"))
+@app.route("/brands")
+def brands():
+    data = read_data()
+    return jsonify(get_list(data, "brands"))
+
 
 @app.route("/admin/brands", methods=["GET", "POST"])
 def admin_brands():
@@ -259,13 +264,21 @@ def admin_brands():
         return jsonify({"success": False, "error": "Brand name required"}), 400
 
     file = request.files.get("imageFile")
+    BASE_URL = os.environ.get("BASE_URL", request.host_url.rstrip("/"))
+
+    # ✅ If file uploaded
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(UPLOAD_FOLDER, filename))
-        # item["image"] = f"http://127.0.0.1:5000/images/{filename}"
-        BASE_URL = os.environ.get("BASE_URL")
+        item["image"] = f"{BASE_URL}/images/{filename}"
 
-    item["image"] = f"{BASE_URL}/images/{filename}"     
+    # ✅ If no file but image URL provided from frontend
+    elif item.get("image"):
+        item["image"] = item["image"]
+
+    # ✅ Brand external URL (coming from frontend input)
+    if item.get("url"):
+        item["url"] = item["url"]
 
     item["id"] = max([b.get("id", 0) for b in data["brands"]] + [0]) + 1
     item["deleted"] = False
@@ -275,6 +288,7 @@ def admin_brands():
     write_data(data)
 
     return jsonify({"success": True, "brand": item})
+
 
 @app.route("/admin/brands/<int:id>", methods=["PUT", "DELETE"])
 def admin_brands_modify(id):
@@ -289,11 +303,21 @@ def admin_brands_modify(id):
     update_data = request.form.to_dict()
 
     file = request.files.get("imageFile")
+    BASE_URL = os.environ.get("BASE_URL", request.host_url.rstrip("/"))
+
+    # ✅ If new image uploaded
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(UPLOAD_FOLDER, filename))
-        # update_data["image"] = f"http://127.0.0.1:5000/images/{filename}"
-        update_data["image"] = f"{request.host_url}images/{filename}"
+        update_data["image"] = f"{BASE_URL}/images/{filename}"
+
+    # ✅ If editing image via URL
+    elif update_data.get("image"):
+        update_data["image"] = update_data["image"]
+
+    # ✅ Update brand external URL
+    if update_data.get("url"):
+        update_data["url"] = update_data["url"]
 
     item = modify_item(data, "brands", id, new_data=update_data)
     write_data(data)

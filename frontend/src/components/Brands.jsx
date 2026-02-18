@@ -58,10 +58,18 @@ export default function Brands() {
       .catch((err) => console.error("Brands fetch error:", err));
   }, []);
 
-  const handleBrandClick = (brandName) => {
-    // Navigate to products page with brand filter
-    navigate(`/products?brand=${encodeURIComponent(brandName)}`);
-  };
+const handleBrandClick = (brand) => {
+  if (brand.url) {
+    window.open(
+      brand.url.startsWith("http")
+        ? brand.url
+        : `https://${brand.url}`,
+      "_blank"
+    );
+  } else {
+    navigate(`/products?brand=${encodeURIComponent(brand.name)}`);
+  }
+};
 
   return (
     <section id="brands" className="brands-section">
@@ -72,9 +80,9 @@ export default function Brands() {
           <div
             key={brand.id}
             className="brand-card"
-            onClick={() => handleBrandClick(brand.name)}
+            onClick={() => handleBrandClick(brand)}            
             style={{ cursor: "pointer" }}
-          >
+            >
             <div className="brand-image">
               <img
                 src={brand.image?.startsWith("http") ? brand.image : `${BASE_URL}/images/${brand.image}`}

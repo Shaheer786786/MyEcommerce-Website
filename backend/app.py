@@ -208,22 +208,27 @@ def admin_revenue():
     return jsonify(result)
 
 
+# ================================
+# REAL CONVERSION RATE API
+# ================================
 @app.route("/admin/dashboard/conversion")
 def admin_conversion():
 
-    total_users = db.users.count_documents({})
-    total_completed_orders = orders_col.count_documents({
-        "status": {"$regex": "^completed$", "$options": "i"}
-    })
+    data = read_data()
+    orders = data.get("orders", [])
+    users = data.get("users", [])
+
+    total_orders = len([o for o in orders if o.get("status") == "Completed"])
+    total_users = len(users)
 
     if total_users == 0:
         rate = 0
     else:
-        rate = round((total_completed_orders / total_users) * 100, 2)
+        rate = round((total_orders / total_users) * 100, 2)
 
     return jsonify({
         "totalUsers": total_users,
-        "totalCompletedOrders": total_completed_orders,
+        "totalCompletedOrders": total_orders,
         "conversionRate": rate
     })
 

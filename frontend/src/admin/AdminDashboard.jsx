@@ -23,31 +23,20 @@ const SummaryCard = ({ title, value, icon, bgColor }) => (
     </div>
   </div>
 );
-
 const ProfileCard = ({ profile }) => (
-  <div className="profile-card">
-    <img
-      src={profile.image || "/default-profile.png"}
-      alt={profile.name}
-      className="profile-image"
-    />
-    <div className="profile-info">
-      <h2>
-        {profile.name} ⭐️{profile.rating || 0}{" "}
-        <small>({profile.reviews || 0} Reviews)</small>
-      </h2>
-      <p>
-        <strong>Location:</strong> {profile.location || "N/A"} &nbsp;|&nbsp;
-        <strong>Joined:</strong> {profile.joined || "N/A"} &nbsp;|&nbsp;
-        <strong>Age:</strong> {profile.age || "N/A"} &nbsp;|&nbsp;
-        <strong>Gender:</strong> {profile.gender || "N/A"}
-      </p>
-      <div className="profile-tags">
-        {(profile.tags || []).map((tag) => (
-          <span key={tag} className="profile-tag">
-            {tag}
-          </span>
-        ))}
+  <div className="owner-profile-card">
+    <div className="owner-left">
+      <img src={profile.image} alt={profile.name} className="owner-image" />
+    </div>
+    <div className="owner-right">
+      <div className="owner-name">
+        {profile.name} <span className="owner-rating">⭐️{profile.rating}</span>
+      </div>
+      <div className="owner-meta">
+        Location: {profile.location} | Joined: {profile.joined} | Age: {profile.age} | Gender: {profile.gender}
+      </div>
+      <div className="owner-tags">
+        {(profile.tags || []).map(tag => <span key={tag} className="owner-tag">{tag}</span>)}
       </div>
     </div>
   </div>

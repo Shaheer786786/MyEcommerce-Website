@@ -206,8 +206,6 @@ def admin_revenue():
     ]
 
     return jsonify(result)
-
-
 # ================================
 # REAL CONVERSION RATE API
 # ================================

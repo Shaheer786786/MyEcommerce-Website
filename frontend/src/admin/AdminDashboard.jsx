@@ -23,24 +23,6 @@ const SummaryCard = ({ title, value, icon, bgColor }) => (
     </div>
   </div>
 );
-const ProfileCard = ({ profile }) => (
-  <div className="owner-profile-card">
-    <div className="owner-left">
-      <img src={profile.image} alt={profile.name} className="owner-image" />
-    </div>
-    <div className="owner-right">
-      <div className="owner-name">
-        {profile.name} <span className="owner-rating">⭐️{profile.rating}</span>
-      </div>
-      <div className="owner-meta">
-        Location: {profile.location} | Joined: {profile.joined} | Age: {profile.age} | Gender: {profile.gender}
-      </div>
-      <div className="owner-tags">
-        {(profile.tags || []).map(tag => <span key={tag} className="owner-tag">{tag}</span>)}
-      </div>
-    </div>
-  </div>
-);
 
 const UserActivity = ({ activities }) => (
   <section className="user-activity-section">
@@ -67,7 +49,6 @@ const UserActivity = ({ activities }) => (
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const [profile, setProfile] = useState(null);
   const [stats, setStats] = useState({});
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
@@ -95,11 +76,6 @@ fetch(`${BASE_URL}/admin/dashboard/conversion`)
   .then((res) => res.json())
   .then((data) => setConversionData(data.conversion))
   .catch((err) => console.error("Conversion fetch error:", err));
-    // Profile
-    fetch(`${BASE_URL}/admin/dashboard/profile`)
-      .then((res) => res.json())
-      .then(setProfile)
-      .catch((err) => console.error("Profile fetch error:", err));
 
     // Stats
     fetch(`${BASE_URL}/admin/dashboard/stats`)
@@ -218,9 +194,6 @@ fetch(`${BASE_URL}/admin/dashboard/conversion`)
   </div>
 
 </section>
-
-      {profile && <ProfileCard profile={profile} />}
-
       <div className="summary-cards">
         <SummaryCard
           title="Total Customers"

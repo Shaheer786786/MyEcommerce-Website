@@ -26,15 +26,29 @@ UPLOAD_FOLDER = os.path.join(BASE_DIR, "images")
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "ico"}
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-MONGO_URI = "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
-client = MongoClient(MONGO_URI)
+# MONGO_URI = "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
+# client = MongoClient(MONGO_URI)
 
 # MONGO_URI = os.environ.get("MONGO_URI")
 # client = MongoClient(MONGO_URI)
+# db = client["ecommerce"]
+# collection = db["products"] 
+# orders_col = db["orders"]      
+MONGO_URI = os.environ.get("MONGO_URI")
+
+if not MONGO_URI:
+    raise Exception("MONGO_URI not found in environment variables")
+
+client = MongoClient(MONGO_URI)
+
+# IMPORTANT: database name explicitly define करो
 db = client["ecommerce"]
-collection = db["products"] 
-orders_col = db["orders"]      
-   
+
+users_col = db["users"]
+orders_col = db["orders"]
+products_col = db["products"]
+
+print("MongoDB Connected Successfully")
 
 
 ORDERS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "orders.json")
@@ -132,11 +146,11 @@ def preloader():
 
 
 # Signup
-@app.route("/auth/signup", methods=["POST"])
-def signup():
-    data = request.json
-    # Save user to DB
-    return jsonify({"message": "User created"})
+# @app.route("/auth/signup", methods=["POST"])
+# def signup():
+#     data = request.json
+#     # Save user to DB
+#     return jsonify({"message": "User created"})
 
 # Forgot password
 @app.route("/auth/forgot-password", methods=["POST"])
@@ -154,6 +168,67 @@ def change_password():
     # Update password in DB
     return jsonify({"message": "Password updated"})
 
+# @app.route("/auth/login", methods=["POST"])
+# def login():
+#     data = request.get_json()
+
+#     email = data.get("email")
+#     password = data.get("password")
+
+#     user = db.users.find_one({"email": email})
+#     if not user or not check_password_hash(user["password"], password):
+#         return jsonify({"error": "Invalid credentials"}), 401
+
+#     token = jwt.encode(
+#         {"user_id": str(user["_id"]), "email": user["email"]},
+#         JWT_SECRET,
+#         algorithm=JWT_ALGO
+#     )
+
+#     return jsonify({
+#         "token": token,
+#         "user": {
+#             "name": user["name"],
+#             "email": user["email"]
+#         }
+#     })
+# ==============================
+# AUTH ROUTES (FINAL WORKING)
+# ==============================
+
+@app.route("/auth/signup", methods=["POST"])
+def signup():
+    data = request.get_json()
+
+    name = data.get("name")
+    email = data.get("email")
+    password = data.get("password")
+
+    if not name or not email or not password:
+        return jsonify({"error": "All fields are required"}), 400
+
+    # Check if email already exists
+    if db.users.find_one({"email": email}):
+        return jsonify({"error": "Email already registered"}), 400
+
+    # Hash password
+    hashed_password = generate_password_hash(password)
+
+    user_data = {
+        "name": name,
+        "email": email,
+        "password": hashed_password,
+        "createdAt": datetime.utcnow()
+    }
+
+    result = db.users.insert_one(user_data)
+
+    return jsonify({
+        "message": "Signup successful",
+        "user_id": str(result.inserted_id)
+    }), 201
+
+
 @app.route("/auth/login", methods=["POST"])
 def login():
     data = request.get_json()
@@ -161,24 +236,36 @@ def login():
     email = data.get("email")
     password = data.get("password")
 
+    if not email or not password:
+        return jsonify({"error": "Email and password required"}), 400
+
     user = db.users.find_one({"email": email})
-    if not user or not check_password_hash(user["password"], password):
+
+    if not user:
+        return jsonify({"error": "User not found"}), 401
+
+    if not check_password_hash(user["password"], password):
         return jsonify({"error": "Invalid credentials"}), 401
 
     token = jwt.encode(
-        {"user_id": str(user["_id"]), "email": user["email"]},
+        {
+            "user_id": str(user["_id"]),
+            "email": user["email"],
+            "exp": datetime.utcnow() + timedelta(days=7)
+        },
         JWT_SECRET,
         algorithm=JWT_ALGO
     )
 
     return jsonify({
+        "message": "Login successful",
         "token": token,
         "user": {
+            "id": str(user["_id"]),
             "name": user["name"],
             "email": user["email"]
         }
     })
-
 @app.route("/admin/dashboard/revenue")
 def admin_revenue():
 

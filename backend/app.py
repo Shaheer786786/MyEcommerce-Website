@@ -29,26 +29,12 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 # MONGO_URI = "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
 # client = MongoClient(MONGO_URI)
 
-# MONGO_URI = os.environ.get("MONGO_URI")
-# client = MongoClient(MONGO_URI)
-# db = client["ecommerce"]
-# collection = db["products"] 
-# orders_col = db["orders"]      
 MONGO_URI = os.environ.get("MONGO_URI")
-
-if not MONGO_URI:
-    raise Exception("MONGO_URI not found in environment variables")
-
 client = MongoClient(MONGO_URI)
-
-# IMPORTANT: database name explicitly define करो
 db = client["ecommerce"]
-
-users_col = db["users"]
-orders_col = db["orders"]
-products_col = db["products"]
-
-print("MongoDB Connected Successfully")
+collection = db["products"] 
+orders_col = db["orders"]      
+   
 
 
 ORDERS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "orders.json")

@@ -130,34 +130,6 @@ def preloader():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Add this in your Flask app (server.py) at the bottom with other routes
-
-@app.route("/orders", methods=["POST"])
-def create_order():
-    try:
-        data = request.get_json()
-
-        # ✅ Check required fields
-        if not data.get("userId") or not data.get("items"):
-            return jsonify({"error": "userId and items are required"}), 400
-
-        order = {
-            "userId": data["userId"],            # Logged-in user
-            "customer": data.get("customer", {}),
-            "items": data["items"],
-            "total": data.get("total", 0),
-            "date": data.get("date") or datetime.utcnow().isoformat(),
-            "status": data.get("status", "Pending"),
-            "displayId": orders_col.count_documents({}) + 1  # simple auto increment
-        }
-
-        result = orders_col.insert_one(order)
-        order["_id"] = str(result.inserted_id)
-
-        return jsonify({"message": "Order placed successfully", "order": order}), 201
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 # Signup
 # @app.route("/auth/signup", methods=["POST"])
 # def signup():

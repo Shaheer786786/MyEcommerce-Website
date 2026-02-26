@@ -34,7 +34,7 @@ client = MongoClient(MONGO_URI)
 db = client["ecommerce"]
 collection = db["products"] 
 orders_col = db["orders"]      
-   
+users_collection = db["users"]
 
 
 ORDERS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "orders.json")
@@ -181,103 +181,60 @@ def change_password():
 # AUTH ROUTES (FINAL WORKING)
 # ==============================
 
+# ----------------------------
+# SIGNUP
+# ----------------------------
 @app.route("/auth/signup", methods=["POST"])
 def signup():
-    data = request.get_json()
+    data = request.json
 
-    name = data.get("name")
-    email = data.get("email")
-    password = data.get("password")
+    if users_collection.find_one({"email": data["email"]}):
+        return jsonify({"message": "Email already exists"}), 400
 
-    if not name or not email or not password:
-        return jsonify({"error": "All fields are required"}), 400
-
-    # Check if email already exists
-    if db.users.find_one({"email": email}):
-        return jsonify({"error": "Email already registered"}), 400
-
-    # Hash password
-    hashed_password = generate_password_hash(password)
-
-    user_data = {
-        "name": name,
-        "email": email,
-        "password": hashed_password,
+    user = {
+        "firstName": data.get("firstName", ""),
+        "lastName": data.get("lastName", ""),
+        "email": data["email"],
+        "password": data["password"],
+        "phone": "",
+        "street": "",
         "createdAt": datetime.utcnow()
     }
 
-    result = db.users.insert_one(user_data)
+    result = users_collection.insert_one(user)
 
     return jsonify({
-        "message": "Signup successful",
-        "user_id": str(result.inserted_id)
-    }), 201
+        "message": "User created successfully",
+        "userId": str(result.inserted_id)
+    })
 
-
-@app.route("/auth/login", methods=["POST"])
+# ----------------------------
+# LOGIN
+# ----------------------------
+@app.route('/auth/login', methods=['POST'])
 def login():
     data = request.get_json()
 
-    email = data.get("email")
-    password = data.get("password")
-
-    if not email or not password:
-        return jsonify({"error": "Email and password required"}), 400
-
-    user = db.users.find_one({"email": email})
+    user = db.users.find_one({"email": data.get("email")})
 
     if not user:
-        return jsonify({"error": "User not found"}), 401
+        return jsonify({"message": "User not found"}), 404
 
-    if not check_password_hash(user["password"], password):
-        return jsonify({"error": "Invalid credentials"}), 401
-
-    token = jwt.encode(
-        {
-            "user_id": str(user["_id"]),
-            "email": user["email"],
-            "exp": datetime.utcnow() + timedelta(days=7)
-        },
-        JWT_SECRET,
-        algorithm=JWT_ALGO
-    )
+    if user["password"] != data.get("password"):
+        return jsonify({"message": "Invalid password"}), 401
 
     return jsonify({
-        "message": "Login successful",
-        "token": token,
+        "token": "dummy_token",
+        "userId": str(user["_id"]),
         "user": {
-            "id": str(user["_id"]),
-            "name": user["name"],
-            "email": user["email"]
+            "_id": str(user["_id"]),
+            "firstName": user.get("firstName", ""),
+            "lastName": user.get("lastName", ""),
+            "email": user.get("email", ""),
+            "phone": user.get("phone", ""),
+            "street": user.get("street", "")
         }
     })
-@app.route("/admin/dashboard/revenue")
-def admin_revenue():
-
-    revenue_by_day = defaultdict(float)
-
-    orders = list(orders_col.find({"status": {"$regex": "^completed$", "$options": "i"}}))
-
-    for order in orders:
-        try:
-            date_obj = order.get("createdAt")
-            
-            # If createdAt stored as string
-            if isinstance(date_obj, str):
-                date_obj = datetime.strptime(date_obj, "%Y-%m-%d %H:%M:%S")
-
-            day_label = date_obj.strftime("%a")
-            revenue_by_day[day_label] += float(order.get("total", 0))
-
-        except:
-            continue
-
-    result = [
-        {"date": day, "revenue": round(amount, 2)}
-        for day, amount in revenue_by_day.items()
-    ]
-
-    return jsonify(result)
 # ================================
 # REAL CONVERSION RATE API
 # ================================
@@ -769,32 +726,37 @@ def admin_footer():
     write_data(data)
     return jsonify({"success": True})
 
+# ----------------------------
+# CREATE ORDER
+# ----------------------------
 @app.route("/orders", methods=["POST"])
 def create_order():
-    data = request.get_json()
-    if not data:
-        return jsonify({"error": "No data received"}), 400
+    data = request.json
 
-    data["createdAt"] = datetime.now()
-    data["status"] = "Pending"
+    order = {
+        "userId": data["userId"],   # 🔥 USER ID SAVE HO RAHA
+        "items": data["items"],
+        "total": data["total"],
+        "status": "Pending",
+        "createdAt": datetime.datetime.utcnow()
+    }
 
-    last_order = orders_col.find_one(sort=[("createdAt", -1)])
-    data["displayId"] = last_order["displayId"] + 1 if last_order else 1
+    orders_col.insert_one(order)
 
-    result = orders_col.insert_one(data)
-    return jsonify({"message": "Order created", "order_id": str(result.inserted_id)}), 201
+    return jsonify({"message": "Order placed successfully"})
 
 
 
 # GET all orders (newest first)
-@app.route("/orders")
-def get_orders():
-    orders = list(orders_col.find().sort("createdAt", -1))  # newest first
+# ----------------------------
+# GET USER ORDERS
+# ----------------------------
+@app.route("/orders/<user_id>", methods=["GET"])
+def get_orders(user_id):
+    orders = list(orders_col.find({"userId": user_id}))
     for order in orders:
-        order["_id"] = str(order["_id"])  # MongoID ko string me convert
-        order["displayId"] = order["_id"]  # displayId ab MongoDB ka real ID
-        if "createdAt" in order:
-            order["createdAt"] = order["createdAt"].isoformat()
+        order["_id"] = str(order["_id"])
+
     return jsonify(orders)
 
 # PUT update order status

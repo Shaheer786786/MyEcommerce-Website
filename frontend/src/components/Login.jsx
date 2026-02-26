@@ -45,8 +45,6 @@
 //     </div>
 //   );
 // }
-
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -58,39 +56,52 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  /* ================= LOGIN ================= */
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!form.email || !form.password) {
-      alert("Please enter email and password");
-      return;
-    }
+  if (!form.email || !form.password) {
+    alert("Please enter email and password");
+    return;
+  }
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const res = await axios.post(
-        `${BASE_URL}/auth/login`,
-        form
-      );
+    const res = await axios.post(
+      `${BASE_URL}/auth/login`,
+      form
+    );
 
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+    console.log("Login response:", res.data);
 
-      alert("Login successful!");
-      navigate("/profile");
-    } catch (err) {
-      alert(
-        "Login failed: " +
-          (err.response?.data?.message || err.message)
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Save token
+    localStorage.setItem("token", res.data.token);
 
-  /* ================= FORGOT PASSWORD ================= */
+    // Save user object
+    localStorage.setItem(
+      "user",
+      JSON.stringify(res.data.user)
+    );
+
+    // 🔥 CORRECT USER ID SAVE
+    localStorage.setItem(
+      "userId",
+      res.data.user.id
+    );
+
+    alert("Login successful!");
+    navigate("/profile");
+
+  } catch (err) {
+    alert(
+      "Login failed: " +
+      (err.response?.data?.message || err.message)
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
   const handleForgotPassword = async () => {
     if (!form.email) {
       alert("Please enter your email first");
@@ -106,7 +117,7 @@ export default function Login() {
     } catch (err) {
       alert(
         "Error: " +
-          (err.response?.data?.message || err.message)
+        (err.response?.data?.message || err.message)
       );
     }
   };

@@ -155,7 +155,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import StepsTracker from "./StepsTracker";
 import BASE_URL from "../config";
-
 import "./OrderSummary.css";
 
 function OrderSummary() {
@@ -163,7 +162,7 @@ function OrderSummary() {
   const navigate = useNavigate();
 
   const steps = ["Cart", "Checkout", "Order Summary"];
-  const currentStep = 2; 
+  const currentStep = 2;
 
   const [customer, setCustomer] = useState({
     firstName: "",
@@ -181,7 +180,7 @@ function OrderSummary() {
   const [loading, setLoading] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
 
-  let { cartItems, totalAmount } = location.state || {};
+  let { cartItems = [], totalAmount = 0 } = location.state || {};
   totalAmount = Number(totalAmount) || 0;
 
   useEffect(() => {
@@ -198,31 +197,49 @@ function OrderSummary() {
     setLoading(true);
     setErrors({});
 
+    // ✅ GET USER ID
+    const userId = localStorage.getItem("userId");
+
+    if (!userId || userId === "undefined") {
+      alert("Please login first");
+      navigate("/login");
+      return;
+    }
+
     const orderData = {
+      userId: userId, // 🔥 important
       customer,
-      items: cartItems.map(item => ({
-        ...item,
-        price: Number(item.price) || 0
+      items: cartItems.map((item) => ({
+        id: item.id,
+        name: item.name,
+        quantity: item.quantity || 1,
+        price: Number(item.price) || 0,
+        image: item.images?.[0] || item.image || "",
       })),
       total: totalAmount,
       date: new Date().toISOString(),
+      status: "Pending",
     };
 
     try {
-      const res = await 
-      // fetch("http://127.0.0.1:5000/orders",
-        fetch(`${BASE_URL}/orders`,
-
-         {
+      const res = await fetch(`${BASE_URL}/orders`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(orderData),
       });
 
-      if (res.ok) setConfirmed(true);
-      else setErrors({ api: "Failed to place order. Please try again." });
-    } catch {
-      setErrors({ api: "Server error. Please try again later." });
+      if (!res.ok) {
+        throw new Error("Failed to place order");
+      }
+
+      setConfirmed(true);
+      localStorage.removeItem("cart");
+
+    } catch (error) {
+      console.error(error);
+      setErrors({ api: "Failed to place order. Please try again." });
     } finally {
       setLoading(false);
       window.scrollTo(0, 0);
@@ -234,7 +251,11 @@ function OrderSummary() {
       <div className="orders-success">
         <h1>🎉 Order Placed Successfully</h1>
         <p>Thank you for shopping with us!</p>
-        <button className="back-btn" type="button" onClick={() => navigate("/")}>
+        <button
+          className="back-btn"
+          type="button"
+          onClick={() => navigate("/")}
+        >
           Back to Home
         </button>
       </div>
@@ -243,11 +264,12 @@ function OrderSummary() {
 
   const getImageUrl = (item) => {
     const image = item.images?.[0] || item.image;
-    return image?.startsWith("http")
+
+    if (!image) return "/default-product.png";
+
+    return image.startsWith("http")
       ? image
-      : image
-      ? `http://127.0.0.1:5000/images/${image}`
-      : "/default-product.png";
+      : `${BASE_URL}/images/${image}`;
   };
 
   return (
@@ -257,41 +279,65 @@ function OrderSummary() {
       <h3 className="orders-title">Review & Confirm Your Order</h3>
 
       <div className="orders-grid">
+        {/* LEFT SIDE */}
         <div className="order-card">
           <h4>Delivery Details</h4>
+
           <div className="order-details">
-            <p><strong>Name:</strong> {customer.firstName} {customer.lastName}</p>
-            <p><strong>Email:</strong> {customer.email}</p>
-            <p><strong>Phone:</strong> {customer.phone}</p>
-            <p><strong>Address:</strong> {customer.address}, {customer.city}, {customer.state} - {customer.pincode}</p>
+            <p>
+              <strong>Name:</strong> {customer.firstName} {customer.lastName}
+            </p>
+            <p>
+              <strong>Email:</strong> {customer.email}
+            </p>
+            <p>
+              <strong>Phone:</strong> {customer.phone}
+            </p>
+            <p>
+              <strong>Address:</strong> {customer.address}, {customer.city},{" "}
+              {customer.state} - {customer.pincode}
+            </p>
           </div>
 
           <h4 className="payment-p">Payment Method</h4>
           <p className="payment-method">
-            {customer.payment === "cod" ? "Cash on Delivery" : "Online Payment"}
+            {customer.payment === "cod"
+              ? "Cash on Delivery"
+              : "Online Payment"}
           </p>
 
           {errors.api && <p className="error-msg">{errors.api}</p>}
 
           <div className="order-footer">
-            <p>Total Amount: <strong>₹{totalAmount.toFixed(2)}</strong></p>
-            <button onClick={placeOrder} disabled={loading} className="confirm-btn">
+            <p>
+              Total Amount: <strong>₹{totalAmount.toFixed(2)}</strong>
+            </p>
+
+            <button
+              onClick={placeOrder}
+              disabled={loading}
+              className="confirm-btn"
+            >
               {loading ? "Placing Order..." : "Confirm Order"}
             </button>
           </div>
         </div>
 
+        {/* RIGHT SIDE */}
         <div className="order-card">
           <h4>Order Items</h4>
-          {cartItems.map((item) => {
+
+          {cartItems.map((item, index) => {
             const price = Number(item.price) || 0;
+
             return (
-              <div className="order-item" key={item.id}>
+              <div className="order-item" key={item.id || index}>
                 <img
                   src={getImageUrl(item)}
                   alt={item.name}
                   loading="lazy"
                 />
+
                 <div>
                   <p className="item-name">{item.name}</p>
                   <p>Quantity: {item.quantity}</p>

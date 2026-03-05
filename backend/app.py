@@ -14,10 +14,13 @@ from datetime import datetime, timedelta
 
 
 app = Flask(__name__)
-CORS(app, origins=[
-    "http://localhost:5173",
-    "https://mye-commerce-website.onrender.com/"
-], supports_credentials=True)
+CORS(
+    app,
+    resources={r"/*": {"origins": [
+        "https://mye-commerce-website.onrender.com"
+    ]}},
+    supports_credentials=True
+)
 
 JWT_SECRET = "supersecretkey"
 JWT_ALGO = "HS256"

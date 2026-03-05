@@ -14,8 +14,10 @@ from datetime import datetime, timedelta
 
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:5173", "https://mye-commerce-website.onrender.com/"])
-
+CORS(app, origins=[
+    "http://localhost:5173",
+    "https://mye-commerce-website.onrender.com/"
+], supports_credentials=True)
 
 JWT_SECRET = "supersecretkey"
 JWT_ALGO = "HS256"
@@ -26,22 +28,30 @@ UPLOAD_FOLDER = os.path.join(BASE_DIR, "images")
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "ico"}
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-# MONGO_URI = "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
-# client = MongoClient(MONGO_URI)
-
-MONGO_URI = os.environ.get("MONGO_URI")
+MONGO_URI = "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
 client = MongoClient(MONGO_URI)
+
+# MONGO_URI = os.environ.get("MONGO_URI")
+# client = MongoClient(MONGO_URI)
 # db = client["ecommerce"]
 # collection = db["products"] 
 # orders_col = db["orders"]      
 # users_collection = db["users"]
 
-# MONGO_URI = os.environ.get("MONGO_URI") or "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
+# MONGO_URI = os.environ.get("MONGO_URI")
 # client = MongoClient(MONGO_URI)
 db = client["ecommerce"]
 collection = db["products"] 
 orders_col = db["orders"]      
 users_collection = db["users"]
+
+
+# MONGO_URI = os.environ.get("MONGO_URI") or "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
+# client = MongoClient(MONGO_URI)
+# db = client["ecommerce"]
+# collection = db["products"] 
+# orders_col = db["orders"]      
+# users_collection = db["users"]
 
 ORDERS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "orders.json")
 
@@ -54,15 +64,16 @@ if os.path.exists(ORDERS_FILE):
             for order in orders:
                 orders_col.update_one({"id": order["id"]}, {"$set": order}, upsert=True)
 
-@app.route("/user-orders/<user_id>")
+@app.route("/user-orders/<user_id>", methods=["GET"])
 def get_user_orders(user_id):
-    # Make sure we use string form of ObjectId
-    user_orders = list(orders_col.find({"userId": user_id}, {"_id": 0}))
-    
-    # If your MongoDB orders don't have 'userId', you must include it when creating orders
-    # For example, when creating order:
-    # order_data["userId"] = user_id
-    
+
+    user_orders = list(orders_col.find({
+        "userId": user_id
+    }))
+
+    for order in user_orders:
+        order["_id"] = str(order["_id"])
+
     return jsonify(user_orders)
 
 
@@ -193,20 +204,24 @@ def change_password():
 # ============================
 @app.route("/auth/signup", methods=["POST"])
 def signup():
-    data = request.json
+    data = request.get_json()
+
     name = data.get("name")
     email = data.get("email")
     password = data.get("password")
 
     if not name or not email or not password:
-        return jsonify({"message": "All fields required"}), 400
+        return jsonify({"error": "Missing fields"}), 400
 
-    # Check if user exists
-    if users_collection.find_one({"email": email}):
-        return jsonify({"message": "Email already exists"}), 400
+    existing = users_collection.find_one({"email": email})
+    if existing:
+        return jsonify({"error": "User already exists"}), 400
 
-    # Hash password
-    hashed_password = generate_password_hash(password, method="pbkdf2:sha256", salt_length=16)
+    hashed_password = generate_password_hash(
+        password,
+        method="pbkdf2:sha256",
+        salt_length=16
+    )
 
     user = {
         "name": name,
@@ -218,9 +233,9 @@ def signup():
     result = users_collection.insert_one(user)
 
     return jsonify({
-        "message": "User created successfully",
+        "message": "User created",
         "userId": str(result.inserted_id)
-    })
+    }), 201
 # ----------------------------
 # LOGIN
 # ----------------------------
@@ -234,27 +249,18 @@ def login():
         return jsonify({"message": "Email and password required"}), 400
 
     user = users_collection.find_one({"email": email})
-    if not user:
-        return jsonify({"message": "User not found"}), 404
+    if not user or not check_password_hash(user["password"], password):
+        return jsonify({"message": "Invalid credentials"}), 401
 
-    if not check_password_hash(user["password"], password):
-        return jsonify({"message": "Invalid password"}), 401
-
-    # Generate JWT token
-    payload = {
+    token = jwt.encode({
         "user_id": str(user["_id"]),
         "email": user["email"],
-        "exp": datetime.utcnow() + timedelta(seconds=JWT_EXP_DELTA_SECONDS)
-    }
-    token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGO)
+        "exp": datetime.utcnow()+timedelta(seconds=JWT_EXP_DELTA_SECONDS)
+    }, JWT_SECRET, algorithm=JWT_ALGO)
 
     return jsonify({
         "token": token,
-        "user": {
-            "_id": str(user["_id"]),
-            "name": user["name"],
-            "email": user["email"]
-        }
+        "user": {"_id": str(user["_id"]),"name": user["name"],"email": user["email"]}
     })
 # ================================
 # REAL CONVERSION RATE API

@@ -9,13 +9,11 @@ export default function Signup() {
     name: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
-
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  /* ================= SIGNUP ================= */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -40,7 +38,6 @@ export default function Signup() {
 
       alert("Signup successful!");
       navigate("/login");
-
     } catch (err) {
       alert(
         err.response?.data?.message ||
@@ -52,32 +49,6 @@ export default function Signup() {
     }
   };
 
-  /* ================= CHANGE PASSWORD ================= */
-  const handleChangePassword = async () => {
-    if (!form.email) {
-      alert("Enter your email first");
-      return;
-    }
-
-    const newPassword = prompt("Enter new password:");
-    if (!newPassword) return;
-
-    try {
-      await axios.post(`${BASE_URL}/auth/change-password`, {
-        email: form.email,
-        newPassword: newPassword,
-      });
-
-      alert("Password changed successfully!");
-    } catch (err) {
-      alert(
-        err.response?.data?.message ||
-        "Password change failed"
-      );
-    }
-  };
-
-  /* ================= FORGOT PASSWORD ================= */
   const handleForgotPassword = async () => {
     if (!form.email) {
       alert("Enter your email first");
@@ -88,13 +59,9 @@ export default function Signup() {
       await axios.post(`${BASE_URL}/auth/forgot-password`, {
         email: form.email,
       });
-
       alert("Reset link sent to your email");
     } catch (err) {
-      alert(
-        err.response?.data?.message ||
-        "Error sending reset link"
-      );
+      alert(err.response?.data?.message || "Error sending reset link");
     }
   };
 
@@ -123,7 +90,7 @@ export default function Signup() {
           />
 
           <input
-            type="password"
+            type="password" // ✅ masked
             placeholder="Password"
             value={form.password}
             onChange={(e) =>
@@ -132,7 +99,7 @@ export default function Signup() {
           />
 
           <input
-            type="password"
+            type="password" // ✅ masked
             placeholder="Confirm Password"
             value={form.confirmPassword}
             onChange={(e) =>
@@ -146,21 +113,11 @@ export default function Signup() {
         </form>
 
         <div className="auth-links">
-          <span onClick={() => navigate("/login")}>
-            Already have account? Login
-          </span>
+          <span onClick={() => navigate("/login")}>Already have account? Login</span>
         </div>
 
         <div className="auth-links">
-          <span onClick={handleForgotPassword}>
-            Forgot Password?
-          </span>
-        </div>
-
-        <div className="auth-links">
-          <span onClick={handleChangePassword}>
-            Change Password
-          </span>
+          <span onClick={handleForgotPassword}>Forgot Password?</span>
         </div>
       </div>
     </div>

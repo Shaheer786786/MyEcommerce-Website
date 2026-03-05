@@ -14,12 +14,12 @@ from datetime import datetime, timedelta
 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["http://localhost:5173", "https://mye-commerce-website.onrender.com/"])
 
 
-
-JWT_SECRET = "supersecretkey"   # production me env variable
+JWT_SECRET = "supersecretkey"
 JWT_ALGO = "HS256"
+JWT_EXP_DELTA_SECONDS = 3600 * 24  # 1 day
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "images")
@@ -31,11 +31,17 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 MONGO_URI = os.environ.get("MONGO_URI")
 client = MongoClient(MONGO_URI)
+# db = client["ecommerce"]
+# collection = db["products"] 
+# orders_col = db["orders"]      
+# users_collection = db["users"]
+
+# MONGO_URI = os.environ.get("MONGO_URI") or "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
+# client = MongoClient(MONGO_URI)
 db = client["ecommerce"]
 collection = db["products"] 
 orders_col = db["orders"]      
 users_collection = db["users"]
-
 
 ORDERS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "orders.json")
 
@@ -181,23 +187,31 @@ def change_password():
 # AUTH ROUTES (FINAL WORKING)
 # ==============================
 
-# ----------------------------
+
+# ============================
 # SIGNUP
-# ----------------------------
+# ============================
 @app.route("/auth/signup", methods=["POST"])
 def signup():
     data = request.json
+    name = data.get("name")
+    email = data.get("email")
+    password = data.get("password")
 
-    if users_collection.find_one({"email": data["email"]}):
+    if not name or not email or not password:
+        return jsonify({"message": "All fields required"}), 400
+
+    # Check if user exists
+    if users_collection.find_one({"email": email}):
         return jsonify({"message": "Email already exists"}), 400
 
+    # Hash password
+    hashed_password = generate_password_hash(password, method="pbkdf2:sha256", salt_length=16)
+
     user = {
-        "firstName": data.get("firstName", ""),
-        "lastName": data.get("lastName", ""),
-        "email": data["email"],
-        "password": data["password"],
-        "phone": "",
-        "street": "",
+        "name": name,
+        "email": email,
+        "password": hashed_password,
         "createdAt": datetime.utcnow()
     }
 
@@ -207,32 +221,39 @@ def signup():
         "message": "User created successfully",
         "userId": str(result.inserted_id)
     })
-
 # ----------------------------
 # LOGIN
 # ----------------------------
-@app.route('/auth/login', methods=['POST'])
+@app.route("/auth/login", methods=["POST"])
 def login():
-    data = request.get_json()
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
 
-    user = db.users.find_one({"email": data.get("email")})
+    if not email or not password:
+        return jsonify({"message": "Email and password required"}), 400
 
+    user = users_collection.find_one({"email": email})
     if not user:
         return jsonify({"message": "User not found"}), 404
 
-    if user["password"] != data.get("password"):
+    if not check_password_hash(user["password"], password):
         return jsonify({"message": "Invalid password"}), 401
 
+    # Generate JWT token
+    payload = {
+        "user_id": str(user["_id"]),
+        "email": user["email"],
+        "exp": datetime.utcnow() + timedelta(seconds=JWT_EXP_DELTA_SECONDS)
+    }
+    token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGO)
+
     return jsonify({
-        "token": "dummy_token",
-        "userId": str(user["_id"]),
+        "token": token,
         "user": {
             "_id": str(user["_id"]),
-            "firstName": user.get("firstName", ""),
-            "lastName": user.get("lastName", ""),
-            "email": user.get("email", ""),
-            "phone": user.get("phone", ""),
-            "street": user.get("street", "")
+            "name": user["name"],
+            "email": user["email"]
         }
     })
 # ================================
@@ -293,20 +314,37 @@ def admin_customers():
         u["_id"] = str(u["_id"])
     return jsonify(users)
 
-@app.route("/user/<user_id>", methods=["GET", "PUT"])
-def user_profile(user_id):
-    user = db.users.find_one({"_id": ObjectId(user_id)}, {"password": 0})
+# ============================
+# GET USER PROFILE
+# ============================
+# ============================
+# GET USER PROFILE
+# ============================
+@app.route("/user/<user_id>", methods=["GET"])
+def get_user(user_id):
+    user = users_collection.find_one({"_id": ObjectId(user_id)}, {"password": 0})
     if not user:
-        return jsonify({"error": "User not found"}), 404
+        return jsonify({"message": "User not found"}), 404
+
     user["_id"] = str(user["_id"])
-    
-    if request.method == "PUT":
-        update_data = request.get_json()
-        db.users.update_one({"_id": ObjectId(user_id)}, {"$set": update_data})
-        user.update(update_data)
-        return jsonify({"success": True, "user": user})
-    
     return jsonify(user)
+
+# ============================
+# UPDATE USER PROFILE
+# ============================
+# ============================
+# UPDATE USER PROFILE
+# ============================
+@app.route("/user/<user_id>", methods=["PUT"])
+def update_user(user_id):
+    update_data = request.json
+    if "password" in update_data:
+        update_data["password"] = generate_password_hash(update_data["password"], method="pbkdf2:sha256", salt_length=16)
+
+    users_collection.update_one({"_id": ObjectId(user_id)}, {"$set": update_data})
+    user = users_collection.find_one({"_id": ObjectId(user_id)}, {"password": 0})
+    user["_id"] = str(user["_id"])
+    return jsonify({"success": True, "user": user})
 
 @app.route("/")
 def home():
@@ -726,24 +764,37 @@ def admin_footer():
     write_data(data)
     return jsonify({"success": True})
 
-# ----------------------------
-# CREATE ORDER
-# ----------------------------
+# ============================
+# PLACE ORDER
+# ============================
 @app.route("/orders", methods=["POST"])
-def create_order():
+def place_order():
     data = request.json
 
+    user_id = data.get("userId")
+    customer = data.get("customer")
+    items = data.get("items")
+    total = data.get("total")
+    date = data.get("date")
+    status = data.get("status", "Pending")
+
+    if not user_id or not customer or not items or total is None:
+        return jsonify({"message": "Invalid order data"}), 400
+
     order = {
-        "userId": data["userId"],   # 🔥 USER ID SAVE HO RAHA
-        "items": data["items"],
-        "total": data["total"],
-        "status": "Pending",
-        "createdAt": datetime.datetime.utcnow()
+        "userId": user_id,
+        "customer": customer,
+        "items": items,
+        "total": total,
+        "date": date,
+        "status": status,
+        "createdAt": datetime.utcnow()
     }
 
-    orders_col.insert_one(order)
+    result = orders_col.insert_one(order)
+    order["_id"] = str(result.inserted_id)
 
-    return jsonify({"message": "Order placed successfully"})
+    return jsonify({"message": "Order placed successfully", "order": order})
 
 
 

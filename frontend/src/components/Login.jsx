@@ -56,51 +56,36 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!form.email || !form.password) {
-    alert("Please enter email and password");
-    return;
-  }
+    if (!form.email || !form.password) {
+      alert("Please enter email and password");
+      return;
+    }
 
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const res = await axios.post(
-      `${BASE_URL}/auth/login`,
-      form
-    );
+      const res = await axios.post(`${BASE_URL}/auth/login`, form);
 
-    console.log("Login response:", res.data);
+      console.log("Login response:", res.data);
 
-    // Save token
-    localStorage.setItem("token", res.data.token);
+      // ✅ Store only token and user info, NO password
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("userId", res.data.user._id); // 🔥 add this
 
-    // Save user object
-    localStorage.setItem(
-      "user",
-      JSON.stringify(res.data.user)
-    );
-
-    // 🔥 CORRECT USER ID SAVE
-    localStorage.setItem(
-      "userId",
-      res.data.user.id
-    );
-
-    alert("Login successful!");
-    navigate("/profile");
-
-  } catch (err) {
-    alert(
-      "Login failed: " +
-      (err.response?.data?.message || err.message)
-    );
-  } finally {
-    setLoading(false);
-  }
-};
+      alert("Login successful!");
+      navigate("/profile");
+    } catch (err) {
+      alert(
+        "Login failed: " + (err.response?.data?.message || err.message)
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleForgotPassword = async () => {
     if (!form.email) {
@@ -112,13 +97,9 @@ const handleSubmit = async (e) => {
       await axios.post(`${BASE_URL}/auth/forgot-password`, {
         email: form.email,
       });
-
       alert("Password reset link sent to your email");
     } catch (err) {
-      alert(
-        "Error: " +
-        (err.response?.data?.message || err.message)
-      );
+      alert("Error: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -138,7 +119,7 @@ const handleSubmit = async (e) => {
           />
 
           <input
-            type="password"
+            type="password" // ✅ masked
             placeholder="Password"
             value={form.password}
             onChange={(e) =>
@@ -152,16 +133,12 @@ const handleSubmit = async (e) => {
         </form>
 
         <div className="forgot-password">
-          <span onClick={handleForgotPassword}>
-            Forgot Password?
-          </span>
+          <span onClick={handleForgotPassword}>Forgot Password?</span>
         </div>
 
         <div className="auth-link">
           New user?{" "}
-          <span onClick={() => navigate("/signup")}>
-            Create account
-          </span>
+          <span onClick={() => navigate("/signup")}>Create account</span>
         </div>
       </div>
     </div>

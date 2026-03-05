@@ -811,13 +811,56 @@ def place_order():
 # ----------------------------
 # GET USER ORDERS
 # ----------------------------
-@app.route("/orders/<user_id>", methods=["GET"])
-def get_orders(user_id):
-    orders = list(orders_col.find({"userId": user_id}))
+# ================================
+# ORDERS API
+# ================================
+
+# Get all orders (Admin dashboard)
+@app.route("/orders", methods=["GET"])
+def get_all_orders():
+
+    orders = list(orders_col.find().sort("createdAt", -1))
+
     for order in orders:
         order["_id"] = str(order["_id"])
 
     return jsonify(orders)
+
+
+# Get orders by user
+@app.route("/orders/<user_id>", methods=["GET"])
+def get_orders_by_user(user_id):
+
+    user_orders = list(orders_col.find({"userId": user_id}))
+
+    for order in user_orders:
+        order["_id"] = str(order["_id"])
+
+    return jsonify(user_orders)
+
+
+# Create order
+@app.route("/orders", methods=["POST"])
+def create_order():
+
+    data = request.json
+
+    order = {
+        "userId": data.get("userId"),
+        "items": data.get("items", []),
+        "total": data.get("total", 0),
+        "status": "Pending",
+        "createdAt": datetime.utcnow()
+    }
+
+    result = orders_col.insert_one(order)
+
+    order["_id"] = str(result.inserted_id)
+
+    return jsonify({
+        "message": "Order created",
+        "order": order
+    }), 201
 
 # PUT update order status
 @app.route("/orders/<order_id>/status", methods=["PUT"])

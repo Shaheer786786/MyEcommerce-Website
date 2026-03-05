@@ -28,8 +28,8 @@ UPLOAD_FOLDER = os.path.join(BASE_DIR, "images")
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "ico"}
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-MONGO_URI = "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
-client = MongoClient(MONGO_URI)
+# MONGO_URI = "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
+# client = MongoClient(MONGO_URI)
 
 # MONGO_URI = os.environ.get("MONGO_URI")
 # client = MongoClient(MONGO_URI)
@@ -38,8 +38,8 @@ client = MongoClient(MONGO_URI)
 # orders_col = db["orders"]      
 # users_collection = db["users"]
 
-# MONGO_URI = os.environ.get("MONGO_URI")
-# client = MongoClient(MONGO_URI)
+MONGO_URI = os.environ.get("MONGO_URI")
+client = MongoClient(MONGO_URI)
 db = client["ecommerce"]
 collection = db["products"] 
 orders_col = db["orders"]      

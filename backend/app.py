@@ -14,13 +14,12 @@ from datetime import datetime, timedelta
 
 
 app = Flask(__name__)
-CORS(
-    app,
-    resources={r"/*": {"origins": [
-        "https://mye-commerce-website.onrender.com"
-    ]}},
-    supports_credentials=True
-)
+CORS(app,
+     resources={r"/*": {"origins": [
+         "http://localhost:5173",
+         "https://mye-commerce-website.onrender.com"
+     ]}},
+     supports_credentials=True)
 
 JWT_SECRET = "supersecretkey"
 JWT_ALGO = "HS256"
@@ -79,6 +78,12 @@ def get_user_orders(user_id):
 
     return jsonify(user_orders)
 
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
+    return response
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS

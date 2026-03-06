@@ -11,7 +11,7 @@ import jwt
 from collections import defaultdict
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
-from bson.objectid import ObjectId
+
 
 app = Flask(__name__)
 CORS(app)

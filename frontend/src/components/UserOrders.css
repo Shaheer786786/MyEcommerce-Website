@@ -57,6 +57,9 @@
 .status.cancelled {
   background-color: #f44336;
 }
+.status.shipping {
+  background-color: #004085;
+}
 
 .order-summary {
   font-size: 14px;

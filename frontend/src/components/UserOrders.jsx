@@ -1,70 +1,96 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import BASE_URL from "../config";
+import "./UserOrders.css";
 
 export default function UserOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = localStorage.getItem("userId");
 
-    // ✅ safety check
-    if (!user || !user.id) {
+    if (!userId) {
+      console.log("User not logged in");
       setLoading(false);
       return;
     }
 
-    // ✅ USE BASE_URL (IMPORTANT)
-    fetch(`${BASE_URL}/user-orders/${user.id}`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to fetch orders");
-        }
-        return res.json();
-      })
+    fetch(`${BASE_URL}/user-orders/${userId}`)
+      .then((res) => res.json())
       .then((data) => {
-        console.log("Fetched orders:", data);
-        setOrders(data || []);
+        const sorted = data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setOrders(sorted);
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Order fetch error:", err);
-        setOrders([]);
+        console.error("Error fetching orders:", err);
         setLoading(false);
       });
   }, []);
 
   if (loading) return <p>Loading your orders...</p>;
-
-  if (!orders.length)
-    return <p>No orders yet.</p>;
+  if (!orders || orders.length === 0) return <p>No orders yet.</p>;
 
   return (
     <div className="my-orders-page">
       <h2>My Orders</h2>
+      <p className="total-orders">Total Orders: <strong>{orders.length}</strong></p>
 
-      {orders.map((order) => (
-        <div
-          key={order._id || order.id}
-          className="order-card"
-        >
-          <h4>
-            Order ID: {order.displayId || order._id}
-          </h4>
+      {orders.map((order) => {
+        const totalAmount = order.items.reduce(
+          (acc, item) => acc + item.price * item.quantity,
+          0
+        );
+        const totalProducts = order.items.reduce(
+          (acc, item) => acc + item.quantity,
+          0
+        );
 
-          <p>Status: {order.status}</p>
-          <p>Total: ₹{order.total}</p>
+        return (
+          <div key={order._id} className="order-card">
+            <div className="order-card-header">
+              <h4>Order #{order._id}</h4>
+              <span className={`status ${order.status.toLowerCase()}`}>
+                {order.status}
+              </span>
+            </div>
 
-          <ul>
-            {order.items?.map((item, i) => (
-              <li key={i}>
-                {item.name} × {item.quantity} =
-                ₹{item.price * item.quantity}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+            <p className="order-summary">
+              Total Products: <strong>{totalProducts}</strong> | Total Amount: <strong>₹{totalAmount}</strong>
+            </p>
+
+            <p className="shipping-info">
+              Ship to: {order.customer?.firstName} {order.customer?.lastName}, {order.customer?.city}, {order.customer?.address}
+            </p>
+
+            <div className="products-grid">
+              <div className="grid-header">
+                <span>Image</span>
+                <span>Name</span>
+                <span>Qty</span>
+                <span>Price</span>
+                <span>Total</span>
+                <span>Offer</span>
+              </div>
+              {order.items.map((item, idx) => (
+                <div key={idx} className="grid-row">
+                  <Link to={`/product/${item.id}`}>
+                    <img src={item.image} alt={item.name} className="product-img"/>
+                  </Link>
+                  <span>{item.name}</span>
+                  <span>{item.quantity}</span>
+                  <span>₹{item.price}</span>
+                  <span>₹{item.price * item.quantity}</span>
+                  <span>{item.offer || "-"}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

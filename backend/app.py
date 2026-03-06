@@ -11,7 +11,7 @@ import jwt
 from collections import defaultdict
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
-
+from bson.objectid import ObjectId
 
 app = Flask(__name__)
 CORS(app)
@@ -63,15 +63,16 @@ if os.path.exists(ORDERS_FILE):
 
 @app.route("/user-orders/<user_id>", methods=["GET"])
 def get_user_orders(user_id):
+    try:
+        orders = list(db.orders.find({"userId": user_id}))
 
-    user_orders = list(orders_col.find({
-        "userId": user_id
-    }))
+        for order in orders:
+            order["_id"] = str(order["_id"])
 
-    for order in user_orders:
-        order["_id"] = str(order["_id"])
+        return jsonify(orders)
 
-    return jsonify(user_orders)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.after_request
 def after_request(response):

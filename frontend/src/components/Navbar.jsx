@@ -409,16 +409,17 @@ export default function Navbar({ cart = { count: 0 } }) {
       )
       .catch(() => setProducts([]));
 
-    const savedUser = localStorage.getItem("user");
-    if (savedUser) {
-      const parsed = JSON.parse(savedUser);
-      setUser(parsed);
+const savedUser = localStorage.getItem("user");
 
-      fetch(`${BASE_URL}/user-orders/${parsed.id}`)
-        .then((res) => res.json())
-        .then((data) => setOrders(Array.isArray(data) ? data : []))
-        .catch(() => setOrders([]));
-    }
+if (savedUser) {
+  const parsed = JSON.parse(savedUser);
+  setUser(parsed);
+
+  fetch(`${BASE_URL}/user-orders/${parsed._id}`)
+    .then((res) => res.json())
+    .then((data) => setOrders(Array.isArray(data) ? data : []))
+    .catch(() => setOrders([]));
+}
 
     const handleOutsideClick = (e) => {
       if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
@@ -555,7 +556,6 @@ export default function Navbar({ cart = { count: 0 } }) {
 
           <div className="nav-orders" onClick={handleOrdersClick}>
             <span>{navbar.orders.line1}</span>
-            <span>{user ? `(${orders.length})` : ""}</span>
             <span>{navbar.orders.line2}</span>
           </div>
 
@@ -604,7 +604,7 @@ export default function Navbar({ cart = { count: 0 } }) {
         <ul className="sidebar-menu">
           <li onClick={() => navigate("/profile")}>Edit Profile</li>
           <li onClick={() => navigate("/user-orders")}>
-            Orders ({orders.length})
+           My Orders
           </li>
           <li onClick={() => navigate("/settings")}>Settings</li>
         </ul>

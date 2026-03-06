@@ -118,27 +118,71 @@ body {
 }
 
 .status-badge {
-  display: inline-block;
-  padding: 5px 12px;
+  padding: 4px 10px;
   border-radius: 12px;
+  font-size: 0.85rem;
   font-weight: 600;
-  font-size: 13px;
-  color: #fff;
-  text-align: center;
-}
-
-.status-pending {
-  background-color: #ff9800;
+  text-transform: capitalize;
 }
 
 .status-completed {
-  background-color: #4caf50;
+  color: #155724;
+  background-color: #d4edda;
+}
+
+.status-pending {
+  color: #856404;
+  background-color: #fff3cd;
 }
 
 .status-cancelled {
-  background-color: #f44336;
+  color: #721c24;
+  background-color: #f8d7da;
 }
 
+.status-shipping {
+  color: #004085;
+  background-color: #cce5ff;
+}
+/* Action Buttons */
+.btn-complete,
+.btn-cancel,
+.btn-shipping {
+  margin: 2px 2px 2px 0;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-complete {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.btn-complete:hover {
+  background-color: #218838;
+}
+
+.btn-cancel {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.btn-cancel:hover {
+  background-color: #c82333;
+}
+
+.btn-shipping {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btn-shipping:hover {
+  background-color: #0069d9;
+}
 .products-section h2 {
   margin-bottom: 15px;
 }

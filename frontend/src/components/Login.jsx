@@ -45,7 +45,7 @@
 //     </div>
 //   );
 // }
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../config";
@@ -55,6 +55,15 @@ export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  // 🔥 Check localStorage on mount
+  useEffect(() => {
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+    if (savedUser && savedUser._id) {
+      // User already logged in, redirect to profile/dashboard
+      navigate("/profile");
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,10 +80,18 @@ export default function Login() {
 
       console.log("Login response:", res.data);
 
-      // ✅ Store only token and user info, NO password
+      // ✅ Prepare user data with profile pic
+      const userData = {
+        _id: res.data.user._id,
+        name: res.data.user.name,
+        email: res.data.user.email,
+        profilePic: res.data.user.profilePic || "", // save profile pic if exists
+      };
+
+      // 🔒 Save token separately
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      localStorage.setItem("userId", res.data.user._id); // 🔥 add this
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("userId", res.data.user._id);
 
       alert("Login successful!");
       navigate("/profile");
@@ -119,7 +136,7 @@ export default function Login() {
           />
 
           <input
-            type="password" // ✅ masked
+            type="password"
             placeholder="Password"
             value={form.password}
             onChange={(e) =>

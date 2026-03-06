@@ -279,24 +279,32 @@ fetch(`${BASE_URL}/admin/dashboard/conversion`)
                       {order.status}
                     </span>
                   </td>
-                  <td>
-                    {order.status !== "Completed" && (
-                      <button
-                        className="btn-complete"
-                        onClick={() => updateOrderStatus(order._id, "Completed")}
-                      >
-                        Complete
-                      </button>
-                    )}
-                    {order.status !== "Cancelled" && (
-                      <button
-                        className="btn-cancel"
-                        onClick={() => updateOrderStatus(order._id, "Cancelled")}
-                      >
-                        Cancel
-                      </button>
-                    )}
-                  </td>
+                 <td>
+  {order.status !== "Completed" && order.status !== "Shipping" && (
+    <button
+      className="btn-shipping"
+      onClick={() => updateOrderStatus(order._id, "Shipping")}
+    >
+      Shipping
+    </button>
+  )}
+  {order.status !== "Completed" && (
+    <button
+      className="btn-complete"
+      onClick={() => updateOrderStatus(order._id, "Completed")}
+    >
+      Complete
+    </button>
+  )}
+  {order.status !== "Cancelled" && (
+    <button
+      className="btn-cancel"
+      onClick={() => updateOrderStatus(order._id, "Cancelled")}
+    >
+      Cancel
+    </button>
+  )}
+</td>
                 </tr>
               ))}
             </tbody>

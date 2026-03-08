@@ -238,6 +238,7 @@ fetch(`${BASE_URL}/admin/dashboard/conversion`)
                 <th>Date</th>
                 <th>Status</th>
                 <th>Action</th>
+                <th>Tracking</th>
               </tr>
             </thead>
             <tbody>
@@ -288,14 +289,14 @@ fetch(`${BASE_URL}/admin/dashboard/conversion`)
       Shipping
     </button>
   )}
-  {order.status !== "Completed" && (
+  {/* {order.status !== "Completed" && (
     <button
       className="btn-complete"
       onClick={() => updateOrderStatus(order._id, "Completed")}
     >
       Complete
     </button>
-  )}
+  )} */}
   {order.status !== "Cancelled" && (
     <button
       className="btn-cancel"
@@ -304,6 +305,47 @@ fetch(`${BASE_URL}/admin/dashboard/conversion`)
       Cancel
     </button>
   )}
+</td>
+
+<td>
+  <div className="status-slider">
+
+    <button onClick={() => updateOrderStatus(order._id, "Order Placed")}>
+      Order Placed
+    </button>
+
+    <button onClick={() => updateOrderStatus(order._id, "Order Confirmed")}>
+      Order Confirmed
+    </button>
+
+    <button onClick={() => updateOrderStatus(order._id, "Packed the product")}>
+      Packed the product
+    </button>
+
+    <button onClick={() => updateOrderStatus(order._id, "Arrived in warehouse")}>
+      Arrived in warehouse
+    </button>
+
+    <button onClick={() => updateOrderStatus(order._id, "Near by courier facility")}>
+      Near by courier facility
+    </button>
+
+    <button onClick={() => updateOrderStatus(order._id, "Out for Delivery")}>
+      Out for Delivery
+    </button>
+
+    <button onClick={() => updateOrderStatus(order._id, "Delivered")}>
+      Delivered
+    </button>
+
+    <button
+      className="btn-cancel"
+      onClick={() => updateOrderStatus(order._id, "Cancelled")}
+    >
+      Cancel
+    </button>
+
+  </div>
 </td>
                 </tr>
               ))}

@@ -625,3 +625,75 @@ body {
 .admin-profile-info p {
   margin: 5px 0;
 }
+.status-slider{
+display:flex;
+gap:8px;
+overflow-x:auto;
+white-space:nowrap;
+padding:6px;
+max-width:340px;
+scroll-behavior:smooth;
+-webkit-overflow-scrolling:touch;
+}
+
+/* Buttons */
+.status-slider button{
+background:#2196f3;
+color:white;
+border:none;
+padding:6px 12px;
+font-size:12px;
+border-radius:20px;
+cursor:pointer;
+flex-shrink:0;
+transition:0.2s;
+}
+
+.status-slider button:hover{
+background:#1976d2;
+}
+
+.btn-cancel{
+background:#f44336 !important;
+}
+
+/* scrollbar desktop */
+.status-slider::-webkit-scrollbar{
+height:6px;
+}
+
+.status-slider::-webkit-scrollbar-thumb{
+background:#ccc;
+border-radius:10px;
+}
+
+/* 📱 Mobile Responsive */
+@media (max-width:768px){
+
+.status-slider{
+max-width:200px;
+gap:6px;
+padding:4px;
+}
+
+.status-slider button{
+font-size:10px;
+padding:5px 10px;
+border-radius:16px;
+}
+
+}
+
+/* 📱 Small phones */
+@media (max-width:480px){
+
+.status-slider{
+max-width:160px;
+}
+
+.status-slider button{
+font-size:9px;
+padding:4px 8px;
+}
+
+}

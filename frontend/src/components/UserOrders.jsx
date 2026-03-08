@@ -48,6 +48,17 @@ export default function UserOrders() {
           (acc, item) => acc + item.quantity,
           0
         );
+const trackingSteps = [
+  "Order Placed",
+  "Order Confirmed",
+  "Packed the product",
+  "Arrived in warehouse",
+  "Near by courier facility",
+  "Out for Delivery",
+  "Delivered"
+];
+
+const currentIndex = trackingSteps.indexOf(order.status);
 
         return (
           <div key={order._id} className="order-card">
@@ -57,7 +68,27 @@ export default function UserOrders() {
                 {order.status}
               </span>
             </div>
+<div className="tracking-bar">
 
+{trackingSteps.map((step, index) => (
+
+<div key={index} className="tracking-step">
+
+<div className={`circle ${index <= currentIndex ? "active" : ""}`}>
+{index < currentIndex ? "✓" : ""}
+</div>
+
+{index !== trackingSteps.length - 1 && (
+<div className={`line ${index < currentIndex ? "active" : ""}`} />
+)}
+
+<p>{step}</p>
+
+</div>
+
+))}
+
+</div>
             <p className="order-summary">
               Total Products: <strong>{totalProducts}</strong> | Total Amount: <strong>₹{totalAmount}</strong>
             </p>

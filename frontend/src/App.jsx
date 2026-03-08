@@ -265,6 +265,7 @@ import AdminDashboard from "./admin/AdminDashboard";
 import AdminBrands from "./admin/AdminBrands";
 import AdminBannerTwo from "./admin/AdminBannerTwo";
 import AdminElectronic from "./admin/AdminElectronic";
+import OwnerProfile from "./admin/OwnerProfile";
 
 import AdminLogin from "./admin/AdminLogin";
 import AdminSignUp from "./admin/AdminSignUp";
@@ -474,6 +475,7 @@ function App() {
           <Route path="favicon" element={<AdminPrivateRoute><AdminFavicon /></AdminPrivateRoute>} />
           <Route path="brands" element={<AdminPrivateRoute><AdminBrands /></AdminPrivateRoute>} />
           <Route path="banner-two" element={<AdminPrivateRoute><AdminBannerTwo /></AdminPrivateRoute>} />
+          <Route path="/admin/profile" element={<OwnerProfile />} />
         </Route>
 
         {/* FALLBACK */}

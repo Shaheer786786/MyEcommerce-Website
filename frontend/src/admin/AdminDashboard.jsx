@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BASE_URL from "../config"; 
+import axios from "axios";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell
+  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell
 } from "recharts";
 import "./AdminDashboard.css";
+
+// Dynamic BASE_URL (same as OwnerProfile)
+const BASE_URL =
+  window.location.hostname === "localhost"
+    ? "http://127.0.0.1:5000"
+    : import.meta.env.VITE_BASE_URL;
 
 const SummaryCard = ({ title, value, icon, bgColor }) => (
   <div className="summary-card" style={{ backgroundColor: bgColor }}>
@@ -49,83 +48,75 @@ const UserActivity = ({ activities }) => (
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
+
   const [stats, setStats] = useState({});
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [activities, setActivities] = useState([]);
   const [revenueData, setRevenueData] = useState([]);
-const [conversionData, setConversionData] = useState(0);
+  const [conversionData, setConversionData] = useState(0);
+
+  // Admin profile state
+  const [adminProfile, setAdminProfile] = useState({});
 
   useEffect(() => {
     const admin = JSON.parse(localStorage.getItem("adminLoggedIn"));
-    if (!admin) {
-      navigate("/admin/login");
-    }
+    if (!admin) navigate("/admin/login");
   }, [navigate]);
 
+  // Fetch all dashboard data
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Admin profile
+        const profileRes = await axios.get(`${BASE_URL}/admin/owner-profile`);
+        if (profileRes.data.success) setAdminProfile(profileRes.data.profile);
 
-    // Revenue Graph
-fetch(`${BASE_URL}/admin/dashboard/revenue`)
-  .then((res) => res.json())
-  .then(setRevenueData)
-  .catch((err) => console.error("Revenue fetch error:", err));
+        // Stats
+        const statsRes = await axios.get(`${BASE_URL}/admin/dashboard/stats`);
+        setStats(statsRes.data);
 
-// Conversion
-fetch(`${BASE_URL}/admin/dashboard/conversion`)
-  .then((res) => res.json())
-  .then((data) => setConversionData(data.conversion))
-  .catch((err) => console.error("Conversion fetch error:", err));
-
-    // Stats
-    fetch(`${BASE_URL}/admin/dashboard/stats`)
-      .then((res) => res.json())
-      .then(setStats)
-      .catch((err) => console.error("Stats fetch error:", err));
-
-    // Orders
-    fetch(`${BASE_URL}/orders`)
-      .then((res) => res.json())
-      .then((data) => {
-        const sortedOrders = data.sort(
+        // Orders
+        const ordersRes = await axios.get(`${BASE_URL}/orders`);
+        const sortedOrders = ordersRes.data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
         setOrders(sortedOrders);
-      })
-      .catch((err) => console.error("Orders fetch error:", err));
 
-    // Products
-    fetch(`${BASE_URL}/admin/dashboard/products`)
-      .then((res) => res.json())
-      .then(setProducts)
-      .catch((err) => console.error("Products fetch error:", err));
+        // Products
+        const productsRes = await axios.get(`${BASE_URL}/admin/dashboard/products`);
+        setProducts(productsRes.data);
 
-    // Activities
-    fetch(`${BASE_URL}/admin/dashboard/activities`)
-      .then((res) => res.json())
-      .then(setActivities)
-      .catch((err) => console.error("Activities fetch error:", err));
+        // Activities
+        const activitiesRes = await axios.get(`${BASE_URL}/admin/dashboard/activities`);
+        setActivities(activitiesRes.data);
+
+        // Revenue
+        const revenueRes = await axios.get(`${BASE_URL}/admin/dashboard/revenue`);
+        setRevenueData(revenueRes.data);
+
+        // Conversion
+        const conversionRes = await axios.get(`${BASE_URL}/admin/dashboard/conversion`);
+        setConversionData(conversionRes.data.conversion || 0);
+
+      } catch (err) {
+        console.error("Dashboard fetch error:", err);
+      }
+    };
+    fetchData();
   }, []);
 
-  const updateOrderStatus = (orderId, status) => {
-    fetch(`${BASE_URL}/orders/${orderId}/status`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          setOrders((prev) =>
-            prev.map((order) =>
-              order._id === orderId ? { ...order, status } : order
-            )
-          );
-        } else {
-          alert("Failed to update status: " + (data.error || "Unknown error"));
-        }
-      })
-      .catch(() => alert("Network error updating order status"));
+  const updateOrderStatus = async (orderId, status) => {
+    try {
+      const res = await axios.put(`${BASE_URL}/orders/${orderId}/status`, { status });
+      if (res.data.success) {
+        setOrders((prev) =>
+          prev.map((o) => (o._id === orderId ? { ...o, status } : o))
+        );
+      } else alert("Failed to update status: " + (res.data.error || "Unknown error"));
+    } catch {
+      alert("Network error updating order status");
+    }
   };
 
   const handleLogout = () => {
@@ -133,122 +124,95 @@ fetch(`${BASE_URL}/admin/dashboard/conversion`)
     navigate("/admin/login");
   };
 
+  // Profile image
+  const profileImage =
+    adminProfile.image
+      ? adminProfile.image.startsWith("http")
+        ? adminProfile.image
+        : `${BASE_URL}${adminProfile.image}`
+      : "/default-avatar.png";
+
   return (
     <div className="dashboard-container">
       <h1>E-Commerce Admin Dashboard</h1>
-      <button className="logout-btn1" onClick={handleLogout}>
-        Logout
-      </button>
+      <button className="logout-btn1" onClick={handleLogout}>Logout</button>
 
+      <div className="dashboard-header">
+        <div className="admin-profile-card" onClick={() => navigate("/admin/profile")}>
+          <img src={profileImage} alt="Admin" className="admin-avatar" />
+          <div>
+            <h4>{adminProfile.name || "Admin"}</h4>
+            <p>{adminProfile.role || "Owner"}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Analytics */}
       <section className="analytics-row">
+        <div className="session-card">
+          <h3>Sessions Over Time</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={revenueData}>
+              <XAxis dataKey="day" />
+              <YAxis />
+              <Tooltip />
+              <Line type="monotone" dataKey="value" stroke="#5b4dfc" strokeWidth={3} dot={false} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
 
-  {/* 📈 Revenue Line Graph */}
-  <div className="session-card">
-    <h3>Sessions Over Time</h3>
+        <div className="conversion-card2">
+          <h3>Conversion</h3>
+          <div className="gauge-wrapper">
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie
+                  data={[
+                    { name: "Converted", value: conversionData },
+                    { name: "Remaining", value: 100 - conversionData }
+                  ]}
+                  startAngle={180} endAngle={0}
+                  innerRadius={70} outerRadius={100}
+                  dataKey="value"
+                >
+                  <Cell fill="#5b4dfc" />
+                  <Cell fill="#e0e0e0" />
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="gauge-center">
+              <h2>{conversionData}%</h2>
+              <span>Live</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
-    <ResponsiveContainer width="100%" height={250}>
-      <LineChart data={revenueData}>
-        <XAxis dataKey="day" />
-        <YAxis />
-        <Tooltip />
-        <Line
-          type="monotone"
-          dataKey="value"
-          stroke="#5b4dfc"
-          strokeWidth={3}
-          dot={false}
-        />
-      </LineChart>
-    </ResponsiveContainer>
-  </div>
-
-  {/* 🎯 Conversion Gauge */}
-  <div className="conversion-card2">
-    <h3>Conversion</h3>
-
-    <div className="gauge-wrapper">
-      <ResponsiveContainer width="100%" height={200}>
-        <PieChart>
-          <Pie
-            data={[
-              { name: "Converted", value: conversionData },
-              { name: "Remaining", value: 100 - conversionData }
-            ]}
-            startAngle={180}
-            endAngle={0}
-            innerRadius={70}
-            outerRadius={100}
-            dataKey="value"
-          >
-            <Cell fill="#5b4dfc" />
-            <Cell fill="#e0e0e0" />
-          </Pie>
-        </PieChart>
-      </ResponsiveContainer>
-
-      <div className="gauge-center">
-        <h2>{conversionData}%</h2>
-        <span>Live</span>
-      </div>
-    </div>
-  </div>
-
-</section>
+      {/* Summary Cards */}
       <div className="summary-cards">
-        <SummaryCard
-          title="Total Customers"
-          value={stats.totalCustomers || 0}
-          icon="👥"
-          bgColor="#ff9800"
-        />
-        <SummaryCard
-          title="New Today"
-          value={stats.newCustomersToday || 0}
-          icon="🆕"
-          bgColor="#4caf50"
-        />
-        <SummaryCard
-          title="New This Week"
-          value={stats.newCustomersWeek || 0}
-          icon="📅"
-          bgColor="#2196f3"
-        />
-        <SummaryCard
-          title="Total Revenue"
-          value={`₹${stats.totalRevenue || 0}`}
-          icon="💰"
-          bgColor="#9c27b0"
-        />
+        <SummaryCard title="Total Customers" value={stats.totalCustomers || 0} icon="👥" bgColor="#ff9800" />
+        <SummaryCard title="New Today" value={stats.newCustomersToday || 0} icon="🆕" bgColor="#4caf50" />
+        <SummaryCard title="New This Week" value={stats.newCustomersWeek || 0} icon="📅" bgColor="#2196f3" />
+        <SummaryCard title="Total Revenue" value={`₹${stats.totalRevenue || 0}`} icon="💰" bgColor="#9c27b0" />
       </div>
 
+      {/* Orders Table */}
       <section className="orders-section">
         <h2>Recent Orders</h2>
         <div className="orders-table-wrapper">
           <table className="orders-table">
             <thead>
               <tr>
-                <th>Order ID</th>
-                <th>Customer Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Address</th>
-                <th>Products</th>
-                <th>Quantity</th>
-                <th>Total</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Action</th>
-                <th>Tracking</th>
+                <th>Order ID</th><th>Customer Name</th><th>Email</th><th>Phone</th>
+                <th>Address</th><th>Products</th><th>Quantity</th><th>Total</th>
+                <th>Date</th><th>Status</th><th>Action</th><th>Tracking</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order) => (
                 <tr key={order._id}>
                   <td>#{order._id}</td>
-                  <td>
-                    {order.customer?.firstName || ""}{" "}
-                    {order.customer?.lastName || ""}
-                  </td>
+                  <td>{order.customer?.firstName} {order.customer?.lastName}</td>
                   <td>{order.customer?.email || "N/A"}</td>
                   <td>{order.customer?.phone || "N/A"}</td>
                   <td className="address-cell">{order.customer?.address || "N/A"}</td>
@@ -256,97 +220,32 @@ fetch(`${BASE_URL}/admin/dashboard/conversion`)
                     <div className="products-list">
                       {order.items.map((item, i) => (
                         <div key={i} className="product-row">
-                          <img
-                            src={item.images?.[0] || item.image || "/default-product.png"}
-                            alt={item.name}
-                            className="product-thumb"
-                          />
+                          <img src={item.images?.[0] || item.image || "/default-product.png"} alt={item.name} className="product-thumb" />
                           <span className="product-name">{item.name}</span>
                         </div>
                       ))}
                     </div>
                   </td>
-                  <td>
-                    <div>
-                      {order.items.map((item, i) => (
-                        <span key={i}>{item.quantity}</span>
-                      ))}
-                    </div>
-                  </td>
+                  <td>{order.items.map((item) => item.quantity).join(", ")}</td>
                   <td>₹{order.total.toFixed(2)}</td>
                   <td>{new Date(order.createdAt).toLocaleString("en-IN")}</td>
+                  <td><span className={`status-badge status-${order.status.toLowerCase()}`}>{order.status}</span></td>
                   <td>
-                    <span className={`status-badge status-${order.status.toLowerCase()}`}>
-                      {order.status}
-                    </span>
+                    {order.status !== "Completed" && order.status !== "Shipping" && (
+                      <button className="btn-shipping" onClick={() => updateOrderStatus(order._id, "Shipping")}>Shipping</button>
+                    )}
+                    {order.status !== "Cancelled" && (
+                      <button className="btn-cancel" onClick={() => updateOrderStatus(order._id, "Cancelled")}>Cancel</button>
+                    )}
                   </td>
-                 <td>
-  {order.status !== "Completed" && order.status !== "Shipping" && (
-    <button
-      className="btn-shipping"
-      onClick={() => updateOrderStatus(order._id, "Shipping")}
-    >
-      Shipping
-    </button>
-  )}
-  {/* {order.status !== "Completed" && (
-    <button
-      className="btn-complete"
-      onClick={() => updateOrderStatus(order._id, "Completed")}
-    >
-      Complete
-    </button>
-  )} */}
-  {order.status !== "Cancelled" && (
-    <button
-      className="btn-cancel"
-      onClick={() => updateOrderStatus(order._id, "Cancelled")}
-    >
-      Cancel
-    </button>
-  )}
-</td>
-
-<td>
-  <div className="status-slider">
-
-    <button onClick={() => updateOrderStatus(order._id, "Order Placed")}>
-      Order Placed
-    </button>
-
-    <button onClick={() => updateOrderStatus(order._id, "Order Confirmed")}>
-      Order Confirmed
-    </button>
-
-    <button onClick={() => updateOrderStatus(order._id, "Packed the product")}>
-      Packed the product
-    </button>
-
-    <button onClick={() => updateOrderStatus(order._id, "Arrived in warehouse")}>
-      Arrived in warehouse
-    </button>
-
-    <button onClick={() => updateOrderStatus(order._id, "Near by courier facility")}>
-      Near by courier facility
-    </button>
-
-    <button onClick={() => updateOrderStatus(order._id, "Out for Delivery")}>
-      Out for Delivery
-    </button>
-
-    <button onClick={() => updateOrderStatus(order._id, "Delivered")}>
-      Delivered
-    </button>
-
-    <button
-      className="btn-cancel"
-      onClick={() => updateOrderStatus(order._id, "Cancelled")}
-    >
-      Cancel
-    </button>
-
-  </div>
-</td>
+                  <td>
+                    <div className="status-slider">
+                      {["Order Placed","Order Confirmed","Packed the product","Arrived in warehouse","Near by courier facility","Out for Delivery","Delivered"].map(s => (
+                        <button key={s} onClick={() => updateOrderStatus(order._id, s)}>{s}</button>
+                      ))}
+                      <button className="btn-cancel" onClick={() => updateOrderStatus(order._id, "Cancelled")}>Cancel</button>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -354,24 +253,19 @@ fetch(`${BASE_URL}/admin/dashboard/conversion`)
         </div>
       </section>
 
+      {/* Top Products */}
       <section className="tp-section">
         <h2>Top Products</h2>
         <div className="tp-grid">
-          {products
-            .sort((a, b) => b.sales - a.sales)
-            .map((p) => (
-              <div key={p.id} className="tp-card">
-                <img
-                  src={p.images?.[0] || p.image || "/default-product.png"}
-                  alt={p.name}
-                  className="tp-thumb"
-                />
-                <div className="tp-info">
-                  <p className="tp-name">{p.name}</p>
-                  <p className="tp-sold">{p.sales} sold</p>
-                </div>
+          {products.sort((a, b) => b.sales - a.sales).map((p) => (
+            <div key={p.id} className="tp-card">
+              <img src={p.images?.[0] || p.image || "/default-product.png"} alt={p.name} className="tp-thumb" />
+              <div className="tp-info">
+                <p className="tp-name">{p.name}</p>
+                <p className="tp-sold">{p.sales} sold</p>
               </div>
-            ))}
+            </div>
+          ))}
         </div>
       </section>
 

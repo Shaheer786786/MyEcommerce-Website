@@ -41,7 +41,7 @@ db = client["ecommerce"]
 collection = db["products"] 
 orders_col = db["orders"]      
 users_collection = db["users"]
-
+profile_col = db["profile"]  # <-- Your existing profile collection
 
 # MONGO_URI = os.environ.get("MONGO_URI") or "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
 # client = MongoClient(MONGO_URI)
@@ -118,6 +118,57 @@ def modify_item(data, key, item_id, new_data=None, delete=False):
     data[key] = items
     write_data(data)
     return item
+@app.route("/admin/owner-profile", methods=["GET", "POST"])
+def owner_profile():
+    try:
+        BASE_URL = os.environ.get("BASE_URL", request.host_url.rstrip("/"))
+
+        # -------- GET Profile --------
+        if request.method == "GET":
+            profile = profile_col.find_one({}, {"_id": 0})
+            if not profile:
+                return jsonify({"success": False, "profile": {}})
+            # Ensure image has full URL
+            if profile.get("image") and not profile["image"].startswith("http"):
+                profile["image"] = f"{BASE_URL}{profile['image']}"
+            return jsonify({"success": True, "profile": profile})
+
+        # -------- POST / SAVE Profile --------
+        if not os.path.exists(UPLOAD_FOLDER):
+            os.makedirs(UPLOAD_FOLDER)
+
+        data = request.form.to_dict()
+        file = request.files.get("image")
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(file_path)
+            data["image"] = f"/images/{filename}"  # relative path stored
+
+        # Add joined year if new profile
+        if profile_col.count_documents({}) == 0:
+            data["joined"] = datetime.utcnow().year
+
+        # Ensure numeric types
+        for field in ["age", "reviews", "rating"]:
+            if field in data:
+                try:
+                    data[field] = int(data[field]) if field != "rating" else float(data[field])
+                except:
+                    data[field] = 0
+
+        profile_col.update_one({}, {"$set": data}, upsert=True)
+
+        # Return full URL for frontend
+        if data.get("image") and not data["image"].startswith("http"):
+            data["image"] = f"{BASE_URL}{data['image']}"
+
+        return jsonify({"success": True, "profile": data})
+
+    except Exception as e:
+        print("Error in owner_profile:", e)
+        return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route("/images/<path:filename>")
 def images(filename):

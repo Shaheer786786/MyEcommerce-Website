@@ -1,0 +1,117 @@
+/* OwnerProfile.css */
+
+/* Container for centering the card */
+.owner-profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+  background-color: #f5f7fa; /* light background for contrast */
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Card style */
+.owner-card {
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  padding: 30px 40px;
+  width: 350px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.owner-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Profile image */
+.owner-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+  border: 4px solid #0077ff; /* professional accent border */
+}
+
+/* Name */
+.owner-card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+  color: #333333;
+}
+
+/* Role / info text */
+.owner-card p {
+  font-size: 0.95rem;
+  margin: 5px 0;
+  color: #555555;
+}
+
+/* Edit form container */
+.edit-form {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Inputs */
+.edit-form input[type="text"],
+.edit-form input[type="email"],
+.edit-form input[type="number"],
+.edit-form input[type="file"] {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #cccccc;
+  font-size: 0.95rem;
+  transition: border 0.2s ease;
+}
+
+.edit-form input:focus {
+  border-color: #0077ff;
+  outline: none;
+}
+
+/* Buttons */
+.edit-form button,
+.owner-card > button {
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: none;
+  background-color: #0077ff;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.edit-form button:hover,
+.owner-card > button:hover {
+  background-color: #005fcc;
+}
+
+/* Cancel button */
+.edit-form button:nth-child(2) {
+  background-color: #ff4d4d;
+}
+
+.edit-form button:nth-child(2):hover {
+  background-color: #cc0000;
+}
+
+/* Responsive for small devices */
+@media (max-width: 400px) {
+  .owner-card {
+    width: 90%;
+    padding: 25px;
+  }
+
+  .owner-avatar {
+    width: 100px;
+    height: 100px;
+  }
+}

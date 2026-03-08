@@ -102,25 +102,43 @@
 
 // export default Cart;
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import StepsTracker from "./StepsTracker";
-import BASE_URL from "../config"; // <- Add BASE_URL import
+import BASE_URL from "../config";
 import "./Cart.css";
 
 function Cart({ cart, removeFromCart, updateQuantity }) {
   const navigate = useNavigate();
 
-  /* ✅ PAGE LOAD HOTE HI SCROLL TOP */
+  const [loading, setLoading] = useState(true);
+
+  /* ✅ PAGE LOAD HOTE HI SCROLL TOP + LOADING */
   useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
+
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 600); // loader time
+
+    return () => clearTimeout(timer);
   }, []);
 
   const steps = ["Cart", "Checkout", "Order Summary"];
   const currentStep = 0;
 
+  /* ✅ LOADING SCREEN */
+  if (loading) {
+    return (
+      <div className="cart-loading">
+        <p>Loading cart...</p>
+      </div>
+    );
+  }
+
+  /* ✅ EMPTY CART */
   if (!cart?.items || cart.items.length === 0) {
     return <p className="cart-empty">Your cart is empty</p>;
   }
@@ -136,14 +154,16 @@ function Cart({ cart, removeFromCart, updateQuantity }) {
 
   const getImageUrl = (item) => {
     const image = item.images?.[0] || item.image;
+
     return image?.startsWith("http")
       ? image
-      : `${BASE_URL}/images/${image}`; // <- Use live backend URL
+      : `${BASE_URL}/images/${image}`;
   };
 
   return (
     <div className="cart-page">
       <StepsTracker steps={steps} currentStep={currentStep} />
+
       <h3 className="cartx-title">Your Shopping Cart</h3>
 
       <div className="cart-container">
@@ -158,6 +178,7 @@ function Cart({ cart, removeFromCart, updateQuantity }) {
           <div className="cart-list">
             {cart.items.map((item) => {
               const price = Number(item.price) || 0;
+
               return (
                 <div className="cart-item" key={item.id}>
                   <img src={getImageUrl(item)} alt={item.name} />
@@ -178,7 +199,9 @@ function Cart({ cart, removeFromCart, updateQuantity }) {
                     >
                       −
                     </button>
+
                     <span>{item.quantity}</span>
+
                     <button
                       onClick={() =>
                         updateQuantity(item.id, item.quantity + 1)
@@ -188,7 +211,9 @@ function Cart({ cart, removeFromCart, updateQuantity }) {
                     </button>
                   </div>
 
-                  <div className="cart-price">₹{price.toFixed(2)}</div>
+                  <div className="cart-price">
+                    ₹{price.toFixed(2)}
+                  </div>
 
                   <button
                     className="cart-remove"
@@ -206,6 +231,7 @@ function Cart({ cart, removeFromCart, updateQuantity }) {
         <div className="cart-right">
           <div className="promo-box">
             <h4>Promo code</h4>
+
             <div className="promo-input">
               <input placeholder="Type here..." />
               <button>Apply</button>

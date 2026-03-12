@@ -229,14 +229,21 @@ export default function AdminDashboard() {
                   <td>{order.items.map((item) => item.quantity).join(", ")}</td>
                   <td>₹{order.total.toFixed(2)}</td>
                   <td>{new Date(order.createdAt).toLocaleString("en-IN")}</td>
-                  <td><span className={`status-badge status-${order.status.toLowerCase()}`}>{order.status}</span></td>
-                  <td>
+<td>
+  <span
+    className={`status-badge status-${order.status?.toLowerCase().replace(/\s/g,"-")}`}
+  >
+    {order.status === "User Cancelled" ? "User Cancelled" : order.status}
+  </span>
+</td>                  <td>
                     {order.status !== "Completed" && order.status !== "Shipping" && (
                       <button className="btn-shipping" onClick={() => updateOrderStatus(order._id, "Shipping")}>Shipping</button>
                     )}
-                    {order.status !== "Cancelled" && (
-                      <button className="btn-cancel" onClick={() => updateOrderStatus(order._id, "Cancelled")}>Cancel</button>
-                    )}
+{order.status !== "Cancelled" && order.status !== "User Cancelled" && (
+  <button className="btn-cancel" onClick={() => updateOrderStatus(order._id, "Cancelled")}>
+    Cancel
+  </button>
+)}
                   </td>
                   <td>
                     <div className="status-slider">

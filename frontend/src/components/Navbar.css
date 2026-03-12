@@ -139,8 +139,8 @@
 .search-dropdown {
   position: absolute;
   top: 110%;
-  left: 0;
-  width: 100%;
+  left: 10px;
+  width: 400px;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
@@ -148,6 +148,8 @@
   max-height: 360px;
   overflow-y: auto;
   animation: fadeIn 0.15s ease-in-out;
+  color: black;
+  font-size: 15px;
 }
 
 .search-dropdown::-webkit-scrollbar {
@@ -162,7 +164,7 @@
 .search-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 18px;
   padding: 10px 14px;
   cursor: pointer;
   transition: background 0.2s ease;
@@ -185,6 +187,36 @@
   text-align: center;
   color: #888;
   font-size: 14px;
+}
+.search-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.search-content {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-arrow {
+  font-size: 18px;
+  color: #888;
+  transition: 0.2s;
+}
+
+.search-item:hover .search-arrow {
+  transform: translateX(5px);
+  color: black;
 }
 
 /* ================= User (Profile + Hamburger) ================= */

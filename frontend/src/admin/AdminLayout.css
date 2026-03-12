@@ -1,10 +1,22 @@
+/* ==============================
+   MODERN RESPONSIVE ADMIN DASHBOARD
+============================== */
+
+/* ===== GLOBAL ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', Arial, sans-serif;
+}
+
 .admin-layout {
-  display: flex; 
-  height: 100vh; 
-  font-family: Arial, sans-serif;
+  display: flex;
+  height: 100vh;
   background: #f5f5f5;
 }
 
+/* ================= SIDEBAR ================= */
 .admin-layout > .admin-sidebar {
   width: 250px;
   background: #1e1e2f;
@@ -12,11 +24,13 @@
   display: flex;
   flex-direction: column;
   padding: 20px 0;
-  height: 100vh; 
-  position: fixed; 
+  height: 100vh;
+  position: fixed;
   left: 0;
   top: 0;
-  overflow-y: auto; 
+  overflow-y: auto;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
 }
 
 .admin-sidebar a {
@@ -24,38 +38,55 @@
   text-decoration: none;
   padding: 12px 20px;
   display: block;
-  transition: background 0.3s;
-}
-.admin-sidebar a:hover {
-  background: #33334d;
+  border-radius: 6px;
+  margin: 2px 12px;
+  transition: background 0.3s, padding-left 0.3s;
 }
 
+.admin-sidebar a:hover {
+  background: #33334d;
+  padding-left: 25px;
+}
+
+.admin-sidebar a.active {
+  background: #3f3f61;
+  font-weight: 600;
+}
+
+/* ================= MAIN CONTENT ================= */
 .admin-main {
-  margin-left: 250px; 
+  margin-left: 250px;
   display: flex;
   flex-direction: column;
   width: calc(100% - 250px);
   height: 100vh;
+  transition: all 0.3s ease;
 }
 
+/* ================= TOPBAR ================= */
 .admin-topbar {
   height: 60px;
-  background: white;
+  background: #fff;
   border-bottom: 1px solid #ddd;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 20px;
   font-size: 20px;
   font-weight: bold;
   color: #333;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
+
+/* ================= CONTENT AREA ================= */
 .admin-content {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
   background: #f5f5f5;
 }
-/* ================== TABLET & SMALL DESKTOP (≤1024px) ================== */
+
+/* ================= TABLET & SMALL DESKTOP (≤1024px) ================= */
 @media (max-width: 1024px) {
   .admin-layout {
     flex-direction: column;
@@ -81,7 +112,7 @@
   }
 }
 
-/* ================== MOBILE (≤768px) ================== */
+/* ================= MOBILE (≤768px) ================= */
 @media (max-width: 768px) {
   .admin-layout {
     flex-direction: column;
@@ -96,6 +127,7 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: center;
   }
 
   .admin-sidebar a {
@@ -103,6 +135,7 @@
     padding: 10px 5px;
     text-align: center;
     font-size: 14px;
+    margin: 2px 0;
   }
 
   .admin-main {
@@ -121,7 +154,7 @@
   }
 }
 
-/* ================== SMALL MOBILE (≤480px) ================== */
+/* ================= SMALL MOBILE (≤480px) ================= */
 @media (max-width: 480px) {
   .admin-sidebar a {
     flex: 1 1 100%;
@@ -137,4 +170,21 @@
   .admin-content {
     padding: 10px 5px;
   }
+}
+
+/* ================= SCROLLBAR ================= */
+.admin-sidebar::-webkit-scrollbar,
+.admin-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb,
+.admin-content::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 3px;
+}
+
+.admin-sidebar::-webkit-scrollbar-track,
+.admin-content::-webkit-scrollbar-track {
+  background: transparent;
 }

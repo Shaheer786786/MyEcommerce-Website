@@ -1,117 +1,207 @@
-/* OwnerProfile.css */
+/* ================= PROFILE PAGE ================= */
 
-/* Container for centering the card */
-.owner-profile-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 40px 20px;
-  background-color: #f5f7fa; /* light background for contrast */
-  min-height: 100vh;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+/* .owner-profile-container{
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:40px;
+font-family: "Inter", Arial, sans-serif;
+} */
+
+/* MAIN WRAPPER */
+
+.owner-profile-wrapper{
+display:flex;
+justify-content:center;
+width:1100px;
+max-width:100%;
+background:white;
+border-radius:20px;
+overflow:hidden;
+box-shadow:0 15px 40px rgba(0,0,0,0.08);
+position: relative;
+left:60px;
+top: 20px;
 }
 
-/* Card style */
-.owner-card {
-  background-color: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  padding: 30px 40px;
-  width: 350px;
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* ================= LEFT PANEL ================= */
+
+.owner-left{
+width:320px;
+background:#f8f8f8;
+padding:40px 30px;
+text-align:center;
+border-right:1px solid #eee;
 }
 
-.owner-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+.owner-avatar{
+width:120px;
+height:120px;
+border-radius:50%;
+object-fit:cover;
+margin-bottom:15px;
+border:4px solid #ff9800;
 }
 
-/* Profile image */
-.owner-avatar {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 20px;
-  border: 4px solid #0077ff; /* professional accent border */
+.owner-name{
+font-size:20px;
+font-weight:600;
+color:#333;
 }
 
-/* Name */
-.owner-card h2 {
-  font-size: 1.5rem;
-  margin-bottom: 5px;
-  color: #333333;
+.owner-role{
+color:#777;
+font-size:14px;
+margin-bottom:25px;
 }
 
-/* Role / info text */
-.owner-card p {
-  font-size: 0.95rem;
-  margin: 5px 0;
-  color: #555555;
+/* LEFT MENU */
+
+.owner-menu{
+display:flex;
+flex-direction:column;
+gap:12px;
 }
 
-/* Edit form container */
-.edit-form {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.owner-menu button{
+padding:12px;
+border:none;
+border-radius:10px;
+background:#ff9800;
+font-size:14px;
+font-weight:500;
+cursor:pointer;
+transition:all .2s ease;
 }
 
-/* Inputs */
-.edit-form input[type="text"],
-.edit-form input[type="email"],
-.edit-form input[type="number"],
-.edit-form input[type="file"] {
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #cccccc;
-  font-size: 0.95rem;
-  transition: border 0.2s ease;
+.owner-menu button:hover{
+background:#c3862b;
+color:white;
 }
 
-.edit-form input:focus {
-  border-color: #0077ff;
-  outline: none;
+.owner-menu .active{
+background:#ffe7cc;
+color:#ff9800;
+font-weight:600;
 }
 
-/* Buttons */
-.edit-form button,
-.owner-card > button {
-  padding: 10px 15px;
-  border-radius: 8px;
-  border: none;
-  background-color: #0077ff;
-  color: #ffffff;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+/* ================= RIGHT PANEL ================= */
+
+.owner-right{
+flex:1;
+padding:40px 50px;
 }
 
-.edit-form button:hover,
-.owner-card > button:hover {
-  background-color: #005fcc;
+.owner-title{
+font-size:22px;
+font-weight:600;
+margin-bottom:30px;
+color:#333;
 }
 
-/* Cancel button */
-.edit-form button:nth-child(2) {
-  background-color: #ff4d4d;
+/* FORM GRID */
+
+.owner-form{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
 }
 
-.edit-form button:nth-child(2):hover {
-  background-color: #cc0000;
+.owner-form input{
+padding:12px;
+border-radius:10px;
+border:1px solid #ddd;
+background:#f8f8f8;
+font-size:14px;
 }
 
-/* Responsive for small devices */
-@media (max-width: 400px) {
-  .owner-card {
-    width: 90%;
-    padding: 25px;
-  }
+.owner-form input:focus{
+outline:none;
+border-color:#ff9800;
+background:white;
+}
 
-  .owner-avatar {
-    width: 100px;
-    height: 100px;
-  }
+/* FULL WIDTH INPUT */
+
+.full{
+grid-column:span 2;
+}
+
+/* ================= BUTTONS ================= */
+
+.owner-buttons{
+margin-top:35px;
+display:flex;
+justify-content:space-between;
+}
+
+.discard-btn{
+padding:12px 28px;
+border-radius:30px;
+border:2px solid #ff9800;
+background:white;
+color:#ff9800;
+font-weight:600;
+cursor:pointer;
+transition:.2s;
+}
+
+.discard-btn:hover{
+background:#fff5ea;
+}
+
+.save-btn{
+padding:12px 30px;
+border:none;
+border-radius:30px;
+background:#ff9800;
+color:white;
+font-weight:600;
+cursor:pointer;
+transition:.2s;
+}
+
+.save-btn:hover{
+background:#e68900;
+}
+
+/* ================= FILE INPUT ================= */
+
+.owner-left input[type="file"]{
+margin-top:10px;
+font-size:13px;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:900px){
+
+.owner-profile-wrapper{
+flex-direction:column;
+}
+
+.owner-left{
+width:100%;
+border-right:none;
+border-bottom:1px solid #eee;
+}
+
+.owner-right{
+padding:30px;
+}
+
+.owner-form{
+grid-template-columns:1fr;
+}
+
+.full{
+grid-column:span 1;
+}
+
+.owner-buttons{
+flex-direction:column;
+gap:10px;
+}
+
 }

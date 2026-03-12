@@ -1,12 +1,24 @@
-.admin-layout {
-  display: flex; 
-  height: 100vh;
-  font-family: Arial, sans-serif;
+/* ==============================
+   ADMIN DASHBOARD MODERN DESIGN
+============================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", Arial, sans-serif;
 }
 
+.admin-layout {
+  display: flex;
+  height: 100vh;
+  background: #b9b9b939;
+}
+
+/* ================= SIDEBAR ================= */
 .admin-sidebar {
-  width: 250px;
-  background: #000000ec;
+  width: 260px;
+  background: #1e1e2f;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -16,93 +28,110 @@
   left: 0;
   overflow-y: auto;
   z-index: 100;
-  padding-top: 20px;
+  padding-top: 25px;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
 }
 
 .sidebar-header {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  border-bottom: 5px solid #757575;
 }
 
 .sidebar-header h2 {
-  font-size: 25px;
-  font-weight: bold;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #fff;
 }
 
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .admin-link {
   display: block;
-  padding: 12px 20px;
-  color: #fff;
+  padding: 14px 22px;
+  color: #cfd8dc;
   text-decoration: none;
-  transition: background 0.3s;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 18px;
+  transition: all 0.2s ease;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .admin-link:hover {
-  background: #33334d;
+  background: #2c2c48;
+  color: #fff;
+  padding-left: 26px;
 }
 
 .admin-link.active {
-  background: #3a3a5e;
-  font-weight: bold;
+  background: #3f3f61;
+  color: #fff;
+  font-weight: 600;
 }
 
+/* ================= MAIN AREA ================= */
 .admin-main {
-  margin-left: 250px;
+  margin-left: 260px;
   flex: 1;
   display: flex;
   flex-direction: column;
-  width: calc(100% - 250px);
+  width: calc(100% - 260px);
   height: 100vh;
+  transition: all 0.3s ease;
 }
 
+/* ================= TOPBAR ================= */
 .admin-topbar {
-  height: 60px;
-  background: white;
-  border-bottom: 1px solid #ddd;
+  height: 110px;
+  background: #1e1e2f;
+  border-bottom: 5px solid #757575;
   display: flex;
   align-items: center;
-  padding: 50px 20px;
+  justify-content: space-between;
+  padding: 0 25px;
   font-size: 20px;
-  font-weight: bold;
-  color: #333;
+  font-weight: 600;
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
+/* ================= CONTENT ================= */
 .admin-content {
   flex: 1;
-  padding: 20px;
+  padding: 25px;
   overflow-y: auto;
-  background: #f5f5f5;
 }
 
-/* ================= MOBILE TOP BAR ================= */
-
+/* ================= MOBILE TOPBAR ================= */
 .admin-mobile-bar {
   display: none;
   align-items: center;
   justify-content: space-between;
-  background: #000000ec;
+  background: #1e1e2f;
   color: #fff;
-  padding: 14px 16px;
+  padding: 14px 18px;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 200;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
 .mobile-title {
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 700;
 }
 
 /* ================= HAMBURGER ICON ================= */
-
 .admin-hamburger {
   width: 28px;
   height: 22px;
@@ -120,11 +149,10 @@
   width: 100%;
   background: #fff;
   border-radius: 2px;
-  transition: 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 /* ================= MOBILE RESPONSIVE ================= */
-
 @media (max-width: 768px) {
 
   .admin-mobile-bar {
@@ -136,15 +164,38 @@
     transition: transform 0.3s ease;
     width: 240px;
     height: 100vh;
+    position: fixed;
   }
 
   .admin-sidebar.show {
     transform: translateX(0);
+    box-shadow: 2px 0 12px rgba(0,0,0,0.3);
   }
 
   .admin-main {
     margin-left: 0;
     width: 100%;
-    padding-top: 60px; /* mobile bar ke liye space */
+    padding-top: 60px; /* topbar ke liye */
   }
+
+  .admin-topbar {
+    display: none;
+  }
+}
+
+/* ================= SCROLLBAR ================= */
+.admin-sidebar::-webkit-scrollbar,
+.admin-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb,
+.admin-content::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 3px;
+}
+
+.admin-sidebar::-webkit-scrollbar-track,
+.admin-content::-webkit-scrollbar-track {
+  background: transparent;
 }

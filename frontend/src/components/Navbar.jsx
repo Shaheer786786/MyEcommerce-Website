@@ -518,31 +518,36 @@ if (savedUser) {
               onChange={(e) => setQuery(e.target.value)}
             />
             {query && (
-              <div className="search-dropdown">
-                {searchResults.length > 0 ? (
-                  searchResults.map((p) => (
-                    <div
-                      key={p.id}
-                      className="search-item"
-                      onClick={() => {
-                        navigate(`/product/${p.id}`);
-                        setQuery("");
-                      }}
-                    >
-                      <img
-                        src={getImageUrl(p.images?.[0] || p.image)}
-                        alt={p.name}
-                      />
-                      <div>
-                        <p>{p.name}</p>
-                        <span>₹{p.price}</span>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="search-empty">No products found</div>
-                )}
-              </div>
+           <div className="search-dropdown">
+  {searchResults.length > 0 ? (
+    searchResults.map((p) => (
+      <div
+        key={p.id}
+        className="search-item"
+        onClick={() => {
+          navigate(`/product/${p.id}`);
+          setQuery("");
+        }}
+      >
+        <img
+          src={getImageUrl(p.images?.[0] || p.image)}
+          alt={p.name}
+        />
+
+        <div className="search-content">
+          <div className="search-text">
+            <p className="search-name">{p.name}</p>
+            {/* <span className="search-price">₹{p.price}</span> */}
+          </div>
+
+          <span className="search-arrow">⬉</span>
+        </div>
+      </div>
+    ))
+  ) : (
+    <div className="search-empty">No products found</div>
+  )}
+</div>
             )}
           </div>
         </div>

@@ -64,7 +64,13 @@ if os.path.exists(ORDERS_FILE):
 @app.route("/user-orders/<user_id>", methods=["GET"])
 def get_user_orders(user_id):
     try:
-        orders = list(db.orders.find({"userId": user_id}))
+        # ✅ Cancelled orders user ko dobara na dikhe
+        orders = list(orders_col.find({
+            "userId": user_id,
+            "status": {
+                "$nin": ["User Cancelled", "Cancelled"]
+            }
+        }))
 
         for order in orders:
             order["_id"] = str(order["_id"])
@@ -72,6 +78,7 @@ def get_user_orders(user_id):
         return jsonify(orders)
 
     except Exception as e:
+        print("User orders error:", e)
         return jsonify({"error": str(e)}), 500
 
 @app.after_request
@@ -169,6 +176,64 @@ def owner_profile():
     except Exception as e:
         print("Error in owner_profile:", e)
         return jsonify({"success": False, "error": str(e)}), 500
+
+
+# ============================
+# CANCEL ORDER (USER)
+# ============================
+@app.route("/cancel-order/<order_id>", methods=["GET","POST"])
+def cancel_order(order_id):
+    try:
+
+        # Check valid ObjectId
+        if not ObjectId.is_valid(order_id):
+            return jsonify({
+                "success": False,
+                "message": "Invalid order id"
+            }), 400
+
+        order = orders_col.find_one({"_id": ObjectId(order_id)})
+
+        if not order:
+            return jsonify({
+                "success": False,
+                "message": "Order not found"
+            }), 404
+
+        # Already delivered check
+        if order.get("status") == "Delivered":
+            return jsonify({
+                "success": False,
+                "message": "Delivered order cannot be cancelled"
+            })
+
+        # Already cancelled check
+        if order.get("status") == "Cancelled":
+            return jsonify({
+                "success": False,
+                "message": "Order already cancelled"
+            })
+
+        # Update status
+        orders_col.update_one(
+            {"_id": ObjectId(order_id)},
+            {"$set": {
+                "status": "User Cancelled",
+                "cancelledAt": datetime.utcnow()
+            }}
+        )
+
+        return jsonify({
+            "success": True,
+            "message": "Order cancelled successfully"
+        })
+
+    except Exception as e:
+        print("Cancel order error:", e)
+        return jsonify({
+            "success": False,
+            "message": "Server error"
+        }), 500
 
 @app.route("/images/<path:filename>")
 def images(filename):
@@ -375,12 +440,6 @@ def admin_customers():
         u["_id"] = str(u["_id"])
     return jsonify(users)
 
-# ============================
-# GET USER PROFILE
-# ============================
-# ============================
-# GET USER PROFILE
-# ============================
 @app.route("/user/<user_id>", methods=["GET"])
 def get_user(user_id):
     user = users_collection.find_one({"_id": ObjectId(user_id)}, {"password": 0})
@@ -390,12 +449,6 @@ def get_user(user_id):
     user["_id"] = str(user["_id"])
     return jsonify(user)
 
-# ============================
-# UPDATE USER PROFILE
-# ============================
-# ============================
-# UPDATE USER PROFILE
-# ============================
 @app.route("/user/<user_id>", methods=["PUT"])
 def update_user(user_id):
     update_data = request.json

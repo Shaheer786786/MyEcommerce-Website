@@ -16,6 +16,7 @@ body {
   max-width: 1200px;
   margin: 50px auto;
   padding: 20px;
+  margin-bottom: 20px;
 }
 
 .orders-title {
@@ -159,8 +160,9 @@ body {
 /* ================= SUCCESS ================= */
 .orders-success {
   max-width: 620px;
-  margin: 140px auto;
+  margin: 175px auto;
   background: #ffffff;
+  margin-top: 220px;
   padding: 60px;
   border-radius: 24px;
   text-align: center;

@@ -369,18 +369,29 @@ def login():
         return jsonify({"message": "Email and password required"}), 400
 
     user = users_collection.find_one({"email": email})
+
     if not user or not check_password_hash(user["password"], password):
         return jsonify({"message": "Invalid credentials"}), 401
 
-    token = jwt.encode({
-        "user_id": str(user["_id"]),
-        "email": user["email"],
-        "exp": datetime.utcnow()+timedelta(seconds=JWT_EXP_DELTA_SECONDS)
-    }, JWT_SECRET, algorithm=JWT_ALGO)
+    # convert ObjectId → string
+    user["_id"] = str(user["_id"])
+
+    # remove password before sending
+    user.pop("password", None)
+
+    token = jwt.encode(
+        {
+            "user_id": user["_id"],
+            "email": user["email"],
+            "exp": datetime.utcnow() + timedelta(seconds=JWT_EXP_DELTA_SECONDS),
+        },
+        JWT_SECRET,
+        algorithm=JWT_ALGO,
+    )
 
     return jsonify({
         "token": token,
-        "user": {"_id": str(user["_id"]),"name": user["name"],"email": user["email"]}
+        "user": user   # ⭐ FULL UPDATED USER RETURN
     })
 # ================================
 # REAL CONVERSION RATE API
@@ -459,6 +470,33 @@ def update_user(user_id):
     user = users_collection.find_one({"_id": ObjectId(user_id)}, {"password": 0})
     user["_id"] = str(user["_id"])
     return jsonify({"success": True, "user": user})
+
+# ================= UPDATE USER PROFILE =================
+@app.route("/update-profile/<user_id>", methods=["PUT"])
+def update_profile(user_id):
+    data = request.json
+
+    update_data = {
+        "firstName": data.get("firstName"),
+        "lastName": data.get("lastName"),
+        "email": data.get("email"),
+        "phone": data.get("phone"),
+        "street": data.get("street"),
+        "city": data.get("city"),
+        "state": data.get("state"),
+        "pincode": data.get("pincode"),
+        "image": data.get("image"),
+    }
+
+    db.users.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": update_data}
+    )
+
+    updated_user = db.users.find_one({"_id": ObjectId(user_id)})
+    updated_user["_id"] = str(updated_user["_id"])
+
+    return jsonify(updated_user)
 
 @app.route("/")
 def home():

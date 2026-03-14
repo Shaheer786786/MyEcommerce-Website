@@ -217,7 +217,7 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import BASE_URL from "../config";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -225,28 +225,34 @@ export default function Profile() {
   const navigate = useNavigate();
 
   // Load user data
-  useEffect(() => {
-    const token = localStorage.getItem("token"); // check login
-    const savedUser = localStorage.getItem("user");
+useEffect(() => {
+  const token = localStorage.getItem("token");
+  const savedUser = localStorage.getItem("user");
 
-    if (!token || !savedUser) {
-      setUser(null);
-    } else {
-      const parsed = JSON.parse(savedUser);
-      setUser({
-        firstName: parsed.firstName || parsed.name?.split(" ")[0] || "",
-        lastName: parsed.lastName || parsed.name?.split(" ")[1] || "",
-        email: parsed.email || "",
-        phone: parsed.phone || "",
-        street: parsed.street || "",
-        city: parsed.city || "",
-        state: parsed.state || "",
-        pincode: parsed.pincode || "",
-        image: parsed.image || "",
-      });
-      setPreview(parsed.image || "https://via.placeholder.com/100");
-    }
-  }, []);
+  if (!token || !savedUser) {
+    setUser(null);
+    return;
+  }
+
+  const parsed = JSON.parse(savedUser);
+
+  // split name safely
+  const nameParts = parsed.name ? parsed.name.split(" ") : [];
+
+  setUser({
+    firstName: parsed.firstName || nameParts[0] || "",
+    lastName: parsed.lastName || nameParts.slice(1).join(" ") || "",
+    email: parsed.email || "",
+    phone: parsed.phone || "",
+    street: parsed.street || "",
+    city: parsed.city || "",
+    state: parsed.state || "",
+    pincode: parsed.pincode || "",
+    image: parsed.image || "",
+  });
+
+  setPreview(parsed.image || "https://via.placeholder.com/100");
+}, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -264,13 +270,37 @@ export default function Profile() {
       reader.readAsDataURL(file);
     }
   };
+const handleSave = async () => {
+  try {
+    const savedUser = JSON.parse(localStorage.getItem("user"));
 
-  const handleSave = () => {
-    if (!user) return;
-    localStorage.setItem("user", JSON.stringify(user));
-    alert("Profile saved successfully!");
+    if (!savedUser?._id) {
+      alert("User ID missing. Please login again.");
+      return;
+    }
+
+    const res = await fetch(
+      `${BASE_URL}/update-profile/${savedUser._id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      }
+    );
+
+    const data = await res.json();
+
+    localStorage.setItem("user", JSON.stringify(data));
+
+    alert("Profile updated successfully!");
     navigate("/");
-  };
+  } catch (err) {
+    console.error(err);
+    alert("Profile update failed");
+  }
+};
 
   if (!localStorage.getItem("token")) {
     return (

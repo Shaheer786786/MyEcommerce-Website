@@ -45,119 +45,141 @@
 //     </div>
 //   );
 // }
-  import { useState, useEffect } from "react";
-  import { useNavigate } from "react-router-dom";
-  import axios from "axios";
-  import BASE_URL from "../config";
-  import "./Auth.css";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import BASE_URL from "../config";
+import "./Auth.css";
 
-  export default function Login() {
-    const [form, setForm] = useState({ email: "", password: "" });
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+export default function Login() {
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-    // 🔥 Check localStorage on mount
-    useEffect(() => {
-      const savedUser = JSON.parse(localStorage.getItem("user"));
-      if (savedUser && savedUser._id) {
-        // User already logged in, redirect to profile/dashboard
-        navigate("/profile");
+  // ✅ SAFE localStorage check
+  useEffect(() => {
+    try {
+      const storedUser = localStorage.getItem("user");
+
+      if (storedUser && storedUser !== "undefined") {
+        const savedUser = JSON.parse(storedUser);
+
+        if (savedUser?._id) {
+          navigate("/profile");
+        }
       }
-    }, []);
+    } catch (error) {
+      console.log("Invalid user data in localStorage");
+      localStorage.removeItem("user");
+    }
+  }, [navigate]);
 
-    const handleSubmit = async (e) => {
-      e.preventDefault();
+  // ✅ LOGIN SUBMIT
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-      if (!form.email || !form.password) {
-        alert("Please enter email and password");
-        return;
-      }
+    if (!form.email || !form.password) {
+      alert("Please enter email and password");
+      return;
+    }
 
-      try {
-        setLoading(true);
+    try {
+      setLoading(true);
 
-        const res = await axios.post(`${BASE_URL}/auth/login`, form);
+      const res = await axios.post(`${BASE_URL}/auth/login`, form);
 
-        console.log("Login response:", res.data);
+      console.log("Login response:", res.data);
 
-        // ✅ Prepare user data with profile pic
-        const userData = {
-          _id: res.data.user._id,
-          name: res.data.user.name,
-          email: res.data.user.email,
-          profilePic: res.data.user.profilePic || "", // save profile pic if exists
-        };
+      const userData = {
+        _id: res.data.user._id,
+        name: res.data.user.name,
+        email: res.data.user.email,
+        profilePic: res.data.user.profilePic || "",
+      };
 
-        // 🔒 Save token separately
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("user", JSON.stringify(userData));
-        localStorage.setItem("userId", res.data.user._id);
+      // ✅ Save safely
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("userId", res.data.user._id);
 
-        alert("Login successful!");
-        navigate("/profile");
-      } catch (err) {
-        alert(
-          "Login failed: " + (err.response?.data?.message || err.message)
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+      alert("Login successful!");
+      navigate("/profile");
+    } catch (err) {
+      alert(
+        "Login failed: " +
+          (err.response?.data?.message || err.message)
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const handleForgotPassword = async () => {
-      if (!form.email) {
-        alert("Please enter your email first");
-        return;
-      }
+  // ✅ FORGOT PASSWORD
+  const handleForgotPassword = async () => {
+    if (!form.email) {
+      alert("Please enter your email first");
+      return;
+    }
 
-      try {
-        await axios.post(`${BASE_URL}/auth/forgot-password`, {
-          email: form.email,
-        });
-        alert("Password reset link sent to your email");
-      } catch (err) {
-        alert("Error: " + (err.response?.data?.message || err.message));
-      }
-    };
+    try {
+      await axios.post(`${BASE_URL}/auth/forgot-password`, {
+        email: form.email,
+      });
 
-    return (
-      <div className="auth-container">
-        <div className="auth-card">
-          <h2>Login</h2>
+      alert("Password reset link sent to your email");
+    } catch (err) {
+      alert("Error: " + (err.response?.data?.message || err.message));
+    }
+  };
 
-          <form onSubmit={handleSubmit}>
-            <input
-              type="email"
-              placeholder="Email"
-              value={form.email}
-              onChange={(e) =>
-                setForm({ ...form, email: e.target.value })
-              }
-            />
+  return (
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2>Login</h2>
 
-            <input
-              type="password"
-              placeholder="Password"
-              value={form.password}
-              onChange={(e) =>
-                setForm({ ...form, password: e.target.value })
-              }
-            />
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={(e) =>
+              setForm({ ...form, email: e.target.value })
+            }
+          />
 
-            <button type="submit" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
-            </button>
-          </form>
+          <input
+            type="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={(e) =>
+              setForm({ ...form, password: e.target.value })
+            }
+          />
 
-          <div className="forgot-password">
-            <span onClick={handleForgotPassword}>Forgot Password?</span>
-          </div>
+          <button type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
 
-          <div className="auth-link">
-            New user?{" "}
-            <span onClick={() => navigate("/signup")}>Create account</span>
-          </div>
+        <div className="forgot-password">
+          <span
+            style={{ cursor: "pointer" }}
+            onClick={handleForgotPassword}
+          >
+            Forgot Password?
+          </span>
+        </div>
+
+        <div className="auth-link">
+          New user?{" "}
+          <span
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/signup")}
+          >
+            Create account
+          </span>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}

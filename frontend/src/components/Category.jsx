@@ -211,7 +211,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Category.css";
 
-const BASE_URL = "https://my-backend-93up.onrender.com";
+// ✅ Auto backend switch (LOCAL + RENDER)
+const isLocal =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1";
+
+const BASE_URL = isLocal
+  ? "http://127.0.0.1:5000"
+  : "https://my-backend-93up.onrender.com";
 
 // Image helper
 const getImageUrl = (prod) => {
@@ -220,11 +227,13 @@ const getImageUrl = (prod) => {
       ? prod.images[0]
       : `${BASE_URL}/images/${prod.images[0]}`;
   }
+
   if (prod.image) {
     return prod.image.startsWith("http")
       ? prod.image
       : `${BASE_URL}/images/${prod.image}`;
   }
+
   return "https://via.placeholder.com/300";
 };
 
@@ -236,22 +245,23 @@ function Category({ addToCart }) {
   const [toasts, setToasts] = useState([]);
   const navigate = useNavigate();
 
-  // Fetch categories
+  // ✅ Fetch categories
   const fetchCategories = async () => {
     try {
       const res = await fetch(`${BASE_URL}/categories`);
       const data = await res.json();
-      setCategories(data);
+      setCategories(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error(err);
+      console.error("Category fetch error:", err);
     }
   };
 
-  // Fetch products + latest products
+  // ✅ Fetch products + latest
   const fetchProducts = async () => {
     try {
       const resProducts = await fetch(`${BASE_URL}/products`);
       const productsData = await resProducts.json();
+
       const resLatest = await fetch(`${BASE_URL}/latestProducts`);
       const latestData = await resLatest.json();
 
@@ -260,10 +270,14 @@ function Category({ addToCart }) {
         ...(Array.isArray(productsData) ? productsData : []),
       ].filter((p) => !p.deleted);
 
-      const sortedById = merged.sort((a, b) => a.id - b.id);
+      // safe sort
+      const sortedById = merged.sort(
+        (a, b) => (a.id || 0) - (b.id || 0)
+      );
+
       setProducts(sortedById);
     } catch (err) {
-      console.error(err);
+      console.error("Products fetch error:", err);
     }
   };
 
@@ -272,15 +286,16 @@ function Category({ addToCart }) {
     fetchProducts();
   }, []);
 
-  // Toast
+  // ✅ Toast
   const showToast = (message) => {
     const id = Date.now();
-    const newToast = { id, message };
-    setToasts((prev) => [...prev, newToast]);
+    setToasts((prev) => [...prev, { id, message }]);
+
     setTimeout(() => {
       setToasts((prev) =>
         prev.map((t) => (t.id === id ? { ...t, fade: true } : t))
       );
+
       setTimeout(() => {
         setToasts((prev) => prev.filter((t) => t.id !== id));
       }, 500);
@@ -298,15 +313,20 @@ function Category({ addToCart }) {
 
   const handleBuyNow = (product, e) => {
     e.stopPropagation();
+
     navigate("/checkout", {
-      state: { cartItems: [{ ...product, quantity: 1 }], totalAmount: product.price },
+      state: {
+        cartItems: [{ ...product, quantity: 1 }],
+        totalAmount: product.price,
+      },
     });
+
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleAddToCart = (product, e) => {
     e.stopPropagation();
-    if (addToCart) addToCart(product, 1);
+    addToCart?.(product, 1);
     showToast(`1 ${product.name} added to cart`);
   };
 
@@ -323,8 +343,8 @@ function Category({ addToCart }) {
     <div id="category" className="category-section">
       <div className="category-container">
         {categories
-          .filter(cat => !cat.deleted)
-          .sort((a, b) => (a.name === "All Items" ? -1 : 0)) // All Items first
+          .filter((cat) => !cat.deleted)
+          .sort((a, b) => (a.name === "All Items" ? -1 : 0))
           .map((cat) => (
             <button
               key={cat.id}
@@ -332,7 +352,11 @@ function Category({ addToCart }) {
               onClick={() => handleCategoryClick(cat.name)}
             >
               <img
-                src={cat.image?.startsWith("http") ? cat.image : `${BASE_URL}/images/${cat.image}`}
+                src={
+                  cat.image?.startsWith("http")
+                    ? cat.image
+                    : `${BASE_URL}/images/${cat.image}`
+                }
                 alt={cat.name}
                 className="category-icon"
               />
@@ -341,12 +365,16 @@ function Category({ addToCart }) {
           ))}
       </div>
 
-      {/* Products */}
+      {/* PRODUCTS */}
       {showProducts && (
         <div className="cat-products">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((prod) => {
-              const stockText = prod.stock > 0 ? `Stock: ${prod.stock}` : "Out of Stock";
+              const stockText =
+                prod.stock > 0
+                  ? `Stock: ${prod.stock}`
+                  : "Out of Stock";
+
               const isOutOfStock = prod.stock === 0;
 
               return (
@@ -358,22 +386,39 @@ function Category({ addToCart }) {
                   <img src={getImageUrl(prod)} alt={prod.name} />
 
                   <h3 className="cat-product-title">{prod.name}</h3>
+
                   <p className="cat-product-desc">
-                    {prod.shortDesc || "High performance with premium quality"}
+                    {prod.shortDesc ||
+                      "High performance with premium quality"}
                   </p>
 
                   <div className="cat-rating-offer">
                     <div className="cat-rating-box">
-                      ⭐ {prod.rating || 4.3} ({prod.reviews || 0} Reviews)
+                      ⭐ {prod.rating || 4.3} (
+                      {prod.reviews || 0} Reviews)
                       <br />
-                      <span className="cat-stock-text">{stockText}</span>
+                      <span className="cat-stock-text">
+                        {stockText}
+                      </span>
                     </div>
-                    {prod.offer && <span className="cat-inline-offer">{prod.offer}</span>}
+
+                    {prod.offer && (
+                      <span className="cat-inline-offer">
+                        {prod.offer}
+                      </span>
+                    )}
                   </div>
 
                   <div className="cat-price-box">
-                    <span className="cat-price">₹{prod.price}</span>
-                    {prod.oldPrice && <span className="cat-old-price">₹{prod.oldPrice}</span>}
+                    <span className="cat-price">
+                      ₹{prod.price}
+                    </span>
+
+                    {prod.oldPrice && (
+                      <span className="cat-old-price">
+                        ₹{prod.oldPrice}
+                      </span>
+                    )}
                   </div>
 
                   <div
@@ -387,6 +432,7 @@ function Category({ addToCart }) {
                     >
                       Buy Now
                     </button>
+
                     <button
                       className="cat-cart-btn"
                       disabled={isOutOfStock}
@@ -404,12 +450,14 @@ function Category({ addToCart }) {
         </div>
       )}
 
-      {/* Toast */}
+      {/* TOAST */}
       <div className="toast-wrapper">
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className={`cart-toast ${toast.fade ? "fade-out" : "show"}`}
+            className={`cart-toast ${
+              toast.fade ? "fade-out" : "show"
+            }`}
           >
             {toast.message}
           </div>

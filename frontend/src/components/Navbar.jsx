@@ -363,6 +363,7 @@
 // }
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaUser, FaShoppingCart, FaHistory, FaCog } from "react-icons/fa";
 import BASE_URL from "../config";
 import "./Navbar.css";
 
@@ -564,11 +565,16 @@ if (savedUser) {
             <span>{navbar.orders.line2}</span>
           </div>
 
-          <div className="nav-cart" onClick={handleCartClick}>
+          {/* <div className="nav-cart" onClick={handleCartClick}>
             <img src={getImageUrl(navbar.cart.icon)} alt="cart" />
             <span className="cart-count">{user ? cart.count : 0}</span>
-          </div>
-
+          </div> */}
+<div className="nav-cart" onClick={handleCartClick}>
+  <FaShoppingCart/> {/* Cart icon */}
+  <span className="cart-count">
+    {user ? cart.count : 0}
+  </span>
+</div>
           {user ? (
             <div className="nav-user">
               <img
@@ -607,19 +613,26 @@ if (savedUser) {
         </div>
 
 <ul className="sidebar-menu">
-  <li onClick={() => navigate("/profile")}>Edit Profile</li>
+      <li onClick={() => navigate("/profile")}>
+        <FaUser style={{ marginRight: "8px" }} />
+        Edit Profile
+      </li>
 
-  <li onClick={() => navigate("/user-orders")}>
-    My Orders
-  </li>
+      <li onClick={() => navigate("/user-orders")}>
+        <FaShoppingCart style={{ marginRight: "8px" }} />
+        My Orders
+      </li>
 
-  {/* NEW */}
-  <li onClick={() => navigate("/order-history")}>
-    Order History
-  </li>
+      <li onClick={() => navigate("/order-history")}>
+        <FaHistory style={{ marginRight: "8px" }} />
+        Order History
+      </li>
 
-  <li onClick={() => navigate("/settings")}>Settings</li>
-</ul>
+      <li onClick={() => navigate("/settings")}>
+        <FaCog style={{ marginRight: "8px" }} />
+        Settings
+      </li>
+    </ul>
 
         <div className="sidebar-footer">
           <button className="logout-btn" onClick={handleLogout}>

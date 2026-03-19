@@ -296,6 +296,14 @@
   color: #e53935;
   font-size: 12px;
   cursor: pointer;
+  position: relative;
+  right: 25px;
+  padding-right: 60px;
+}
+.cart-remove:hover {
+background: red;
+color: white;
+transition: .50s;
 }
 
 /* RIGHT */
@@ -334,6 +342,10 @@
   cursor: pointer;
 }
 
+.promo-input button:hover {
+background-color: #000000bf;
+}
+
 /* SUMMARY */
 .summary-Sub,
 .summary-Dis {
@@ -365,6 +377,10 @@
   border-radius: 14px;
   font-size: 15px;
   cursor: pointer;
+}
+.checkout-btn:hover {
+background-color: #000000bf;
+
 }
 
 /* EMPTY */

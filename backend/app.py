@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request, send_from_directory
+from dotenv import load_dotenv
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from pymongo import MongoClient
@@ -12,20 +13,23 @@ from collections import defaultdict
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-JWT_SECRET = "supersecretkey"
-JWT_ALGO = "HS256"
-JWT_EXP_DELTA_SECONDS = 3600 * 24  # 1 day
+JWT_SECRET = os.getenv("JWT_SECRET")
+JWT_ALGO = os.getenv("JWT_ALGO")
+JWT_EXP_DELTA_SECONDS = int(os.getenv("JWT_EXP_DELTA_SECONDS"))
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "images")
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "ico"}
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-MONGO_URI = "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
+MONGO_URI = os.getenv("MONGO_URI")
+
 client = MongoClient(MONGO_URI)
 
 # MONGO_URI = os.environ.get("MONGO_URI")

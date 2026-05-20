@@ -39,20 +39,12 @@ client = MongoClient(MONGO_URI)
 # orders_col = db["orders"]      
 # users_collection = db["users"]
 
-# MONGO_URI = os.environ.get("MONGO_URI")
-# client = MongoClient(MONGO_URI)
 db = client["ecommerce"]
 collection = db["products"] 
 orders_col = db["orders"]      
 users_collection = db["users"]
 profile_col = db["profile"]  # <-- Your existing profile collection
 
-# MONGO_URI = os.environ.get("MONGO_URI") or "mongodb+srv://shaheer_mongodb:soyal12345@cluster0.qhf6ili.mongodb.net/mydb?retryWrites=true&w=majority"
-# client = MongoClient(MONGO_URI)
-# db = client["ecommerce"]
-# collection = db["products"] 
-# orders_col = db["orders"]      
-# users_collection = db["users"]
 
 ORDERS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "orders.json")
 
@@ -68,7 +60,6 @@ if os.path.exists(ORDERS_FILE):
 @app.route("/user-orders/<user_id>", methods=["GET"])
 def get_user_orders(user_id):
     try:
-        # ✅ Cancelled orders user ko dobara na dikhe
         orders = list(orders_col.find({
             "userId": user_id,
             "status": {
@@ -230,7 +221,6 @@ def cancel_order(order_id):
                 "message": "Order already cancelled"
             })
 
-        # ✅ SAVE REASON ALSO
         orders_col.update_one(
             {"_id": ObjectId(order_id)},
             {
@@ -407,7 +397,7 @@ def login():
 
     return jsonify({
         "token": token,
-        "user": user   # ⭐ FULL UPDATED USER RETURN
+        "user": user  
     })
 # ================================
 # REAL CONVERSION RATE API
@@ -516,7 +506,7 @@ def update_profile(user_id):
 
 @app.route("/")
 def home():
-    return "Backend is Running Successfully 🚀"
+    return "Backend is Running Successfully"
 
 @app.route("/banner")
 def banners():
@@ -550,17 +540,14 @@ def admin_brands():
     file = request.files.get("imageFile")
     BASE_URL = os.environ.get("BASE_URL", request.host_url.rstrip("/"))
 
-    # ✅ If file uploaded
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(UPLOAD_FOLDER, filename))
         item["image"] = f"{BASE_URL}/images/{filename}"
 
-    # ✅ If no file but image URL provided from frontend
     elif item.get("image"):
         item["image"] = item["image"]
 
-    # ✅ Brand external URL (coming from frontend input)
     if item.get("url"):
         item["url"] = item["url"]
 
@@ -589,17 +576,14 @@ def admin_brands_modify(id):
     file = request.files.get("imageFile")
     BASE_URL = os.environ.get("BASE_URL", request.host_url.rstrip("/"))
 
-    # ✅ If new image uploaded
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(UPLOAD_FOLDER, filename))
         update_data["image"] = f"{BASE_URL}/images/{filename}"
 
-    # ✅ If editing image via URL
     elif update_data.get("image"):
         update_data["image"] = update_data["image"]
 
-    # ✅ Update brand external URL
     if update_data.get("url"):
         update_data["url"] = update_data["url"]
 
@@ -956,7 +940,6 @@ def place_order():
 
         processed_items = []
 
-        # ✅ FIX OFFER + DISCOUNT SAVE
         for item in items:
 
             offer_text = item.get("offer", "")
@@ -987,7 +970,6 @@ def place_order():
                 "price": price,
                 "quantity": qty,
 
-                # ✅ IMPORTANT FIELDS
                 "offer": offer_text,
                 "offerPercentage": offer_percentage,
                 "discount": discount
